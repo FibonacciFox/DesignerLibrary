@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.10"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Controls\VisualMesh.axaml.cs">
+        <DependentUpon>VisualMesh.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+
+</Project>

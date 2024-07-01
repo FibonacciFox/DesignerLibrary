@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:designerLibrary="clr-namespace:DesignerLibrary"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Background="Transparent"
+             x:Class="DesignerLibrary.VisualEditor">
+    <Border BorderThickness="3" BorderBrush="DarkSlateGray" Width="1024" Height="768">
+        <Grid>
+            <designerLibrary:MyCustomControl Grid.Row="0" Grid.Column="0"  Name="GridControl" Width="{Binding #CanvasPanel.Bounds.Width}" Height="{Binding #CanvasPanel.Bounds.Height}" GridSizeX="8" GridSizeY="8" GridElementSize="1.5" DrawMode="Dots" GridColor="DarkSlateGray"/>
+            <ContentControl Name="ContentPresenter" Grid.Row="0" Grid.Column="0"/>
+            <Canvas Name="CanvasPanel" Background="Transparent" Grid.Row="0" Grid.Column="0"/>
+        </Grid> 
+    </Border>
+</UserControl>

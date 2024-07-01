@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignerLibrary", "DesignerLibrary\DesignerLibrary.csproj", "{BDC2FD69-8312-4B91-B925-4CD25AA8B598}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.IDE.ToolKit", "Avalonia.IDE.ToolKit\Avalonia.IDE.ToolKit.csproj", "{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDC2FD69-8312-4B91-B925-4CD25AA8B598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDC2FD69-8312-4B91-B925-4CD25AA8B598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDC2FD69-8312-4B91-B925-4CD25AA8B598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDC2FD69-8312-4B91-B925-4CD25AA8B598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

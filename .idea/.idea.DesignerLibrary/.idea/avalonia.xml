@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="Avalonia.IDE.ToolKit/Themes/Default.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="Avalonia.IDE.ToolKit/Themes/ScalingContainer.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="Avalonia.IDE.ToolKit/VisualMesh.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/App.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/MainWindow.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/MyCustomControl.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/Scroll.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/VisualEditor.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/VisualEditorDecoratorItem.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+        <entry key="DesignerLibrary/VisualEditorDecoratorItems.axaml" value="DesignerLibrary/DesignerLibrary.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

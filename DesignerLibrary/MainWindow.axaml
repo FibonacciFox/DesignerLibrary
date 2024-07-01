@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:designerLibrary="clr-namespace:DesignerLibrary"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DesignerLibrary.MainWindow"
+        Title="DesignerLibrary">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Панель управления -->
+        <Border Grid.Column="0" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
+            <StackPanel>
+                <TextBlock Text="Add Controls" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <ListBox Name="ControlsListView" SelectionChanged="ControlsListView_SelectionChanged">
+                    <ListBox.Items>
+                        <TextBlock Text="Button" Tag="Button"/>
+                        <TextBlock Text="TextBox" Tag="TextBox"/>
+                        <TextBlock Text="Label" Tag="Label"/>
+                        <TextBlock Text="StackPanel" Tag="StackPanel"/>
+                        <TextBlock Text="Canvas" Tag="Canvas"/>
+                        <TextBlock Text="DockPanel" Tag="DockPanel"/>
+                        <TextBlock Text="Grid" Tag="Grid"/>
+                        <TextBlock Text="ComboBox" Tag="ComboBox"/>
+                        <TextBlock Text="CheckBox" Tag="CheckBox"/>
+                        <TextBlock Text="RadioButton" Tag="RadioButton"/>
+                        <TextBlock Text="Slider" Tag="Slider"/>
+                        <TextBlock Text="ProgressBar" Tag="ProgressBar"/>
+                        <TextBlock Text="Image" Tag="Image"/>
+                        <TextBlock Text="Calendar" Tag="Calendar"/>
+                    </ListBox.Items>
+                </ListBox>
+            </StackPanel>
+        </Border>
+        
+        <!-- Панель дизайна -->
+        <DockPanel Grid.Column="1">
+            <designerLibrary:VisualEditor Name="DesignPanel" Background="SlateGray"/>
+        </DockPanel>
+    </Grid>
+</Window>

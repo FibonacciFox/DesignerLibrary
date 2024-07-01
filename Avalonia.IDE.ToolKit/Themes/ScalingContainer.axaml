@@ -1,0 +1,26 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Styles>
+        <Design.PreviewWith>
+            <controls:ScalingContainer />
+        </Design.PreviewWith>
+        <Style Selector="controls|ScalingContainer">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ScrollViewer Background="Transparent" Name="PART_ScrollViewer">
+                        <LayoutTransformControl Name="PART_LayoutTransform">
+                            <ContentPresenter Background="Transparent" Content="{TemplateBinding Content , Mode=TwoWay}" />
+                        </LayoutTransformControl>
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </Styles>
+</Styles>
