@@ -14,9 +14,17 @@
         <Style Selector="controls|ScalingContainer">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <ScrollViewer Background="Transparent" Name="PART_ScrollViewer">
+                    <ScrollViewer Background="Transparent"
+                                  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+                                  AllowAutoHide="{TemplateBinding AllowAutoHide}"
+                                  Name="PART_ScrollViewer">
                         <LayoutTransformControl Name="PART_LayoutTransform">
-                            <ContentPresenter Background="Transparent" Content="{TemplateBinding Content , Mode=TwoWay}" />
+                            <ContentPresenter  
+                                Background="{TemplateBinding Background}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}" />
                         </LayoutTransformControl>
                     </ScrollViewer>
                 </ControlTemplate>

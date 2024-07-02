@@ -2,7 +2,10 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace DesignerLibrary;
@@ -15,7 +18,18 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        Content = new ScalingContainer(){Background = Brushes.Black};
+        Content = new ScalingContainer(){
+            AllowAutoHide = false ,  
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+            VerticalContentAlignment = VerticalAlignment.Top,
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+            Width = 640,
+            Height = 480,
+            BorderThickness= new Thickness(3,3,3,3),
+            ScaleFactor = 1,
+            Content = new TextBlock(){Text = "DDDDDDDDDDDDD", Width = 60 , Height = 90}
+        };
         
         _controlFactory = new Dictionary<string, Func<Control>>
         {
