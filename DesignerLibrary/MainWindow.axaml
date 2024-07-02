@@ -40,11 +40,17 @@
         
         <!-- Панель дизайна -->
         <DockPanel Grid.Column="1">
-            <controls:ScalingContainer Name="DesignPanel" 
-                                       Background="SlateGray" 
-                                       AllowAutoHide="False" 
-                                       HorizontalScrollBarVisibility="Visible" 
-                                       VerticalScrollBarVisibility="Visible" />
+            <Border>
+                <controls:ScalingContainer Name="DesignPanel" 
+                                           Width="640"
+                                           Height="480"
+                                           Background="SlateGray" 
+                                           AllowAutoHide="False" 
+                                           HorizontalScrollBarVisibility="Visible" 
+                                           VerticalScrollBarVisibility="Visible">
+                    <controls:VisualMesh DrawMode="Lines" GridSizeX="28" GridSizeY="28" GridElementSize="0.5" GridColor="LightGray"/>
+                </controls:ScalingContainer>
+            </Border>
         </DockPanel>
     </Grid>
 </Window>

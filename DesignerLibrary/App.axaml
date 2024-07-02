@@ -7,5 +7,6 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/ScalingContainer.axaml"/>
+        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualMesh.axaml"/>
     </Application.Styles>
 </Application>
