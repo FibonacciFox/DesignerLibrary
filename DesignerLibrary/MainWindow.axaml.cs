@@ -18,7 +18,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        Content = new ScalingContainer(){
+        /*Content = new ScalingContainer(){
             AllowAutoHide = false ,  
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
             VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
@@ -29,7 +29,7 @@ public partial class MainWindow : Window
             BorderThickness= new Thickness(3,3,3,3),
             ScaleFactor = 1,
             Content = new TextBlock(){Text = "DDDDDDDDDDDDD", Width = 60 , Height = 90}
-        };
+        };*/
         
         _controlFactory = new Dictionary<string, Func<Control>>
         {
@@ -61,8 +61,8 @@ public partial class MainWindow : Window
                 Canvas.SetLeft(newControl, 50);
                 Canvas.SetTop(newControl, 50);
 
-                DesignPanel.ContentPresenter.Content = newControl;
-                DesignPanel.CanvasPanel.Children.Add(new VisualEditorDecoratorItem(newControl, DesignPanel.CanvasPanel));
+                DesignPanel.Content = newControl;
+                //DesignPanel.CanvasPanel.Children.Add(new VisualEditorDecoratorItem(newControl, DesignPanel.CanvasPanel));
             }
 
             listBox.SelectedItem = null;

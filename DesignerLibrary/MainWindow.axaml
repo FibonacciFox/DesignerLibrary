@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:designerLibrary="clr-namespace:DesignerLibrary"
+        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -39,7 +40,11 @@
         
         <!-- Панель дизайна -->
         <DockPanel Grid.Column="1">
-            <designerLibrary:VisualEditor Name="DesignPanel" Background="SlateGray"/>
+            <controls:ScalingContainer Name="DesignPanel" 
+                                       Background="SlateGray" 
+                                       AllowAutoHide="False" 
+                                       HorizontalScrollBarVisibility="Visible" 
+                                       VerticalScrollBarVisibility="Visible" />
         </DockPanel>
     </Grid>
 </Window>

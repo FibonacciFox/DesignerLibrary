@@ -121,12 +121,10 @@ public class ScalingContainer : TemplatedControl
         base.OnApplyTemplate(e);
         
         _partLayoutTransform = e.NameScope.Find<LayoutTransformControl>("PART_LayoutTransform");
-        _partScrollViewer = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer");
-
+        
         // Применяем масштаб только после того, как шаблон был применен
         ScaleContent(ScaleFactor);
     }
     
     private LayoutTransformControl? _partLayoutTransform;
-    private ScrollViewer? _partScrollViewer;
 }
