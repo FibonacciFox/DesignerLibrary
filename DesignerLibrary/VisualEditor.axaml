@@ -9,7 +9,7 @@
              x:Class="DesignerLibrary.VisualEditor">
     <Border BorderThickness="3" BorderBrush="DarkSlateGray" Width="1024" Height="768">
         <Grid>
-            <controls:VisualMesh Grid.Row="0" Grid.Column="0"  Name="GridControl" Width="{Binding #CanvasPanel.Bounds.Width}" Height="{Binding #CanvasPanel.Bounds.Height}" GridSizeX="8" GridSizeY="8" GridElementSize="1.5" DrawMode="Dots" GridColor="DarkSlateGray"/>
+            <controls:VisualMesh Grid.Row="0" Grid.Column="0"  Name="GridControl" Width="{Binding #CanvasPanel.Bounds.Width}" Height="{Binding #CanvasPanel.Bounds.Height}" MeshSizeX="8" MeshSizeY="8" MeshThickness="1.5" DrawMode="Dots" MeshBrush="DarkSlateGray"/>
             <ContentControl Name="ContentPresenter" Grid.Row="0" Grid.Column="0"/>
             <Canvas Name="CanvasPanel" Background="Transparent" Grid.Row="0" Grid.Column="0"/>
         </Grid> 

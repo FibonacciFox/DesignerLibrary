@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Controls\VisualMesh.axaml.cs">
+      <Compile Update="Controls\VisualMesh.cs">
         <DependentUpon>VisualMesh.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

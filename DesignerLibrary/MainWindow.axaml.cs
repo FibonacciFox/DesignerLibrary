@@ -17,7 +17,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
+        var scroll = new ScrollViewer();
+        var t = scroll.Offset;
         /*Content = new ScalingContainer(){
             AllowAutoHide = false ,  
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
@@ -67,5 +68,11 @@ public partial class MainWindow : Window
 
             listBox.SelectedItem = null;
         }
+    }
+
+    private void DesignPanel_OnScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        var scalingContainer = (ScalingContainer)sender;
+        Title = $"{scalingContainer.Name} - {scalingContainer.Offset} -- {scalingContainer.Viewport.ToString()}";
     }
 }

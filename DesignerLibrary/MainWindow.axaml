@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:designerLibrary="clr-namespace:DesignerLibrary"
         xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.MainWindow"
@@ -42,13 +41,15 @@
         <DockPanel Grid.Column="1">
             <Border>
                 <controls:ScalingContainer Name="DesignPanel" 
+                                           ScrollChanged="DesignPanel_OnScrollChanged"
                                            Width="640"
                                            Height="480"
+                                           ScaleFactor="1"
                                            Background="SlateGray" 
                                            AllowAutoHide="False" 
                                            HorizontalScrollBarVisibility="Visible" 
                                            VerticalScrollBarVisibility="Visible">
-                    <controls:VisualMesh DrawMode="Lines" GridSizeX="28" GridSizeY="28" GridElementSize="0.5" GridColor="LightGray"/>
+                    <controls:VisualMesh Width="1024" Height="768" DrawMode="Lines" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.5" MeshBrush="LightGray"/>
                 </controls:ScalingContainer>
             </Border>
         </DockPanel>
