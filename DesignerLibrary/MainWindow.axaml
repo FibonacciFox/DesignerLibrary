@@ -42,14 +42,22 @@
             <Border>
                 <controls:ScalingContainer Name="DesignPanel" 
                                            ScrollChanged="DesignPanel_OnScrollChanged"
-                                           Width="640"
-                                           Height="480"
                                            ScaleFactor="1"
-                                           Background="SlateGray" 
                                            AllowAutoHide="False" 
                                            HorizontalScrollBarVisibility="Visible" 
                                            VerticalScrollBarVisibility="Visible">
-                    <controls:VisualMesh Width="1024" Height="768" DrawMode="Lines" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.5" MeshBrush="LightGray"/>
+                    <Grid   Background="SlateGray" >
+                            <controls:VisualMesh Grid.Row="0" Grid.Column="0"  Name="GridControl"  MeshSizeX="10" MeshSizeY="10" MeshThickness="1.5" DrawMode="Dots" MeshBrush="Black"/>
+                            <StackPanel x:Name="StackPanel1">
+                                <TextBlock Text="Item 1" Background="LightBlue"/>
+                                <TextBlock Text="Item 2" Background="LightGreen"/>
+                                <TextBlock Text="Item 3" Background="LightPink"/>
+                            </StackPanel>
+
+                            <controls:VisualEditingLayer Children="{Binding #StackPanel1.Children}" />
+
+                    </Grid>
+                    
                 </controls:ScalingContainer>
             </Border>
         </DockPanel>

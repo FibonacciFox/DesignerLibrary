@@ -1,0 +1,11 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Avalonia.IDE.ToolKit.Controls">
+    <Style Selector="controls|VisualEditingLayer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Canvas Name="PART_Canvas" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

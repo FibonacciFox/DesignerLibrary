@@ -2,10 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit.Controls;
-using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace DesignerLibrary;
@@ -17,20 +14,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        var scroll = new ScrollViewer();
-        var t = scroll.Offset;
-        /*Content = new ScalingContainer(){
-            AllowAutoHide = false ,  
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
-            VerticalContentAlignment = VerticalAlignment.Top,
-            HorizontalContentAlignment = HorizontalAlignment.Left,
-            Width = 640,
-            Height = 480,
-            BorderThickness= new Thickness(3,3,3,3),
-            ScaleFactor = 1,
-            Content = new TextBlock(){Text = "DDDDDDDDDDDDD", Width = 60 , Height = 90}
-        };*/
+
+        var t = new StackPanel();
         
         _controlFactory = new Dictionary<string, Func<Control>>
         {
@@ -62,8 +47,8 @@ public partial class MainWindow : Window
                 Canvas.SetLeft(newControl, 50);
                 Canvas.SetTop(newControl, 50);
 
-                DesignPanel.Content = newControl;
-                //DesignPanel.CanvasPanel.Children.Add(new VisualEditorDecoratorItem(newControl, DesignPanel.CanvasPanel));
+               // Canvas1.Children.Add(newControl);
+                //Canvas1.Children.Add(new VisualEditorDecoratorItem(newControl, Canvas1));
             }
 
             listBox.SelectedItem = null;

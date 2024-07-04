@@ -1,0 +1,36 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Avalonia.IDE.ToolKit.Controls">
+    <Design.PreviewWith>
+        <controls:VisualEditingLayerItem Width="200" Height="100" BorderBrush="Black" BorderThickness="1" Background="LightGray"/>
+    </Design.PreviewWith>
+    <Style Selector="Button.Anchor">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="Height" Value="8"/>
+    </Style>
+    <Style Selector="controls|VisualEditingLayerItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Background="Transparent" />
+                    </Border>
+                    <Button Classes="Anchor" Name="TopLeftAnchor" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}"  />
+                    <Button Classes="Anchor" Name="TopRightAnchor" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomLeftAnchor" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomRightAnchor" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="TopCenterAnchor" HorizontalAlignment="Center" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomCenterAnchor" HorizontalAlignment="Center" VerticalAlignment="Bottom" IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="LeftCenterAnchor" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="{TemplateBinding IsSelected}"  />
+                    <Button Classes="Anchor" Name="RightCenterAnchor"  HorizontalAlignment="Right" VerticalAlignment="Center" IsVisible="{TemplateBinding IsSelected}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

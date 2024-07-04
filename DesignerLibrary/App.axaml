@@ -8,5 +8,7 @@
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/ScalingContainer.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualMesh.axaml"/>
+        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualEditingLayerItem.axaml"/>
+        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualEditingLayer.axaml"/>
     </Application.Styles>
 </Application>
