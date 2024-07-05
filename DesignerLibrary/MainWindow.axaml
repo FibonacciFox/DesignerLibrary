@@ -48,14 +48,13 @@
                                            VerticalScrollBarVisibility="Visible">
                     <Grid   Background="SlateGray" >
                             <controls:VisualMesh Grid.Row="0" Grid.Column="0"  Name="GridControl"  MeshSizeX="10" MeshSizeY="10" MeshThickness="1.5" DrawMode="Dots" MeshBrush="Black"/>
-                            <StackPanel x:Name="StackPanel1">
-                                <TextBlock Text="Item 1" Background="LightBlue"/>
-                                <TextBlock Text="Item 2" Background="LightGreen"/>
-                                <TextBlock Text="Item 3" Background="LightPink"/>
-                            </StackPanel>
-
-                            <controls:VisualEditingLayer Children="{Binding #StackPanel1.Children}" />
-
+                            <Panel  Name="CanvasPanel" >
+                               
+                            </Panel>
+                            
+                            <Canvas Name="AdornerLayer1">
+                                <controls:VisualEditingLayerItem Name="VisualEditingLayerItem1" IsSelected="True" Canvas.Top="0" Canvas.Left="0" Width="300" Height="300" BorderBrush="Black" BorderThickness="1" StepSizeByX="10" StepSizeByY="10"/> 
+                            </Canvas>
                     </Grid>
                     
                 </controls:ScalingContainer>

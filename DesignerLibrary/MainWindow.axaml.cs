@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.IDE.ToolKit.Controls;
 using Avalonia.Media;
 
@@ -14,8 +15,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
-        var t = new StackPanel();
         
         _controlFactory = new Dictionary<string, Func<Control>>
         {
@@ -44,13 +43,17 @@ public partial class MainWindow : Window
             if (_controlFactory.TryGetValue(selectedItem.Tag.ToString(), out var controlFactory))
             {
                 var newControl = controlFactory();
-                Canvas.SetLeft(newControl, 50);
-                Canvas.SetTop(newControl, 50);
+                
+                CanvasPanel.Children.Add(newControl);
+                
+                Canvas.SetTop(newControl, 129);
+                Canvas.SetLeft(newControl, 129);
 
-               // Canvas1.Children.Add(newControl);
-                //Canvas1.Children.Add(new VisualEditorDecoratorItem(newControl, Canvas1));
+                VisualEditingLayerItem1.AttachedControl = newControl;
+                
+                
             }
-
+            
             listBox.SelectedItem = null;
         }
     }
