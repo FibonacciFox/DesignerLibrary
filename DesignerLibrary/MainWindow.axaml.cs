@@ -46,11 +46,10 @@ public partial class MainWindow : Window
                 
                 CanvasPanel.Children.Add(newControl);
                 
-                Canvas.SetTop(newControl, 129);
-                Canvas.SetLeft(newControl, 129);
-
-                VisualEditingLayerItem1.AttachedControl = newControl;
+               // Canvas.SetTop(newControl, 0);
+               // Canvas.SetLeft(newControl, 0);
                 
+                VisualEditingLayerItem1.AttachedControl = newControl;
                 
             }
             

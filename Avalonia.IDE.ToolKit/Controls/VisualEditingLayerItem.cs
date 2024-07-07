@@ -1,8 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Reactive;
 
 namespace Avalonia.IDE.ToolKit.Controls
 {
@@ -24,20 +24,36 @@ namespace Avalonia.IDE.ToolKit.Controls
         {
             AttachedControlProperty.Changed.AddClassHandler<VisualEditingLayerItem>((x, e) => x.OnAttachedControlChanged(e));
         }
-
+        
+        private IDisposable? _boundsSubscription;
+        
         private void OnAttachedControlChanged(AvaloniaPropertyChangedEventArgs attachedControlChangedEventArgs)
         {
-            Width = AttachedControl.Width;
-            Height = AttachedControl.Height;
+            // Отписка от предыдущего контрола, если он существует
+            _boundsSubscription?.Dispose();
             
-            var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), Parent as Visual);
+            // Подписка на изменение Bounds нового контрола
+            if (attachedControlChangedEventArgs.NewValue is Control newControl)
+            {
+                _boundsSubscription = newControl.GetObservable(BoundsProperty)
+                    .Subscribe(new AnonymousObserver<Rect>(OnAttachedControlBoundsChanged));
+            }
             
+        }
+        
+        // Обработчик изменений Bounds AttachedControl
+        private void OnAttachedControlBoundsChanged(Rect bounds)
+        {
+            Width = bounds.Width;
+            Height = bounds.Height;
+            
+            var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), Parent as Visual ?? throw new InvalidOperationException());
+            Console.WriteLine(relativePositionToParent);
             if (relativePositionToParent.HasValue)
             {
                 Canvas.SetLeft(this, relativePositionToParent.Value.X);
                 Canvas.SetTop(this, relativePositionToParent.Value.Y);
             }
-            
         }
 
         public double StepSizeByX
@@ -116,7 +132,19 @@ namespace Avalonia.IDE.ToolKit.Controls
         {
             _isResizing = false;
             _currentAnchor = null;
+
+            ////////////////////////////
+            AttachedControl.Width = Width;
+            AttachedControl.Height = Height;
             
+            var relativePositionToParent = this.TranslatePoint(new Point(0, 0), AttachedControl.Parent as Visual ?? throw new InvalidOperationException());
+            
+            if (relativePositionToParent.HasValue)
+            {
+                Canvas.SetLeft(AttachedControl, relativePositionToParent.Value.X);
+                Canvas.SetTop(AttachedControl, relativePositionToParent.Value.Y);
+            }
+            ////////////////////////////
             e.Pointer.Capture(null);
         }
 
@@ -188,5 +216,6 @@ namespace Avalonia.IDE.ToolKit.Controls
         {
             return Math.Round(value / gridSize) * gridSize;
         }
+        
     }
 }
