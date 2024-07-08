@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Reactive;
@@ -20,6 +21,9 @@ namespace Avalonia.IDE.ToolKit.Controls
         public static readonly StyledProperty<Control> AttachedControlProperty =
             AvaloniaProperty.Register<VisualEditingLayerItem, Control>(nameof(AttachedControl));
         
+        public new static readonly StyledProperty<double> BorderThicknessProperty =
+            AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(BorderThickness));
+        
         static VisualEditingLayerItem()
         {
             AttachedControlProperty.Changed.AddClassHandler<VisualEditingLayerItem>((x, e) => x.OnAttachedControlChanged(e));
@@ -38,7 +42,6 @@ namespace Avalonia.IDE.ToolKit.Controls
                 _boundsSubscription = newControl.GetObservable(BoundsProperty)
                     .Subscribe(new AnonymousObserver<Rect>(OnAttachedControlBoundsChanged));
             }
-            
         }
         
         // Обработчик изменений Bounds AttachedControl
@@ -47,13 +50,22 @@ namespace Avalonia.IDE.ToolKit.Controls
             Width = bounds.Width;
             Height = bounds.Height;
             
-            var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), Parent as Visual ?? throw new InvalidOperationException());
+            var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), (Parent as Visual)!);
             Console.WriteLine(relativePositionToParent);
             if (relativePositionToParent.HasValue)
             {
                 Canvas.SetLeft(this, relativePositionToParent.Value.X);
                 Canvas.SetTop(this, relativePositionToParent.Value.Y);
             }
+        }
+        
+        /// <summary>
+        /// Gets or sets the thickness of the control's border.
+        /// </summary>
+        public new double BorderThickness
+        {
+            get => GetValue(BorderThicknessProperty);
+            set => SetValue(BorderThicknessProperty, value);
         }
 
         public double StepSizeByX
@@ -87,32 +99,35 @@ namespace Avalonia.IDE.ToolKit.Controls
         private double _originalLeft;
         private double _originalTop;
         private Control? _currentAnchor;
+        private Rectangle? _partCustomBorder;
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
             
-            var anchors = new[]
+            var anchorNames = new[]
             {
-                e.NameScope.Find<Control>("TopLeftAnchor"),
-                e.NameScope.Find<Control>("TopRightAnchor"),
-                e.NameScope.Find<Control>("BottomLeftAnchor"),
-                e.NameScope.Find<Control>("BottomRightAnchor"),
-                e.NameScope.Find<Control>("TopCenterAnchor"),
-                e.NameScope.Find<Control>("BottomCenterAnchor"),
-                e.NameScope.Find<Control>("LeftCenterAnchor"),
-                e.NameScope.Find<Control>("RightCenterAnchor"),
+                "TopLeftAnchor", "TopRightAnchor", "BottomLeftAnchor", "BottomRightAnchor",
+                "TopCenterAnchor", "BottomCenterAnchor", "LeftCenterAnchor", "RightCenterAnchor"
             };
 
-            foreach (var anchor in anchors)
+            foreach (var name in anchorNames)
             {
+                var anchor = e.NameScope.Find<Control>(name);
                 if (anchor != null)
                 {
-                    anchor.AddHandler(PointerPressedEvent, AnchorOnPointerPressed, RoutingStrategies.Tunnel);
-                    anchor.AddHandler(PointerMovedEvent, AnchorOnPointerMoved, RoutingStrategies.Tunnel);
-                    anchor.AddHandler(PointerReleasedEvent, AnchorOnPointerReleased, RoutingStrategies.Tunnel);
+                    SubscribeAnchorEvents(anchor);
                 }
             }
+            
+            _partCustomBorder = e.NameScope.Find<Rectangle>("PART_CustomBorder");
+        }
+
+        private void SubscribeAnchorEvents(Control anchor)
+        {
+            anchor.AddHandler(PointerPressedEvent, AnchorOnPointerPressed, RoutingStrategies.Tunnel);
+            anchor.AddHandler(PointerMovedEvent, AnchorOnPointerMoved, RoutingStrategies.Tunnel);
+            anchor.AddHandler(PointerReleasedEvent, AnchorOnPointerReleased, RoutingStrategies.Tunnel);
         }
 
         private void AnchorOnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -126,6 +141,8 @@ namespace Avalonia.IDE.ToolKit.Controls
             _originalHeight = Height;
             _originalLeft = Canvas.GetLeft(this);
             _originalTop = Canvas.GetTop(this);
+            
+            _partCustomBorder?.Classes.Add("Resize");
         }
 
         private void AnchorOnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -133,19 +150,12 @@ namespace Avalonia.IDE.ToolKit.Controls
             _isResizing = false;
             _currentAnchor = null;
 
-            ////////////////////////////
-            AttachedControl.Width = Width;
-            AttachedControl.Height = Height;
+            // Обновление размеров и позиции AttachedControl
+            UpdateAttachedControlBounds();
             
-            var relativePositionToParent = this.TranslatePoint(new Point(0, 0), AttachedControl.Parent as Visual ?? throw new InvalidOperationException());
-            
-            if (relativePositionToParent.HasValue)
-            {
-                Canvas.SetLeft(AttachedControl, relativePositionToParent.Value.X);
-                Canvas.SetTop(AttachedControl, relativePositionToParent.Value.Y);
-            }
-            ////////////////////////////
             e.Pointer.Capture(null);
+            
+            _partCustomBorder?.Classes.Remove("Resize");
         }
 
         private void AnchorOnPointerMoved(object? sender, PointerEventArgs e)
@@ -156,59 +166,78 @@ namespace Avalonia.IDE.ToolKit.Controls
                 var deltaX = currentPoint.Position.X - _startPoint.Position.X;
                 var deltaY = currentPoint.Position.Y - _startPoint.Position.Y;
 
-                double newWidth = _originalWidth;
-                double newHeight = _originalHeight;
-                double newLeft = _originalLeft;
-                double newTop = _originalTop;
+                var (newWidth, newHeight, newLeft, newTop) = CalculateNewDimensions(deltaX, deltaY);
 
-                if (_currentAnchor.Name == "TopLeftAnchor" || _currentAnchor.Name == "LeftCenterAnchor" || _currentAnchor.Name == "BottomLeftAnchor")
-                {
-                    newWidth = Math.Max(StepSizeByX, _originalWidth - deltaX);
-                    newLeft = _originalLeft + deltaX;
-                }
-
-                if (_currentAnchor.Name == "TopLeftAnchor" || _currentAnchor.Name == "TopCenterAnchor" || _currentAnchor.Name == "TopRightAnchor")
-                {
-                    newHeight = Math.Max(StepSizeByY, _originalHeight - deltaY);
-                    newTop = _originalTop + deltaY;
-                }
-
-                if (_currentAnchor.Name == "BottomLeftAnchor" || _currentAnchor.Name == "BottomCenterAnchor" || _currentAnchor.Name == "BottomRightAnchor")
-                {
-                    newHeight = Math.Max(StepSizeByY, _originalHeight + deltaY);
-                }
-
-                if (_currentAnchor.Name == "TopRightAnchor" || _currentAnchor.Name == "RightCenterAnchor" || _currentAnchor.Name == "BottomRightAnchor")
-                {
-                    newWidth = Math.Max(StepSizeByX, _originalWidth + deltaX);
-                }
-
-                // Snap to the nearest grid
-                newWidth = SnapToGrid(newWidth, StepSizeByX);
-                newHeight = SnapToGrid(newHeight, StepSizeByY);
-
-                // Update element dimensions
+                // Обновление размеров и позиции элемента
                 Width = newWidth;
                 Height = newHeight;
-
-                // Adjust position after snapping to grid
-                if (_currentAnchor.Name == "TopLeftAnchor" || _currentAnchor.Name == "LeftCenterAnchor" || _currentAnchor.Name == "BottomLeftAnchor")
-                {
-                    newLeft = _originalLeft + (_originalWidth - newWidth);
-                    newLeft = SnapToGrid(newLeft, StepSizeByX);
-                }
-
-                if (_currentAnchor.Name == "TopLeftAnchor" || _currentAnchor.Name == "TopCenterAnchor" || _currentAnchor.Name == "TopRightAnchor")
-                {
-                    newTop = _originalTop + (_originalHeight - newHeight);
-                    newTop = SnapToGrid(newTop, StepSizeByY);
-                }
-
-                // Update element position
                 Canvas.SetLeft(this, newLeft);
                 Canvas.SetTop(this, newTop);
-                
+
                 e.Handled = true;
+            }
+        }
+
+        private (double newWidth, double newHeight, double newLeft, double newTop) CalculateNewDimensions(double deltaX, double deltaY)
+        {
+            double newWidth = _originalWidth;
+            double newHeight = _originalHeight;
+            double newLeft = _originalLeft;
+            double newTop = _originalTop;
+
+            if (_currentAnchor.Name.Contains("Left"))
+            {
+                newWidth = Math.Max(StepSizeByX, _originalWidth - deltaX);
+                newLeft = _originalLeft + deltaX;
+            }
+
+            if (_currentAnchor.Name.Contains("Top"))
+            {
+                newHeight = Math.Max(StepSizeByY, _originalHeight - deltaY);
+                newTop = _originalTop + deltaY;
+            }
+
+            if (_currentAnchor.Name.Contains("Bottom"))
+            {
+                newHeight = Math.Max(StepSizeByY, _originalHeight + deltaY);
+            }
+
+            if (_currentAnchor.Name.Contains("Right"))
+            {
+                newWidth = Math.Max(StepSizeByX, _originalWidth + deltaX);
+            }
+
+            // Привязка к сетке
+            newWidth = SnapToGrid(newWidth, StepSizeByX);
+            newHeight = SnapToGrid(newHeight, StepSizeByY);
+
+            // Корректировка позиции после привязки к сетке
+            if (_currentAnchor.Name.Contains("Left"))
+            {
+                newLeft = _originalLeft + (_originalWidth - newWidth);
+                newLeft = SnapToGrid(newLeft, StepSizeByX);
+            }
+
+            if (_currentAnchor.Name.Contains("Top"))
+            {
+                newTop = _originalTop + (_originalHeight - newHeight);
+                newTop = SnapToGrid(newTop, StepSizeByY);
+            }
+
+            return (newWidth, newHeight, newLeft, newTop);
+        }
+
+        public void UpdateAttachedControlBounds()
+        {
+            AttachedControl.Width = Width;
+            AttachedControl.Height = Height;
+
+            var relativePositionToParent = this.TranslatePoint(new Point(0, 0), (AttachedControl.Parent as Visual)!);
+
+            if (relativePositionToParent.HasValue)
+            {
+                Canvas.SetLeft(AttachedControl, relativePositionToParent.Value.X);
+                Canvas.SetTop(AttachedControl, relativePositionToParent.Value.Y);
             }
         }
 
@@ -216,6 +245,5 @@ namespace Avalonia.IDE.ToolKit.Controls
         {
             return Math.Round(value / gridSize) * gridSize;
         }
-        
     }
 }

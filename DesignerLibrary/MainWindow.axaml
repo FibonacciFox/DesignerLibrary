@@ -11,9 +11,13 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         
         <!-- Панель управления -->
-        <Border Grid.Column="0" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
+        <Border Grid.Column="0" Grid.Row="1" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
             <StackPanel>
                 <TextBlock Text="Add Controls" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
                 <ListBox Name="ControlsListView" SelectionChanged="ControlsListView_SelectionChanged">
@@ -37,28 +41,42 @@
             </StackPanel>
         </Border>
         
+        <!-- Панель инструментов -->
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5" >
+            <TextBlock Text="Сетка [X:Y]:" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="8" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="8" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="5,0"/>
+            <ComboBox Width="80" SelectedIndex="0" Name="ScaleBox">
+                <ComboBox.Items>
+                    <ComboBoxItem Content="100%"/>
+                    <ComboBoxItem Content="125%"/>
+                    <ComboBoxItem Content="150%"/>
+                    <ComboBoxItem Content="175%"/>
+                    <ComboBoxItem Content="200%"/>
+                </ComboBox.Items>
+            </ComboBox>
+        </StackPanel>
+        
         <!-- Панель дизайна -->
-        <DockPanel Grid.Column="1">
+        <DockPanel Grid.Column="1" Grid.Row="1">
             <Border>
                 <Grid Background="LightSlateGray">
-                    <controls:VisualMesh Name="GridControl"  MeshSizeX="24" MeshSizeY="24" MeshThickness="0.5" DrawMode="Lines" MeshBrush="DarkGray"/>
+                    <controls:VisualMesh Name="GridControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.5" DrawMode="Lines" MeshBrush="DarkGray"/>
                     <controls:ScalingContainer Name="DesignPanel" 
                                                ScrollChanged="DesignPanel_OnScrollChanged"
                                                ScaleFactor="1"
                                                AllowAutoHide="False" 
                                                HorizontalScrollBarVisibility="Visible" 
                                                VerticalScrollBarVisibility="Visible">
-                    <Grid>
-                         <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
-                             <controls:VisualMesh Width="640" Height="483" Name="GridControl2"  MeshSizeX="8" MeshSizeY="8" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
-                             <Canvas Width="640" Height="483" Name="CanvasPanel" />
-                         </Panel>
-                        <Canvas Name="AdornerLayer1">
-                            <controls:VisualEditingLayerItem Name="VisualEditingLayerItem1" IsSelected="True" Canvas.Top="0" Canvas.Left="0" Width="300" Height="300" BorderBrush="Blue" BorderThickness="1" StepSizeByX="8" StepSizeByY="8"/> 
-                        </Canvas>
-                    </Grid>
-                   
-                </controls:ScalingContainer>
+                        <Grid>
+                            <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
+                                <Canvas Width="640" Height="483" Name="DisignerLayer" />
+                            </Panel>
+                            <Canvas Name="AdornerLayer1"/>
+                        </Grid>
+                    </controls:ScalingContainer>
                 </Grid> 
             </Border>
         </DockPanel>

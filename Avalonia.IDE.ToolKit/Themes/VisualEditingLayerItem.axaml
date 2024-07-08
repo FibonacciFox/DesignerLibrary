@@ -11,16 +11,18 @@
         <Setter Property="Width" Value="8"/>
         <Setter Property="Height" Value="8"/>
     </Style>
+    <Style Selector="Rectangle.Resize">
+        <Setter Property="StrokeDashArray" Value="5,2"/>
+    </Style>
     <Style Selector="controls|VisualEditingLayerItem">
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                        <ContentPresenter Background="Transparent" />
-                    </Border>
+                    <Rectangle Name="PART_CustomBorder"
+                               StrokeDashArray="0,0"
+                               Stroke="{TemplateBinding BorderBrush}" 
+                               StrokeThickness="{TemplateBinding BorderThickness}"/>
+                    <ContentPresenter Background="{TemplateBinding Background}" />
                     <Button Classes="Anchor" Name="TopLeftAnchor" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}"  />
                     <Button Classes="Anchor" Name="TopRightAnchor" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}" />
                     <Button Classes="Anchor" Name="BottomLeftAnchor" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsVisible="{TemplateBinding IsSelected}" />

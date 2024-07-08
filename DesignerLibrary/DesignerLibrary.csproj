@@ -16,6 +16,8 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
     </ItemGroup>
+    
+    
 
     <ItemGroup>
       <Compile Update="VisualEditorDecoratorItem.axaml.cs">
@@ -25,5 +27,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Avalonia.IDE.ToolKit\Avalonia.IDE.ToolKit.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 </Project>
