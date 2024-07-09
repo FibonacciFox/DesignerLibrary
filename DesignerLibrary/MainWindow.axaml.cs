@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using System.Collections.Generic;
 using Avalonia.IDE.ToolKit.Controls;
+using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform;

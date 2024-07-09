@@ -5,7 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Reactive;
 
-namespace Avalonia.IDE.ToolKit.Controls
+namespace Avalonia.IDE.ToolKit.Controls.Designer
 {
     public class VisualEditingLayerItem : TemplatedControl, ISelectable
     {
