@@ -64,19 +64,7 @@ public partial class MainWindow : Window
             { "Image", () => new Image { Source = new Bitmap(AssetLoader.Open(new Uri("avares://DesignerLibrary/Assets/Logo.png"))), Width = 100, Height = 100 } },
             { "Calendar", () => new Calendar { Width = 100, Height = 100 } }
         };
-
-        var logicalChildrenMonitor = new LogicalChildrenMonitorService(DisignerLayer);
-            logicalChildrenMonitor.StartMonitoring();
-
-            logicalChildrenMonitor.ChildAdded += control =>
-            {
-           
-                control.HorizontalAlignment = HorizontalAlignment.Center;
-                control.VerticalAlignment = VerticalAlignment.Center;
-                
-                VisualLayer.AddItem(control);
-            };
-
+        
     }
 
     private void ControlsListView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -93,6 +81,8 @@ public partial class MainWindow : Window
                 Canvas.SetLeft(newControl, 100);
                 
                 DisignerLayer.Children.Add(newControl);
+                
+                VisualLayer.AddItem(newControl);
             }
             
             listBox.SelectedItem = null;

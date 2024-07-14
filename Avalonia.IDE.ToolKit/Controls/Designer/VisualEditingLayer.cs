@@ -29,7 +29,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
                 AttachedControl = attachedControl
             };
             
-            _canvas?.Children.Add(veLayerItem);
+            _canvas.Children.Add(veLayerItem);
             veLayerItem.Tapped += veLayerItem_Tapped;
         }
         

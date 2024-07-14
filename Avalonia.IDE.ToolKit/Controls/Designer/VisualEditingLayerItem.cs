@@ -40,7 +40,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             // Подписка на изменение Bounds нового контрола
             if (attachedControlChangedEventArgs.NewValue is Control newControl)
             {
-                _boundsSubscription = newControl.GetObservable(BoundsProperty)
+                _boundsSubscription = newControl.GetObservable(BoundsProperty).Skip(1)
                     .Subscribe(new AnonymousObserver<Rect>(OnAttachedControlBoundsChanged));
             }
         }
