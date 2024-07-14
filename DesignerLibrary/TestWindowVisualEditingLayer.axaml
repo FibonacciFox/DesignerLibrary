@@ -6,9 +6,22 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.TestWindowVisualEditingLayer"
         Title="TestWindowVisualEditingLayer">
-    <Grid>
-        <ContentControl Name="Panel1"/>
-        <designer:VisualEditingLayer Name="VisualLayer" TemplateRootLayerContent="{Binding #Panel1.Content}"/>
+    <Grid ColumnDefinitions="200, *">
+        <!-- Панель с кнопками для добавления контролов -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Top">
+            <Button Content="Добавить кнопку" Margin="5" Click="AddButton_Click"/>
+            <Button Content="Добавить текст" Margin="5" Click="AddTextBlock_Click"/>
+            <Button Content="Добавить календарь" Margin="5" Click="AddCalendar_Click"/>
+        </StackPanel>
+
+        <!-- Основная панель и слой визуального редактирования -->
+        <Grid Grid.Column="1">
+            <Canvas Name="Panel1">
+                <StackPanel Canvas.Left="100" Canvas.Top="100">
+                        <TextBox>Hello World</TextBox>
+                </StackPanel>
+            </Canvas>
+            <designer:VisualEditingLayer Name="VisualLayer" />
+        </Grid>
     </Grid>
-    
 </Window>
