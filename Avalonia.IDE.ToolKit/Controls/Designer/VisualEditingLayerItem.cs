@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
@@ -51,11 +52,13 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             Height = bounds.Height;
             
             var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), (Parent as Visual)!);
-            Console.WriteLine(relativePositionToParent);
+            
             if (relativePositionToParent.HasValue)
             {
                 Canvas.SetLeft(this, relativePositionToParent.Value.X);
                 Canvas.SetTop(this, relativePositionToParent.Value.Y);
+
+                Console.WriteLine($"{relativePositionToParent.Value.X}-{relativePositionToParent.Value.Y}");
             }
         }
         

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
 namespace Avalonia.IDE.ToolKit.Services;
@@ -11,9 +12,9 @@ public class LogicalChildrenMonitorService : ILogicalChildrenMonitorService
 
     public ObservableCollection<Control> LogicalChildren { get; } = new();
 
-    public LogicalChildrenMonitorService(Panel panel)
+    public LogicalChildrenMonitorService(Control control)
     {
-        _panel = panel;
+        _control = control;
     }
 
     public void StartMonitoring()
@@ -25,36 +26,14 @@ public class LogicalChildrenMonitorService : ILogicalChildrenMonitorService
     {
         _monitorTimer?.Change(Timeout.Infinite, Timeout.Infinite);
         _monitorTimer?.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                // Dispose managed state (managed objects).
-                _monitorTimer?.Dispose();
-            }
-
-            // Free any unmanaged resources (unmanaged objects) and override a finalizer below.
-            // Set large fields to null.
-
-            _disposed = true;
-        }
+        _monitorTimer = null;
     }
 
     private void MonitorTreeChanges(object state)
     {
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var currentChildren = new HashSet<Control>(_panel.Children.OfType<Control>());
+            var currentChildren = new HashSet<Control>(_control.GetLogicalDescendants().OfType<Control>());
             CheckForChanges(currentChildren);
             _previousChildren = currentChildren;
         });
@@ -77,9 +56,29 @@ public class LogicalChildrenMonitorService : ILogicalChildrenMonitorService
             ChildRemoved?.Invoke(child);
         }
     }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                // Dispose managed state (managed objects)
+                _monitorTimer?.Dispose();
+            }
+
+            _disposed = true;
+        }
+    }
     
-    private readonly Panel _panel;
+    private readonly Control _control;
     private Timer _monitorTimer;
-    private HashSet<Control> _previousChildren = new HashSet<Control>();
-    private bool _disposed = false;
+    private HashSet<Control> _previousChildren = new();
+    private bool _disposed;
 }

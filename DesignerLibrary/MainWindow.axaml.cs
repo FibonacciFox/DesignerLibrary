@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using System.Collections.Generic;
 using Avalonia.IDE.ToolKit.Controls;
 using Avalonia.IDE.ToolKit.Controls.Designer;
+using Avalonia.IDE.ToolKit.Services;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform;
@@ -63,7 +64,19 @@ public partial class MainWindow : Window
             { "Image", () => new Image { Source = new Bitmap(AssetLoader.Open(new Uri("avares://DesignerLibrary/Assets/Logo.png"))), Width = 100, Height = 100 } },
             { "Calendar", () => new Calendar { Width = 100, Height = 100 } }
         };
-        
+
+        var logicalChildrenMonitor = new LogicalChildrenMonitorService(DisignerLayer);
+            logicalChildrenMonitor.StartMonitoring();
+
+            logicalChildrenMonitor.ChildAdded += control =>
+            {
+           
+                control.HorizontalAlignment = HorizontalAlignment.Center;
+                control.VerticalAlignment = VerticalAlignment.Center;
+                
+                VisualLayer.AddItem(control);
+            };
+
     }
 
     private void ControlsListView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -76,23 +89,10 @@ public partial class MainWindow : Window
                 newControl.HorizontalAlignment = HorizontalAlignment.Center;
                 newControl.VerticalAlignment = VerticalAlignment.Center;
                 
-                DisignerLayer.Children.Add(newControl);
-                
                 Canvas.SetTop(newControl, 100);
                 Canvas.SetLeft(newControl, 100);
-
-               var veLayerItem = new VisualEditingLayerItem()
-               {
-                   BorderBrush = Brushes.DarkSlateGray,
-                   Background = Brushes.Transparent,
-                   BorderThickness = 1,
-                   IsSelected=true,
-                   StepSizeByX = 8,
-                   StepSizeByY=8,
-                   AttachedControl = newControl
-               };
-               
-               AdornerLayer1.Children.Add(veLayerItem);
+                
+                DisignerLayer.Children.Add(newControl);
             }
             
             listBox.SelectedItem = null;

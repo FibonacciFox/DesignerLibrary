@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 
 namespace Avalonia.IDE.ToolKit.Services;
@@ -27,4 +28,7 @@ public interface ILogicalChildrenMonitorService : IDisposable
     /// Occurs when a child control is removed from the monitored collection.
     /// </summary>
     event Action<Control> ChildRemoved;
+    
+    
+    ObservableCollection<Control> LogicalChildren { get; }
 }

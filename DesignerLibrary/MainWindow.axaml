@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
+        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -74,7 +75,7 @@
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
                                 <Canvas Width="640" Height="483" Name="DisignerLayer" />
                             </Panel>
-                            <Canvas Name="AdornerLayer1"/>
+                            <designer:VisualEditingLayer Name="VisualLayer" />
                         </Grid>
                     </controls:ScalingContainer>
                 </Grid> 
