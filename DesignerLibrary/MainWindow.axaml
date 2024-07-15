@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/> <!-- Фиксированная высота для консоли -->
         </Grid.RowDefinitions>
         
         <!-- Панель управления -->
@@ -43,7 +44,7 @@
         </Border>
         
         <!-- Панель инструментов -->
-        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5" >
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5">
             <TextBlock Text="Сетка [X:Y]:" VerticalAlignment="Center" Margin="5,0"/>
             <TextBox Width="30" Text="8" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
             <TextBox Width="30" Text="8" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
@@ -83,5 +84,12 @@
                 </Grid> 
             </Border>
         </DockPanel>
+
+        <!-- Консоль -->
+        <ScrollViewer Grid.Column="1" Grid.Row="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+            <TextBox Name="ConsoleTextBox"
+                     AcceptsReturn="True"
+                     IsReadOnly="True"/>
+        </ScrollViewer>
     </Grid>
 </Window>

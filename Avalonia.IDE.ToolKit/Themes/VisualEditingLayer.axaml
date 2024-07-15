@@ -7,8 +7,8 @@
     
     <Style Selector="designer|VisualEditingLayer">
         <Setter Property="Template">
-            <ControlTemplate>
-                <Canvas x:Name="PART_Canvas"/>
+            <ControlTemplate >
+                <Canvas Background="Transparent" x:Name="PART_Canvas"/>
             </ControlTemplate>
         </Setter>
     </Style>
