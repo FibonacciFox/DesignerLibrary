@@ -21,7 +21,8 @@
                     <Rectangle Name="PART_CustomBorder"
                                StrokeDashArray="0,0"
                                Stroke="{TemplateBinding BorderBrush}" 
-                               StrokeThickness="{TemplateBinding BorderThickness}"/>
+                               StrokeThickness="{TemplateBinding BorderThickness}"
+                               IsVisible="{TemplateBinding IsSelected}"/>
                     <ContentPresenter Background="{TemplateBinding Background}" />
                     <Button Classes="Anchor" Name="TopLeftAnchor" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}"  />
                     <Button Classes="Anchor" Name="TopRightAnchor" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{TemplateBinding IsSelected}" />

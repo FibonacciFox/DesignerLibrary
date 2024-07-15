@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
@@ -39,7 +40,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             // Подписка на изменение Bounds нового контрола
             if (attachedControlChangedEventArgs.NewValue is Control newControl)
             {
-                _boundsSubscription = newControl.GetObservable(BoundsProperty)
+                _boundsSubscription = newControl.GetObservable(BoundsProperty).Skip(1)
                     .Subscribe(new AnonymousObserver<Rect>(OnAttachedControlBoundsChanged));
             }
         }
@@ -51,7 +52,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             Height = bounds.Height;
             
             var relativePositionToParent = AttachedControl.TranslatePoint(new Point(0, 0), (Parent as Visual)!);
-            Console.WriteLine(relativePositionToParent);
+            
             if (relativePositionToParent.HasValue)
             {
                 Canvas.SetLeft(this, relativePositionToParent.Value.X);

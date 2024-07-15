@@ -19,6 +19,7 @@
             <Canvas Name="Panel1">
                 <StackPanel Canvas.Left="100" Canvas.Top="100">
                         <TextBox>Hello World</TextBox>
+                    <Button><CheckBox>123</CheckBox></Button>
                 </StackPanel>
             </Canvas>
             <designer:VisualEditingLayer Name="VisualLayer" />

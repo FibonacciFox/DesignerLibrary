@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
+        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -14,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/> <!-- Фиксированная высота для консоли -->
         </Grid.RowDefinitions>
         
         <!-- Панель управления -->
@@ -42,12 +44,12 @@
         </Border>
         
         <!-- Панель инструментов -->
-        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5" >
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5">
             <TextBlock Text="Сетка [X:Y]:" VerticalAlignment="Center" Margin="5,0"/>
             <TextBox Width="30" Text="8" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
             <TextBox Width="30" Text="8" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
             <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="5,0"/>
-            <ComboBox Width="80" SelectedIndex="0" Name="ScaleBox">
+            <ComboBox Width="85" SelectedIndex="0" Name="ScaleBox">
                 <ComboBox.Items>
                     <ComboBoxItem Content="100%"/>
                     <ComboBoxItem Content="125%"/>
@@ -72,13 +74,22 @@
                         <Grid>
                             <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
-                                <Canvas Width="640" Height="483" Name="DisignerLayer" />
+                                <Canvas Width="640" Height="483" Name="DisignerLayer" >
+                                    <Button>Content</Button>
+                                </Canvas>
                             </Panel>
-                            <Canvas Name="AdornerLayer1"/>
+                            <designer:VisualEditingLayer Name="VisualLayer" />
                         </Grid>
                     </controls:ScalingContainer>
                 </Grid> 
             </Border>
         </DockPanel>
+
+        <!-- Консоль -->
+        <ScrollViewer Grid.Column="1" Grid.Row="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+            <TextBox Name="ConsoleTextBox"
+                     AcceptsReturn="True"
+                     IsReadOnly="True"/>
+        </ScrollViewer>
     </Grid>
 </Window>
