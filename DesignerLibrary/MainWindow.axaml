@@ -49,7 +49,7 @@
             <TextBox Width="30" Text="8" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
             <TextBox Width="30" Text="8" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
             <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="5,0"/>
-            <ComboBox Width="80" SelectedIndex="0" Name="ScaleBox">
+            <ComboBox Width="85" SelectedIndex="0" Name="ScaleBox">
                 <ComboBox.Items>
                     <ComboBoxItem Content="100%"/>
                     <ComboBoxItem Content="125%"/>

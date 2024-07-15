@@ -3,7 +3,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using System;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer
 {
@@ -21,7 +20,9 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             {
                 AddHandler(PointerPressedEvent, OnCanvasPointerPressed, RoutingStrategies.Bubble);
             }
+            
         }
+        
 
         private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
         {
@@ -61,15 +62,32 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
                 StepSizeByY = 8,
                 AttachedControl = attachedControl,
                 Width = attachedControl.Bounds.Width,
-                Height = attachedControl.Bounds.Height
+                Height = attachedControl.Bounds.Height,
+                Focusable = true
             };
 
             Canvas.SetTop(veLayerItem, attachedControl.Bounds.Top);
             Canvas.SetLeft(veLayerItem, attachedControl.Bounds.Left);
 
             _canvas.Children.Add(veLayerItem);
+            veLayerItem.Focus();
 
             veLayerItem.AddHandler(PointerPressedEvent, OnLayerItemPointerPressed, RoutingStrategies.Bubble);
+            veLayerItem.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Bubble);
+        }
+        
+        private void OnKeyDown(object? sender, KeyEventArgs e)
+        {
+            var layerItem = sender as VisualEditingLayerItem;
+            if (e.Key == Key.Delete)
+            {
+                if (layerItem.IsSelected)
+                {
+                    Canvas attachedControlParent = layerItem.AttachedControl.Parent as Canvas;
+                    attachedControlParent.Children.Remove(layerItem.AttachedControl);
+                    _canvas.Children.Remove(layerItem);
+                }
+            }
         }
 
         private void OnLayerItemPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -77,6 +95,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             if (sender is VisualEditingLayerItem layerItem)
             {
                 // Logger.LogInfo($"Layer item pressed: {sender}");
+                ClearSelectedItems();
                 layerItem.ZIndex = 1;
                 layerItem.IsSelected = true;
             }
