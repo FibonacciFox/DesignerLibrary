@@ -2,6 +2,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using System.Collections.Generic;
+using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit.Controls;
 using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.IDE.ToolKit.Services;
@@ -60,11 +61,25 @@ public partial class MainWindow : Window
             { "CheckBox", () => new CheckBox { Content = "New CheckBox" } },
             { "RadioButton", () => new RadioButton { Content = "New RadioButton" } },
             { "Slider", () => new Slider() },
-            { "ProgressBar", () => new ProgressBar() },
+            { "ProgressBar", () => new ProgressBar() {Width = 100, Height = 40, Value = 20} },
             { "Image", () => new Image { Source = new Bitmap(AssetLoader.Open(new Uri("avares://DesignerLibrary/Assets/Logo.png"))), Width = 100, Height = 100 } },
-            { "Calendar", () => new Calendar { Width = 100, Height = 100 } }
+            { "Calendar", () => new Calendar { } }
         };
         
+        var logicalChildren = new LogicalChildrenMonitorService(DisignerLayer, [typeof(AccessText)]);
+
+        logicalChildren.ChildAdded += control =>
+        {
+            Console.WriteLine($"Added: {control.GetType()}");
+            VisualLayer.AddItem(control);
+        };
+
+        logicalChildren.ChildRemoved += control =>
+        {
+            Console.WriteLine($"Removed: {control.GetType()}");
+        }; 
+                
+        logicalChildren.StartMonitoring();
     }
 
     private void ControlsListView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -80,9 +95,8 @@ public partial class MainWindow : Window
                 Canvas.SetTop(newControl, 100);
                 Canvas.SetLeft(newControl, 100);
                 
-                DisignerLayer.Children.Add(newControl);
                 
-                VisualLayer.AddItem(newControl);
+                DisignerLayer.Children.Add(newControl);
             }
             
             listBox.SelectedItem = null;

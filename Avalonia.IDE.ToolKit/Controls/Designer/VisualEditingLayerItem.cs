@@ -57,8 +57,6 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             {
                 Canvas.SetLeft(this, relativePositionToParent.Value.X);
                 Canvas.SetTop(this, relativePositionToParent.Value.Y);
-
-                Console.WriteLine($"{relativePositionToParent.Value.X}-{relativePositionToParent.Value.Y}");
             }
         }
         

@@ -26,10 +26,17 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
                 IsSelected=true,
                 StepSizeByX =8,
                 StepSizeByY=8,
-                AttachedControl = attachedControl
+                AttachedControl = attachedControl,
+                Width = attachedControl.Bounds.Width,
+                Height = attachedControl.Bounds.Height
             };
             
+            Canvas.SetTop(veLayerItem, attachedControl.Bounds.Y);
+            Canvas.SetLeft(veLayerItem, attachedControl.Bounds.X);
+            
+            
             _canvas.Children.Add(veLayerItem);
+            
             veLayerItem.Tapped += veLayerItem_Tapped;
         }
         
