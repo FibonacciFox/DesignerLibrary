@@ -29,8 +29,6 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer
             if (sender is VisualEditingLayer)
             {
                 ClearSelectedItems();
-                // Здесь можно использовать методы логирования вместо Console.WriteLine
-                // Logger.LogInfo($"Canvas pressed: {sender}");
             }
         }
 
