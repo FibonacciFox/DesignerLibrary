@@ -5,16 +5,26 @@
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
         x:Class="DesignerLibrary.TestWindowVisualEditingLayer"
+        Background="Bisque"
         Title="TestWindowVisualEditingLayer">
-        <Panel Name="Panel1" Background="Gray">
-            <TextBox
-                Name="TextBox1"
-                toolKit:Layout.X="50"
-                toolKit:Layout.Y="0"
-                Width="150"
-                Height="40"
-                Text="Абсолютная позиция" />
-            
-                <Button Content="Set" Click="Button_OnClick"/>
-        </Panel>
+
+    <Panel Name="Panel1" Background="Gray" Width="400" Height="400">
+        <Panel
+            Background="DarkSlateGray"
+            Name="DragPanel"
+            toolKit:Layout.X="50"
+            toolKit:Layout.Y="30"
+            Width="150"
+            Height="40"
+            PointerPressed="OnDragStart"
+            PointerMoved="OnDragMove"
+            PointerReleased="OnDragEnd">
+            <TextBox IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center">Draggable Panel</TextBox>
+        </Panel>    
+        <Button 
+            toolKit:Layout.X="100"
+            toolKit:Layout.Y="100"
+            Content="Вернуть в начальное положение"
+            Click="Button_OnClick"/>
+    </Panel>
 </Window>

@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
@@ -62,8 +61,8 @@ public static class Layout
         YProperty.Changed.Subscribe(OnAnyPositionChanged);
 
         // Реакция на изменение выравнивания
-        Control.HorizontalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
-        Control.VerticalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
+        Layoutable.HorizontalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
+        Layoutable.VerticalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
     }
 
     /// <summary>
