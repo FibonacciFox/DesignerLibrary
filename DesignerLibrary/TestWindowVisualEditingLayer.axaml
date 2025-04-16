@@ -2,27 +2,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
         x:Class="DesignerLibrary.TestWindowVisualEditingLayer"
         Title="TestWindowVisualEditingLayer">
-    <Grid ColumnDefinitions="200, *">
-        <!-- Панель с кнопками для добавления контролов -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Top">
-            <Button Content="Добавить кнопку" Margin="5" Click="AddButton_Click"/>
-            <Button Content="Добавить текст" Margin="5" Click="AddTextBlock_Click"/>
-            <Button Content="Добавить календарь" Margin="5" Click="AddCalendar_Click"/>
-        </StackPanel>
-
-        <!-- Основная панель и слой визуального редактирования -->
-        <Grid Grid.Column="1">
-            <Canvas Name="Panel1">
-                <StackPanel Canvas.Left="100" Canvas.Top="100">
-                        <TextBox>Hello World</TextBox>
-                    <Button><CheckBox>123</CheckBox></Button>
-                </StackPanel>
-            </Canvas>
-            <designer:VisualEditingLayer Name="VisualLayer" />
-        </Grid>
-    </Grid>
+        <Panel Name="Panel1" Background="Gray">
+            <TextBox
+                Name="TextBox1"
+                toolKit:Layout.X="50"
+                toolKit:Layout.Y="0"
+                Width="150"
+                Height="40"
+                Text="Абсолютная позиция" />
+            
+                <Button Content="Set" Click="Button_OnClick"/>
+        </Panel>
 </Window>
