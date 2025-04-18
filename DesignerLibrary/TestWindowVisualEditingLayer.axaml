@@ -3,28 +3,60 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
         x:Class="DesignerLibrary.TestWindowVisualEditingLayer"
         Background="Bisque"
         Title="TestWindowVisualEditingLayer">
 
-    <Panel Name="Panel1" Background="Gray" Width="400" Height="400">
-        <Panel
-            Background="DarkSlateGray"
-            Name="DragPanel"
-            toolKit:Layout.X="50"
-            toolKit:Layout.Y="30"
-            Width="150"
-            Height="40"
-            PointerPressed="OnDragStart"
-            PointerMoved="OnDragMove"
-            PointerReleased="OnDragEnd">
-            <TextBox IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center">Draggable Panel</TextBox>
-        </Panel>    
-        <Button 
-            toolKit:Layout.X="100"
-            toolKit:Layout.Y="100"
-            Content="Вернуть в начальное положение"
-            Click="Button_OnClick"/>
-    </Panel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Левая панель с элементами -->
+        <Panel Name="Panel1" Background="Gray" Width="400" Height="400">
+            <Panel
+                Background="DarkSlateGray"
+                Name="DragPanel"
+                toolKit:Layout.X="50"
+                toolKit:Layout.Y="30"
+                Width="150"
+                Height="40"
+                PointerPressed="OnDragStart"
+                PointerMoved="OnDragMove"
+                PointerReleased="OnDragEnd">
+                <TextBox IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center">Draggable Panel</TextBox>
+            </Panel>    
+        </Panel>
+
+        <!-- Правая панель управления -->
+        <StackPanel Grid.Column="1" Margin="10" Spacing="10">
+            <TextBlock Text="Позиция X:"/>
+            <TextBox Name="XInputBox" LostFocus="OnXBoxChanged"/>
+
+            <TextBlock Text="Позиция Y:"/>
+            <TextBox Name="YInputBox" LostFocus="OnYBoxChanged"/>
+
+            <TextBlock Text="Горизонтальное выравнивание:"/>
+            <ComboBox Name="HAlignCombo" SelectionChanged="OnHAlignChanged">
+                <ComboBoxItem Content="Stretch"/>
+                <ComboBoxItem Content="Left"/>
+                <ComboBoxItem Content="Center"/>
+                <ComboBoxItem Content="Right"/>
+            </ComboBox>
+
+            <TextBlock Text="Вертикальное выравнивание:"/>
+            <ComboBox Name="VAlignCombo" SelectionChanged="OnVAlignChanged">
+                <ComboBoxItem Content="Stretch"/>
+                <ComboBoxItem Content="Top"/>
+                <ComboBoxItem Content="Center"/>
+                <ComboBoxItem Content="Bottom"/>
+            </ComboBox>
+            <Button 
+                Content="Вернуть в начальное положение"
+                Click="Button_OnClick"/>
+        </StackPanel>
+
+    </Grid>
 </Window>

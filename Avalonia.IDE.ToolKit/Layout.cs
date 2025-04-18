@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using System;
 
 namespace Avalonia.IDE.ToolKit;
 
@@ -16,98 +17,91 @@ namespace Avalonia.IDE.ToolKit;
 /// в <see cref="HorizontalAlignment.Left"/> и <see cref="VerticalAlignment.Top"/>, чтобы трансформация
 /// была привязана к левому верхнему углу.
 ///
-/// Если значения <c>X</c> или <c>Y</c> не заданы (равны <c>null</c>), позиционирование не применяется.
+/// Если значения <c>X</c> или <c>Y</c> не заданы (равны <see cref="double.NaN"/>), позиционирование не применяется.
 /// </summary>
 public static class Layout
 {
-    /// <summary>
-    /// AttachedProperty для задания смещения по оси X.
-    /// Значение <c>null</c> означает, что позиционирование не применяется.
-    /// </summary>
     public static readonly AttachedProperty<double?> XProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "X",
             typeof(Layout),
-            defaultValue: null,
+            defaultValue: double.NaN,
             inherits: false,
             defaultBindingMode: BindingMode.TwoWay);
 
-    /// <summary>
-    /// AttachedProperty для задания смещения по оси Y.
-    /// Значение <c>null</c> означает, что позиционирование не применяется.
-    /// </summary>
     public static readonly AttachedProperty<double?> YProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "Y",
             typeof(Layout),
-            defaultValue: null,
+            defaultValue: double.NaN,
             inherits: false,
             defaultBindingMode: BindingMode.TwoWay);
 
-    /// <summary>
-    /// Вспомогательное свойство, указывающее, подписан ли контрол на изменения <see cref="Control.Bounds"/>.
-    /// Используется для предотвращения дублирующих подписок.
-    /// </summary>
     private static readonly AttachedProperty<bool> IsBoundsSubscribedProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, bool>(
             "IsBoundsSubscribed",
             typeof(Layout),
             defaultValue: false);
 
+    private static readonly AttachedProperty<bool> IsAlignmentSubscribedProperty =
+        AvaloniaProperty.RegisterAttached<AvaloniaObject, bool>(
+            "IsAlignmentSubscribed",
+            typeof(Layout),
+            defaultValue: false);
+
     static Layout()
     {
-        // Реакция на изменение X и Y
         XProperty.Changed.Subscribe(OnAnyPositionChanged);
         YProperty.Changed.Subscribe(OnAnyPositionChanged);
-
-        // Реакция на изменение выравнивания
-        Layoutable.HorizontalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
-        Layoutable.VerticalAlignmentProperty.Changed.Subscribe(OnAlignmentChanged);
     }
 
-    /// <summary>
-    /// Обрабатывает изменение свойства <c>X</c> или <c>Y</c>.
-    /// </summary>
     private static void OnAnyPositionChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Sender is Control control)
         {
             ApplyPosition(control);
-        }
-    }
 
-    /// <summary>
-    /// Обрабатывает изменение выравнивания.
-    /// При выравнивании, отличном от Left/Top, позиционирование сбрасывается.
-    /// </summary>
-    private static void OnAlignmentChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Sender is Control control)
-        {
-            if (control.HorizontalAlignment != HorizontalAlignment.Left ||
-                control.VerticalAlignment != VerticalAlignment.Top)
+            // Подписка на выравнивание при первом использовании
+            if (!control.GetValue(IsAlignmentSubscribedProperty))
             {
-                SetX(control, null);
-                SetY(control, null);
-                control.RenderTransform = null;
-                return;
-            }
+                control.SetValue(IsAlignmentSubscribedProperty, true);
 
-            ApplyPosition(control);
+                control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
+                       .Subscribe(_ => OnAlignmentChanged(control));
+
+                control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
+                       .Subscribe(_ => OnAlignmentChanged(control));
+            }
         }
     }
 
-    /// <summary>
-    /// Применяет визуальное смещение к контролу на основе заданных <c>X</c> и <c>Y</c>.
-    /// Также подписывается на <see cref="Control.BoundsProperty"/> для синхронизации координат.
-    /// </summary>
-    /// <param name="control">Целевой контрол.</param>
+    private static void OnAlignmentChanged(Control control)
+    {
+        var x = GetX(control);
+        var y = GetY(control);
+
+        if (x.HasValue && !double.IsNaN(x.Value) && control.HorizontalAlignment != HorizontalAlignment.Left)
+        {
+            SetX(control, double.NaN);
+        }
+
+        if (y.HasValue && !double.IsNaN(y.Value) && control.VerticalAlignment != VerticalAlignment.Top)
+        {
+            SetY(control, double.NaN);
+        }
+
+        ApplyPosition(control);
+    }
+
     private static void ApplyPosition(Control control)
     {
-        var xNullable = control.GetValue(XProperty);
-        var yNullable = control.GetValue(YProperty);
+        var x = control.GetValue(XProperty).GetValueOrDefault();
+        var y = control.GetValue(YProperty).GetValueOrDefault();
 
-        if (xNullable is not double x || yNullable is not double y)
+        var hasX = !double.IsNaN(x);
+        var hasY = !double.IsNaN(y);
+
+        if (!hasX && !hasY)
         {
             control.RenderTransform = null;
             return;
@@ -116,7 +110,7 @@ public static class Layout
         control.HorizontalAlignment = HorizontalAlignment.Left;
         control.VerticalAlignment = VerticalAlignment.Top;
 
-        control.RenderTransform = new TranslateTransform(x, y);
+        control.RenderTransform = new TranslateTransform(hasX ? x : 0, hasY ? y : 0);
 
         if (!control.GetValue(IsBoundsSubscribedProperty))
         {
@@ -130,34 +124,23 @@ public static class Layout
                 var actualX = bounds.X + (offset?.X ?? 0);
                 var actualY = bounds.Y + (offset?.Y ?? 0);
 
-                if (Math.Abs(control.GetValue(XProperty) ?? 0 - actualX) > 0.5 ||
-                    Math.Abs(control.GetValue(YProperty) ?? 0 - actualY) > 0.5)
-                {
+                var currentX = control.GetValue(XProperty).GetValueOrDefault();
+                var currentY = control.GetValue(YProperty).GetValueOrDefault();
+
+                if (Math.Abs(currentX - actualX) > 0.5)
                     SetX(control, actualX);
+
+                if (Math.Abs(currentY - actualY) > 0.5)
                     SetY(control, actualY);
-                    Console.WriteLine($"[Layout] Bounds changed: Name={control.Name}, X={actualX}, Y={actualY}");
-                }
+
+                Console.WriteLine($"[Layout] Bounds changed: Name={control.Name}, X={actualX}, Y={actualY}");
             });
         }
     }
 
-    /// <summary>
-    /// Получает значение <see cref="XProperty"/>.
-    /// </summary>
     public static double? GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
-
-    /// <summary>
-    /// Устанавливает значение <see cref="XProperty"/>.
-    /// </summary>
     public static void SetX(AvaloniaObject obj, double? value) => obj.SetValue(XProperty, value);
 
-    /// <summary>
-    /// Получает значение <see cref="YProperty"/>.
-    /// </summary>
     public static double? GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
-
-    /// <summary>
-    /// Устанавливает значение <see cref="YProperty"/>.
-    /// </summary>
     public static void SetY(AvaloniaObject obj, double? value) => obj.SetValue(YProperty, value);
 }
