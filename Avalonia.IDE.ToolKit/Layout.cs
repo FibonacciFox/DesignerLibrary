@@ -2,22 +2,11 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
-using System;
 
 namespace Avalonia.IDE.ToolKit;
 
 /// <summary>
 /// Предоставляет attached-свойства для управления абсолютным позиционированием контролов в Avalonia UI.
-///
-/// Вместо использования <see cref="Canvas"/>, данное решение позволяет применять смещения
-/// по осям X и Y к любому <see cref="Control"/>, независимо от типа layout-контейнера,
-/// при этом сохраняя возможности адаптивной верстки.
-///
-/// Для смещения используется <see cref="TranslateTransform"/>, и выравнивание устанавливается
-/// в <see cref="HorizontalAlignment.Left"/> и <see cref="VerticalAlignment.Top"/>, чтобы трансформация
-/// была привязана к левому верхнему углу.
-///
-/// Если значения <c>X</c> или <c>Y</c> не заданы (равны <see cref="double.NaN"/>), позиционирование не применяется.
 /// </summary>
 public static class Layout
 {
@@ -61,7 +50,6 @@ public static class Layout
         {
             ApplyPosition(control);
 
-            // Подписка на выравнивание при первом использовании
             if (!control.GetValue(IsAlignmentSubscribedProperty))
             {
                 control.SetValue(IsAlignmentSubscribedProperty, true);
@@ -107,8 +95,12 @@ public static class Layout
             return;
         }
 
-        control.HorizontalAlignment = HorizontalAlignment.Left;
-        control.VerticalAlignment = VerticalAlignment.Top;
+        if (control.HorizontalAlignment != HorizontalAlignment.Left ||
+            control.VerticalAlignment != VerticalAlignment.Top)
+        {
+            control.RenderTransform = null;
+            return;
+        }
 
         control.RenderTransform = new TranslateTransform(hasX ? x : 0, hasY ? y : 0);
 
@@ -116,7 +108,7 @@ public static class Layout
         {
             control.SetValue(IsBoundsSubscribedProperty, true);
 
-            control.GetPropertyChangedObservable(Control.BoundsProperty).Subscribe(_ =>
+            control.GetPropertyChangedObservable(Visual.BoundsProperty).Subscribe(_ =>
             {
                 var bounds = control.Bounds;
                 var offset = control.RenderTransform as TranslateTransform;
