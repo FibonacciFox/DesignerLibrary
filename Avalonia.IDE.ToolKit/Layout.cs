@@ -10,15 +10,11 @@ using Avalonia.Threading;
 namespace Avalonia.IDE.ToolKit;
 
 /// <summary>
-/// Attached-свойства Layout.X и Layout.Y для управления абсолютным позиционированием.
-/// Работает через TranslateTransform при выравнивании Left/Top, и сохраняет фактические координаты
-/// при других выравниваниях, используя TranslatePoint.
+/// Предоставляет attached-свойства Layout.X и Layout.Y для позиционирования элементов с независимой логикой по осям.
+/// X применяется, если HorizontalAlignment = Left; Y — если VerticalAlignment = Top.
 /// </summary>
 public static class Layout
 {
-    /// <summary>
-    /// Смещение по оси X.
-    /// </summary>
     public static readonly AttachedProperty<double?> XProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "X",
@@ -27,9 +23,6 @@ public static class Layout
             inherits: false,
             defaultBindingMode: BindingMode.TwoWay);
 
-    /// <summary>
-    /// Смещение по оси Y.
-    /// </summary>
     public static readonly AttachedProperty<double?> YProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "Y",
@@ -38,7 +31,6 @@ public static class Layout
             inherits: false,
             defaultBindingMode: BindingMode.TwoWay);
 
-    // Флаг, чтобы не подписываться на выравнивание дважды
     private static readonly AttachedProperty<bool> IsAlignmentSubscribedProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, bool>(
             "IsAlignmentSubscribed",
@@ -47,86 +39,80 @@ public static class Layout
 
     static Layout()
     {
-        XProperty.Changed.Subscribe(OnAnyPositionChanged);
-        YProperty.Changed.Subscribe(OnAnyPositionChanged);
+        XProperty.Changed.Subscribe(e => OnPositionChanged(e, isX: true));
+        YProperty.Changed.Subscribe(e => OnPositionChanged(e, isX: false));
     }
 
-    /// <summary>
-    /// Срабатывает при любом изменении X или Y. Применяет трансформацию и следит за выравниванием.
-    /// </summary>
-    private static void OnAnyPositionChanged(AvaloniaPropertyChangedEventArgs e)
+    private static void OnPositionChanged(AvaloniaPropertyChangedEventArgs e, bool isX)
     {
         if (e.Sender is Control control)
         {
             EnsureFirstLayoutInitialized(control);
-            ApplyPosition(control);
+            ApplyAxis(control, isX);
 
             if (!control.GetValue(IsAlignmentSubscribedProperty))
             {
                 control.SetValue(IsAlignmentSubscribedProperty, true);
 
                 control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
-                       .Subscribe(_ => OnAlignmentChanged(control));
+                    .Subscribe(_ => OnAlignmentChanged(control, isX: true));
 
                 control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
-                       .Subscribe(_ => OnAlignmentChanged(control));
+                    .Subscribe(_ => OnAlignmentChanged(control, isX: false));
             }
         }
     }
 
-    /// <summary>
-    /// Обрабатывает изменение выравнивания. Обновляет координаты и применяет трансформацию.
-    /// </summary>
-    private static void OnAlignmentChanged(Control control)
+    private static void OnAlignmentChanged(Control control, bool isX)
     {
         Dispatcher.UIThread.Post(() =>
         {
-            var offset = control.RenderTransform as TranslateTransform;
+            var offset = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
 
-            if (control.HorizontalAlignment != HorizontalAlignment.Left ||
-                control.VerticalAlignment != VerticalAlignment.Top)
+            if (isX && control.HorizontalAlignment != HorizontalAlignment.Left)
             {
-                var position = GetVisualPosition(control);
-                if (position != null)
-                {
-                    SetX(control, position.Value.X + (offset?.X ?? 0));
-                    SetY(control, position.Value.Y + (offset?.Y ?? 0));
-                }
+                var pos = GetVisualPosition(control);
+                if (pos != null)
+                    SetX(control, pos.Value.X + offset.X);
             }
 
-            control.RenderTransform = null;
-            ApplyPosition(control);
+            if (!isX && control.VerticalAlignment != VerticalAlignment.Top)
+            {
+                var pos = GetVisualPosition(control);
+                if (pos != null)
+                    SetY(control, pos.Value.Y + offset.Y);
+            }
 
-            Console.WriteLine($"[Layout] Alignment changed → X: {GetX(control)}, Y: {GetY(control)}");
+            // Сброс и повторное применение только нужной оси
+            var current = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
+            var newTransform = new TranslateTransform
+            {
+                X = control.HorizontalAlignment == HorizontalAlignment.Left ? GetX(control) ?? 0 : 0,
+                Y = control.VerticalAlignment == VerticalAlignment.Top ? GetY(control) ?? 0 : 0
+            };
+
+            control.RenderTransform = newTransform;
         }, DispatcherPriority.Loaded);
     }
 
-    /// <summary>
-    /// Применяет TranslateTransform при Left/Top выравнивании.
-    /// </summary>
-    private static void ApplyPosition(Control control)
+    private static void ApplyAxis(Control control, bool isX)
     {
-        var x = control.GetValue(XProperty).GetValueOrDefault();
-        var y = control.GetValue(YProperty).GetValueOrDefault();
+        var transform = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
 
-        var hasX = !double.IsNaN(x);
-        var hasY = !double.IsNaN(y);
-
-        var isAbsolute = control.HorizontalAlignment == HorizontalAlignment.Left &&
-                         control.VerticalAlignment == VerticalAlignment.Top;
-
-        if (!isAbsolute)
+        if (isX)
         {
-            control.RenderTransform = null;
-            return;
+            var x = GetX(control) ?? 0;
+            transform.X = control.HorizontalAlignment == HorizontalAlignment.Left ? x : 0;
+        }
+        else
+        {
+            var y = GetY(control) ?? 0;
+            transform.Y = control.VerticalAlignment == VerticalAlignment.Top ? y : 0;
         }
 
-        control.RenderTransform = new TranslateTransform(hasX ? x : 0, hasY ? y : 0);
+        control.RenderTransform = transform;
     }
 
-    /// <summary>
-    /// Гарантирует, что позиция будет корректно захвачена после первого layout.
-    /// </summary>
     private static void EnsureFirstLayoutInitialized(Control control)
     {
         if (control.GetVisualRoot() == null)
@@ -139,9 +125,6 @@ public static class Layout
         }
     }
 
-    /// <summary>
-    /// Захватывает позицию контрола после первого layout-прохода.
-    /// </summary>
     private static void FirstLayoutInit(object? sender, EventArgs e)
     {
         if (sender is not Control control)
@@ -153,45 +136,34 @@ public static class Layout
         {
             control.LayoutUpdated -= OnLayoutReady;
 
-            if (control.HorizontalAlignment != HorizontalAlignment.Left ||
-                control.VerticalAlignment != VerticalAlignment.Top)
+            var pos = GetVisualPosition(control);
+            if (pos != null)
             {
-                var position = GetVisualPosition(control);
-                if (position != null)
-                {
-                    SetX(control, position.Value.X);
-                    SetY(control, position.Value.Y);
-                }
+                if (control.HorizontalAlignment != HorizontalAlignment.Left)
+                    SetX(control, pos.Value.X);
 
-                ApplyPosition(control);
+                if (control.VerticalAlignment != VerticalAlignment.Top)
+                    SetY(control, pos.Value.Y);
             }
 
-            Console.WriteLine($"[Layout] Initial layout → X: {GetX(control)}, Y: {GetY(control)}");
+            ApplyAxis(control, isX: true);
+            ApplyAxis(control, isX: false);
         }
 
         control.LayoutUpdated += OnLayoutReady;
     }
 
-    /// <summary>
-    /// Получает визуальную позицию контрола внутри его родителя.
-    /// </summary>
     private static Point? GetVisualPosition(Control control)
     {
         var parent = control.GetVisualParent();
-        return parent is Visual visualParent
+        return parent is { } visualParent
             ? control.TranslatePoint(new Point(0, 0), visualParent)
             : null;
     }
 
-    /// <summary> Получает значение Layout.X для объекта. </summary>
     public static double? GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
-
-    /// <summary> Устанавливает значение Layout.X для объекта. </summary>
     public static void SetX(AvaloniaObject obj, double? value) => obj.SetValue(XProperty, value);
 
-    /// <summary> Получает значение Layout.Y для объекта. </summary>
     public static double? GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
-
-    /// <summary> Устанавливает значение Layout.Y для объекта. </summary>
     public static void SetY(AvaloniaObject obj, double? value) => obj.SetValue(YProperty, value);
 }
