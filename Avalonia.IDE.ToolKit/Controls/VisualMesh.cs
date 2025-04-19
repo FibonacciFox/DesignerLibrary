@@ -4,59 +4,68 @@ using Avalonia.Media;
 namespace Avalonia.IDE.ToolKit.Controls
 {
     /// <summary>
-    /// Enum defining the drawing mode for the grid.
-    /// Перечисление, определяющее режим рисования для сетки.
+    /// Specifies the rendering mode for the grid.
+    /// Определяет режим отрисовки сетки.
     /// </summary>
     public enum GridDrawMode
     {
-        Lines,  // Линии
-        Dots    // Точки
+        /// <summary>
+        /// Draw the grid using dashed lines.
+        /// Отображать сетку с помощью пунктирных линий.
+        /// </summary>
+        Lines,
+
+        /// <summary>
+        /// Draw the grid using dots.
+        /// Отображать сетку точками.
+        /// </summary>
+        Dots
     }
 
     /// <summary>
-    /// Custom control that draws a grid with configurable properties such as size, color, and drawing mode.
-    /// Пользовательский контрол, который рисует сетку с настраиваемыми свойствами, такими как размер, цвет и режим рисования.
+    /// Represents a custom control that renders a configurable visual grid.
+    /// Пользовательский контрол для отрисовки настраиваемой визуальной сетки.
     /// </summary>
     public class VisualMesh : TemplatedControl
     {
         /// <summary>
-        /// Defines the X-axis grid size property.
-        /// Определяет свойство размера сетки по оси X.
+        /// Identifies the <see cref="MeshSizeX"/> property.
+        /// Идентификатор свойства <see cref="MeshSizeX"/>.
         /// </summary>
         public static readonly StyledProperty<int> MeshSizeXProperty =
             AvaloniaProperty.Register<VisualMesh, int>(nameof(MeshSizeX), 8);
 
         /// <summary>
-        /// Defines the Y-axis grid size property.
-        /// Определяет свойство размера сетки по оси Y.
+        /// Identifies the <see cref="MeshSizeY"/> property.
+        /// Идентификатор свойства <see cref="MeshSizeY"/>.
         /// </summary>
         public static readonly StyledProperty<int> MeshSizeYProperty =
             AvaloniaProperty.Register<VisualMesh, int>(nameof(MeshSizeY), 8);
 
         /// <summary>
-        /// Defines the drawing mode property for the grid (lines or dots).
-        /// Определяет свойство режима рисования для сетки (линии или точки).
+        /// Identifies the <see cref="DrawMode"/> property.
+        /// Идентификатор свойства <see cref="DrawMode"/>.
         /// </summary>
         public static readonly StyledProperty<GridDrawMode> DrawModeProperty =
             AvaloniaProperty.Register<VisualMesh, GridDrawMode>(nameof(DrawMode), GridDrawMode.Dots);
 
         /// <summary>
-        /// Defines the grid element size property (used for both lines and dots).
-        /// Определяет свойство размера элемента сетки (используется как для линий, так и для точек).
+        /// Identifies the <see cref="MeshThickness"/> property.
+        /// Идентификатор свойства <see cref="MeshThickness"/>.
         /// </summary>
         public static readonly StyledProperty<double> MeshThicknessProperty =
             AvaloniaProperty.Register<VisualMesh, double>(nameof(MeshThickness), 1.0);
 
         /// <summary>
-        /// Defines the grid color property.
-        /// Определяет свойство цвета сетки.
+        /// Identifies the <see cref="MeshBrush"/> property.
+        /// Идентификатор свойства <see cref="MeshBrush"/>.
         /// </summary>
         public static readonly StyledProperty<IBrush> MeshBrushProperty =
             AvaloniaProperty.Register<VisualMesh, IBrush>(nameof(MeshBrush), Brushes.Black);
 
         /// <summary>
-        /// Gets or sets the X-axis grid size.
-        /// Получает или задает размер сетки по оси X.
+        /// Gets or sets the grid cell width in pixels.
+        /// Получает или задает ширину ячейки сетки в пикселях.
         /// </summary>
         public int MeshSizeX
         {
@@ -65,8 +74,8 @@ namespace Avalonia.IDE.ToolKit.Controls
         }
 
         /// <summary>
-        /// Gets or sets the Y-axis grid size.
-        /// Получает или задает размер сетки по оси Y.
+        /// Gets or sets the grid cell height in pixels.
+        /// Получает или задает высоту ячейки сетки в пикселях.
         /// </summary>
         public int MeshSizeY
         {
@@ -75,8 +84,8 @@ namespace Avalonia.IDE.ToolKit.Controls
         }
 
         /// <summary>
-        /// Gets or sets the drawing mode (lines or dots).
-        /// Получает или задает режим рисования (линии или точки).
+        /// Gets or sets the rendering mode for the grid (lines or dots).
+        /// Получает или задает режим отрисовки сетки (линии или точки).
         /// </summary>
         public GridDrawMode DrawMode
         {
@@ -85,8 +94,8 @@ namespace Avalonia.IDE.ToolKit.Controls
         }
 
         /// <summary>
-        /// Gets or sets the grid element size.
-        /// Получает или задает размер элемента сетки.
+        /// Gets or sets the thickness of grid lines or dot size.
+        /// Получает или задает толщину линий сетки или размер точки.
         /// </summary>
         public double MeshThickness
         {
@@ -95,8 +104,8 @@ namespace Avalonia.IDE.ToolKit.Controls
         }
 
         /// <summary>
-        /// Gets or sets the grid color.
-        /// Получает или задает цвет сетки.
+        /// Gets or sets the brush used to draw the grid.
+        /// Получает или задает кисть, используемую для отрисовки сетки.
         /// </summary>
         public IBrush MeshBrush
         {
@@ -110,46 +119,58 @@ namespace Avalonia.IDE.ToolKit.Controls
         /// </summary>
         public VisualMesh()
         {
-            // Подписываемся на изменения свойств, чтобы перерисовывать контрол при их изменении
-            MeshSizeXProperty.Changed.AddClassHandler<VisualMesh>((o, e) => o.InvalidateVisual());
-            MeshSizeYProperty.Changed.AddClassHandler<VisualMesh>((o, e) => o.InvalidateVisual());
-            DrawModeProperty.Changed.AddClassHandler<VisualMesh>((o, e) => o.InvalidateVisual());
-            MeshThicknessProperty.Changed.AddClassHandler<VisualMesh>((o, e) => o.InvalidateVisual());
-            MeshBrushProperty.Changed.AddClassHandler<VisualMesh>((o, e) => o.InvalidateVisual());
+            foreach (var prop in new AvaloniaProperty[]
+            {
+                MeshSizeXProperty, MeshSizeYProperty,
+                DrawModeProperty, MeshThicknessProperty,
+                MeshBrushProperty
+            })
+            {
+                prop.Changed.AddClassHandler<VisualMesh>((o, _) => o.InvalidateVisual());
+            }
         }
 
         /// <summary>
-        /// Renders the grid based on the defined properties.
-        /// Отрисовывает сетку на основе заданных свойств.
+        /// Renders the grid using the specified drawing context.
+        /// Отрисовывает сетку, используя указанный контекст рисования.
         /// </summary>
-        /// <param name="context">Drawing context.</param>
+        /// <param name="context">The drawing context.</param>
         public override void Render(DrawingContext context)
         {
             base.Render(context);
 
+            if (MeshSizeX <= 0 || MeshSizeY <= 0 || MeshThickness <= 0)
+                return;
+
             var bounds = new Rect(Bounds.Size);
-            var renderScaling = VisualRoot?.RenderScaling ?? 1.0;
-            
-            // Создаем стиль штриховки
-            var dashStyle = new DashStyle(new double[] { 1, 5 }, 0); // Пунктирная линия с чередованием 5 пикселя
+            var scale = VisualRoot?.RenderScaling ?? 1.0;
 
-            var gridSizeXInPixels = new PixelSize((int)Math.Round(MeshSizeX * renderScaling), 0);
-            var gridSizeYInPixels = new PixelSize(0, (int)Math.Round(MeshSizeY * renderScaling));
-            var gridElementSizeInPixels = MeshThickness * renderScaling;
+            int stepX = (int)Math.Round(MeshSizeX * scale);
+            int stepY = (int)Math.Round(MeshSizeY * scale);
+            double thickness = MeshThickness * scale;
 
-            for (int x = 0; x < bounds.Width; x += gridSizeXInPixels.Width)
+            if (DrawMode == GridDrawMode.Lines)
             {
-                for (int y = 0; y < bounds.Height; y += gridSizeYInPixels.Height)
+                var pen = new Pen(MeshBrush, thickness)
                 {
-                    if (DrawMode == GridDrawMode.Lines)
+                    DashStyle = new DashStyle(new double[] { 1, 5 }, 0)
+                };
+
+                for (double x = 0.5; x <= bounds.Width; x += stepX)
+                    context.DrawLine(pen, new Point(x, 0), new Point(x, bounds.Height));
+
+                for (double y = 0.5; y <= bounds.Height; y += stepY)
+                    context.DrawLine(pen, new Point(0, y), new Point(bounds.Width, y));
+            }
+            else if (DrawMode == GridDrawMode.Dots)
+            {
+                var dotSize = new Size(thickness, thickness);
+
+                for (double x = 0; x <= bounds.Width; x += stepX)
+                {
+                    for (double y = 0; y <= bounds.Height; y += stepY)
                     {
-                        var pen = new Pen(MeshBrush, gridElementSizeInPixels){DashStyle = dashStyle};
-                        context.DrawLine(pen, new Point(x, 0), new Point(x, bounds.Height));
-                        context.DrawLine(pen, new Point(0, y), new Point(bounds.Width, y));
-                    }
-                    else if (DrawMode == GridDrawMode.Dots)
-                    {
-                        context.FillRectangle(MeshBrush, new Rect(new Point(x, y), new Size(gridElementSizeInPixels, gridElementSizeInPixels)));
+                        context.FillRectangle(MeshBrush, new Rect(new Point(x, y), dotSize));
                     }
                 }
             }
