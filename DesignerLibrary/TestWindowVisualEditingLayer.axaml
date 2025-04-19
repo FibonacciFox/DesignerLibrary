@@ -14,22 +14,20 @@
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Левая панель с редактируемыми элементами -->
+        <!-- Левая панель с элементами -->
         <Panel Name="Panel1" Background="Gray" Width="400" Height="400">
             <Panel
                 Background="DarkSlateGray"
                 Name="DragPanel"
-                toolKit:Layout.X="100"
-                toolKit:Layout.Y="100"
+                toolKit:Layout.X="50"
+                toolKit:Layout.Y="30"
                 Width="150"
                 Height="40"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
                 PointerPressed="OnDragStart"
                 PointerMoved="OnDragMove"
                 PointerReleased="OnDragEnd">
                 <TextBox IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center">Draggable Panel</TextBox>
-            </Panel>
+            </Panel>    
         </Panel>
 
         <!-- Правая панель управления -->
@@ -55,9 +53,10 @@
                 <ComboBoxItem Content="Center"/>
                 <ComboBoxItem Content="Bottom"/>
             </ComboBox>
-
-            <Button Content="Вернуть в начальное положение"
-                    Click="Button_OnClick"/>
+            <Button 
+                Content="Вернуть в начальное положение"
+                Click="Button_OnClick"/>
         </StackPanel>
+
     </Grid>
 </Window>
