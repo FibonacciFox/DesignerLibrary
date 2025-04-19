@@ -19,21 +19,14 @@ namespace DesignerLibrary
             InitializeComponent();
             this.AttachDevTools();
 
-            // Инициализация значений из текущего положения
-            XInputBox.Text = (Layout.GetX(DragPanel) ?? 0).ToString("F0");
-            YInputBox.Text = (Layout.GetY(DragPanel) ?? 0).ToString("F0");
+            UpdateUIFromPanel();
 
-            HAlignCombo.SelectedIndex = (int)DragPanel.HorizontalAlignment;
-            VAlignCombo.SelectedIndex = (int)DragPanel.VerticalAlignment;
-
-            // Обновление UI при изменении координат
-            
+            // Подписка на изменение Layout.X/Y и выравнивания
             DragPanel.PropertyChanged += (_, args) =>
             {
                 if (args.Property == Layout.XProperty || args.Property == Layout.YProperty)
                 {
-                    XInputBox.Text = (Layout.GetX(DragPanel) ?? 0).ToString("F0");
-                    YInputBox.Text = (Layout.GetY(DragPanel) ?? 0).ToString("F0");
+                    UpdateXYInputs();
                 }
                 else if (args.Property == Layoutable.HorizontalAlignmentProperty)
                 {
@@ -44,15 +37,30 @@ namespace DesignerLibrary
                     VAlignCombo.SelectedIndex = (int)DragPanel.VerticalAlignment;
                 }
             };
+        }
 
+        private void UpdateXYInputs()
+        {
+            XInputBox.Text = (Layout.GetX(DragPanel) ?? 0).ToString("F0");
+            YInputBox.Text = (Layout.GetY(DragPanel) ?? 0).ToString("F0");
+        }
+
+        private void UpdateUIFromPanel()
+        {
+            UpdateXYInputs();
+            HAlignCombo.SelectedIndex = (int)DragPanel.HorizontalAlignment;
+            VAlignCombo.SelectedIndex = (int)DragPanel.VerticalAlignment;
         }
 
         private void Button_OnClick(object? sender, RoutedEventArgs e)
         {
+            DragPanel.HorizontalAlignment = HorizontalAlignment.Left;
+            DragPanel.VerticalAlignment = VerticalAlignment.Top;
+
             Layout.SetX(DragPanel, 50);
             Layout.SetY(DragPanel, 30);
 
-            Console.WriteLine($"Reset to: {Layout.GetX(DragPanel)}, {Layout.GetY(DragPanel)}");
+            Console.WriteLine($"[Reset] → X={Layout.GetX(DragPanel)}, Y={Layout.GetY(DragPanel)}");
         }
 
         private void OnDragStart(object? sender, PointerPressedEventArgs e)
@@ -75,27 +83,25 @@ namespace DesignerLibrary
                 var current = e.GetPosition(Panel1);
                 var delta = current - _dragStart;
 
-                double? x = Layout.GetX(_dragTarget);
-                double? y = Layout.GetY(_dragTarget);
+                double x = Layout.GetX(_dragTarget) ?? 0;
+                double y = Layout.GetY(_dragTarget) ?? 0;
 
-                if (!double.IsNaN(x.GetValueOrDefault()) && !double.IsNaN(y.GetValueOrDefault()))
-                {
-                    Layout.SetX(_dragTarget, x.GetValueOrDefault() + delta.X);
-                    Layout.SetY(_dragTarget, y.GetValueOrDefault() + delta.Y);
-                    _dragStart = current;
-                }
+                Layout.SetX(_dragTarget, x + delta.X);
+                Layout.SetY(_dragTarget, y + delta.Y);
+
+                _dragStart = current;
             }
         }
 
         private void OnDragEnd(object? sender, PointerReleasedEventArgs e)
         {
-            if (_isDragging && _dragTarget != null)
+            if (_isDragging)
             {
                 _isDragging = false;
                 e.Pointer.Capture(null);
                 _dragTarget = null;
 
-                Console.WriteLine($"Dropped at: {Layout.GetX(DragPanel)}, {Layout.GetY(DragPanel)}");
+                Console.WriteLine($"[Drop] → X={Layout.GetX(DragPanel)}, Y={Layout.GetY(DragPanel)}");
             }
         }
 
