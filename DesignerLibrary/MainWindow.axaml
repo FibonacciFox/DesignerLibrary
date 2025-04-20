@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
         xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -75,7 +76,7 @@
                             <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
                                 <Canvas Width="640" Height="483" Name="DisignerLayer" >
-                                    <Button>Content</Button>
+                                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" toolKit:Layout.X="200" toolKit:Layout.Y="0" >Content</Button>
                                 </Canvas>
                             </Panel>
                             <designer:VisualEditingLayer Name="VisualLayer" />
