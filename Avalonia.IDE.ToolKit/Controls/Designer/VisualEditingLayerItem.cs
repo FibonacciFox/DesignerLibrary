@@ -4,6 +4,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
+using System;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
 
@@ -29,11 +31,13 @@ public enum AnchorType
 /// </summary>
 public class VisualEditingLayerItem : TemplatedControl, ISelectable
 {
+    private const double AnchorPadding = 6;
+
     public static readonly StyledProperty<double> StepSizeByXProperty =
-        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByX), 8);
+        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByX), AnchorPadding);
 
     public static readonly StyledProperty<double> StepSizeByYProperty =
-        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByY), 8);
+        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByY), AnchorPadding);
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<ListBoxItem>();
@@ -106,16 +110,35 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
 
         if (e.NewValue is Control newControl)
         {
-            Width = newControl.Width;
-            Height = newControl.Height;
-            Layout.SetX(this, Layout.GetX(newControl));
-            Layout.SetY(this, Layout.GetY(newControl));
+            if (this.GetVisualRoot() == null)
+                AttachedToVisualTree += OnFirstAttach;
+            else
+                ApplyInitialLayout();
 
-            _widthSub = newControl.GetObservable(WidthProperty).Subscribe(w => Width = w);
-            _heightSub = newControl.GetObservable(HeightProperty).Subscribe(h => Height = h);
-            _xSub = newControl.GetObservable(Layout.XProperty).Subscribe(x => Layout.SetX(this, x));
-            _ySub = newControl.GetObservable(Layout.YProperty).Subscribe(y => Layout.SetY(this, y));
+            _widthSub = newControl.GetObservable(WidthProperty)
+                .Subscribe(w => Width = w + AnchorPadding * 2);
+            _heightSub = newControl.GetObservable(HeightProperty)
+                .Subscribe(h => Height = h + AnchorPadding * 2);
+            _xSub = newControl.GetObservable(Layout.XProperty)
+                .Subscribe(x => Layout.SetX(this, (x ?? 0) - AnchorPadding));
+            _ySub = newControl.GetObservable(Layout.YProperty)
+                .Subscribe(y => Layout.SetY(this, (y ?? 0) - AnchorPadding));
         }
+    }
+
+    private void OnFirstAttach(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        AttachedToVisualTree -= OnFirstAttach;
+        ApplyInitialLayout();
+    }
+
+    private void ApplyInitialLayout()
+    {
+        Width = AttachedControl.Width + AnchorPadding * 2;
+        Height = AttachedControl.Height + AnchorPadding * 2;
+
+        Layout.SetX(this, (Layout.GetX(AttachedControl) ?? 0) - AnchorPadding);
+        Layout.SetY(this, (Layout.GetY(AttachedControl) ?? 0) - AnchorPadding);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -171,7 +194,8 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
         _originalLeft = Layout.GetX(this) ?? 0;
         _originalTop = Layout.GetY(this) ?? 0;
 
-        _partCustomBorder?.Classes.Add("Resize");
+        if (_partCustomBorder != null)
+            _partCustomBorder.IsVisible = true;
     }
 
     private void AnchorOnPointerMoved(object? sender, PointerEventArgs e)
@@ -201,8 +225,56 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
 
         UpdateAttachedControlBounds();
 
+        if (_partCustomBorder != null)
+            _partCustomBorder.IsVisible = false;
+
         e.Pointer.Capture(null);
-        _partCustomBorder?.Classes.Remove("Resize");
+    }
+
+    private void OnContentDragStart(object? sender, PointerPressedEventArgs e)
+    {
+        if (_isResizing) return;
+
+        _isDragging = true;
+        _dragStartPoint = e.GetCurrentPoint((Visual?)Parent);
+        _originalPosition = new Point(Layout.GetX(this) ?? 0, Layout.GetY(this) ?? 0);
+
+        if (_partCustomBorder != null)
+            _partCustomBorder.IsVisible = true;
+
+        e.Pointer.Capture((IInputElement)sender!);
+    }
+
+    private void OnContentDragMove(object? sender, PointerEventArgs e)
+    {
+        if (_isDragging)
+        {
+            var current = e.GetCurrentPoint((Visual?)Parent);
+            var dx = current.Position.X - _dragStartPoint.Position.X;
+            var dy = current.Position.Y - _dragStartPoint.Position.Y;
+
+            var newX = SnapToGrid(_originalPosition.X + dx, StepSizeByX);
+            var newY = SnapToGrid(_originalPosition.Y + dy, StepSizeByY);
+
+            Layout.SetX(this, newX);
+            Layout.SetY(this, newY);
+
+            e.Handled = true;
+        }
+    }
+
+    private void OnContentDragEnd(object? sender, PointerReleasedEventArgs e)
+    {
+        if (_isDragging)
+        {
+            _isDragging = false;
+            UpdateAttachedControlBounds();
+
+            if (_partCustomBorder != null)
+                _partCustomBorder.IsVisible = false;
+
+            e.Pointer.Capture(null);
+        }
     }
 
     private (double newWidth, double newHeight, double newLeft, double newTop) CalculateNewDimensions(double dx, double dy)
@@ -252,54 +324,16 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
         return (w, h, l, t);
     }
 
-    private void OnContentDragStart(object? sender, PointerPressedEventArgs e)
-    {
-        if (_isResizing) return;
-
-        _isDragging = true;
-        _dragStartPoint = e.GetCurrentPoint((Visual?)Parent);
-        _originalPosition = new Point(Layout.GetX(this) ?? 0, Layout.GetY(this) ?? 0);
-        e.Pointer.Capture((IInputElement)sender!);
-    }
-
-    private void OnContentDragMove(object? sender, PointerEventArgs e)
-    {
-        if (_isDragging)
-        {
-            var current = e.GetCurrentPoint((Visual?)Parent);
-            var dx = current.Position.X - _dragStartPoint.Position.X;
-            var dy = current.Position.Y - _dragStartPoint.Position.Y;
-
-            var newX = SnapToGrid(_originalPosition.X + dx, StepSizeByX);
-            var newY = SnapToGrid(_originalPosition.Y + dy, StepSizeByY);
-
-            Layout.SetX(this, newX);
-            Layout.SetY(this, newY);
-
-            e.Handled = true;
-        }
-    }
-
-    private void OnContentDragEnd(object? sender, PointerReleasedEventArgs e)
-    {
-        if (_isDragging)
-        {
-            _isDragging = false;
-            UpdateAttachedControlBounds();
-            e.Pointer.Capture(null);
-        }
-    }
-
     /// <summary>
     /// Копирует текущие размеры и координаты в AttachedControl.
     /// </summary>
     public void UpdateAttachedControlBounds()
     {
-        AttachedControl.Width = Width;
-        AttachedControl.Height = Height;
+        AttachedControl.Width = Width - AnchorPadding * 2;
+        AttachedControl.Height = Height - AnchorPadding * 2;
 
-        Layout.SetX(AttachedControl, Layout.GetX(this));
-        Layout.SetY(AttachedControl, Layout.GetY(this));
+        Layout.SetX(AttachedControl, (Layout.GetX(this) ?? 0) + AnchorPadding);
+        Layout.SetY(AttachedControl, (Layout.GetY(this) ?? 0) + AnchorPadding);
     }
 
     private double SnapToGrid(double value, double gridSize)

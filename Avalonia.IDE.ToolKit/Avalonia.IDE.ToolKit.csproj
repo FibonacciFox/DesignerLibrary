@@ -16,9 +16,6 @@
         <DependentUpon>VisualMesh.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Controls\Designer\ResizableBorder.cs">
-        <DependentUpon>ResizableBorder.axaml</DependentUpon>
-      </Compile>
     </ItemGroup>
 
 

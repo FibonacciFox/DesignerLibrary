@@ -76,7 +76,7 @@
                             <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
                                 <Canvas Width="640" Height="483" Name="DisignerLayer" >
-                                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" toolKit:Layout.X="200" toolKit:Layout.Y="0" >Content</Button>
+                                    <Panel HorizontalAlignment="Left" VerticalAlignment="Top" toolKit:Layout.X="200" toolKit:Layout.Y="200" Background="White" />
                                 </Canvas>
                             </Panel>
                             <designer:VisualEditingLayer Name="VisualLayer" />

@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
 using Avalonia.IDE.ToolKit.Controls;
-using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.IDE.ToolKit.Services;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;

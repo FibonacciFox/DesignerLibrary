@@ -10,6 +10,5 @@
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualMesh.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualEditingLayer.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Themes/VisualEditingLayerItem.axaml"/>
-        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/ResizableBorder.axaml"/>
     </Application.Styles>
 </Application>
