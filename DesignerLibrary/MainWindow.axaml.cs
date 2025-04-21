@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
@@ -54,7 +55,7 @@ namespace DesignerLibrary
                         Height = 100
                     }
                 },
-                { "Calendar", () => new Calendar() }
+                { "Calendar", () => new Calendar() },
             };
 
             var logicalChildren = new LogicalChildrenMonitorService(DisignerLayer, new[] { typeof(AccessText) });
@@ -98,11 +99,11 @@ namespace DesignerLibrary
                 Layout.SetX(newControl, x);
                 Layout.SetY(newControl, y);
 
-                if (double.IsNaN(newControl.Width) || newControl.Width == 0)
-                    newControl.Width = 100;
+                //if (double.IsNaN(newControl.Width) || newControl.Width == 0)
+                //    newControl.Width = 100;
 
-                if (double.IsNaN(newControl.Height) || newControl.Height == 0)
-                    newControl.Height = 40;
+                //if (double.IsNaN(newControl.Height) || newControl.Height == 0)
+                 //   newControl.Height = 40;
 
                 DisignerLayer.Children.Add(newControl);
             }

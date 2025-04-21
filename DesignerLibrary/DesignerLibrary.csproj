@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -9,15 +9,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10"/>
+        <PackageReference Include="Avalonia" Version="11.2.8"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.8"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.8"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.8"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.8"/>
+        
     </ItemGroup>
+
+    <PropertyGroup>
+        <ActiproVersion>25.1.1</ActiproVersion>
+    </PropertyGroup>
     
-    
+    <ItemGroup>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia" Version="$(ActiproVersion)" />
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Bars.Mvvm" Version="$(ActiproVersion)" />
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.ColorPicker" Version="$(ActiproVersion)" />
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.DataGrid" Version="$(ActiproVersion)" />
+    </ItemGroup>
 
     <ItemGroup>
       <Compile Update="VisualEditorDecoratorItem.axaml.cs">

@@ -24,8 +24,8 @@
                     <ScrollViewer Background="Transparent"
                                   HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
                                   Offset="{TemplateBinding Offset , Mode=TwoWay}"
-                                  Extent="{TemplateBinding Extent , Mode=OneWayToSource}"
-                                  Viewport="{TemplateBinding Viewport , Mode=OneWayToSource}"
+                                  Extent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Extent, Mode=OneWayToSource}"
+                                  Viewport="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Viewport, Mode=OneWayToSource}"
                                   VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
                                   AllowAutoHide="{TemplateBinding AllowAutoHide}"
                                   Name="PART_ScrollViewer">

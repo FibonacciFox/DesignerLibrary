@@ -53,7 +53,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
-                    <!-- Контент и рамка -->
+           <!-- Контент и рамка -->
                     <Grid Margin="6">
                         <Rectangle Name="PART_CustomBorder"
                                    Stroke="{TemplateBinding BorderBrush}"

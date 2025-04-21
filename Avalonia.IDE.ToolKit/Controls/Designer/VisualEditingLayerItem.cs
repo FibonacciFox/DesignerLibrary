@@ -5,13 +5,9 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using System;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
 
-/// <summary>
-/// Тип точки якоря, определяющий направление изменения размеров.
-/// </summary>
 public enum AnchorType
 {
     None,
@@ -25,10 +21,6 @@ public enum AnchorType
     LeftCenter
 }
 
-/// <summary>
-/// Контрол-обёртка для визуального редактирования размеров и положения другого контрола.
-/// Синхронизируется с <see cref="AttachedControl"/>, предоставляет интерфейс перетаскивания и изменения размеров.
-/// </summary>
 public class VisualEditingLayerItem : TemplatedControl, ISelectable
 {
     private const double AnchorPadding = 6;
@@ -179,6 +171,9 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
 
     private void AnchorOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            return;
+
         _isResizing = true;
         _startPoint = e.GetCurrentPoint((Visual?)Parent);
         _currentAnchor = sender as Control;
@@ -194,8 +189,7 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
         _originalLeft = Layout.GetX(this) ?? 0;
         _originalTop = Layout.GetY(this) ?? 0;
 
-        if (_partCustomBorder != null)
-            _partCustomBorder.IsVisible = true;
+        _partCustomBorder?.SetValue(IsVisibleProperty, true);
     }
 
     private void AnchorOnPointerMoved(object? sender, PointerEventArgs e)
@@ -219,28 +213,27 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
 
     private void AnchorOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (!_isResizing)
+            return;
+
         _isResizing = false;
         _currentAnchor = null;
         _currentAnchorType = AnchorType.None;
 
         UpdateAttachedControlBounds();
 
-        if (_partCustomBorder != null)
-            _partCustomBorder.IsVisible = false;
-
+        _partCustomBorder?.SetValue(IsVisibleProperty, false);
         e.Pointer.Capture(null);
     }
 
     private void OnContentDragStart(object? sender, PointerPressedEventArgs e)
     {
-        if (_isResizing) return;
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || _isResizing)
+            return;
 
         _isDragging = true;
         _dragStartPoint = e.GetCurrentPoint((Visual?)Parent);
         _originalPosition = new Point(Layout.GetX(this) ?? 0, Layout.GetY(this) ?? 0);
-
-        if (_partCustomBorder != null)
-            _partCustomBorder.IsVisible = true;
 
         e.Pointer.Capture((IInputElement)sender!);
     }
@@ -259,6 +252,7 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
             Layout.SetX(this, newX);
             Layout.SetY(this, newY);
 
+            _partCustomBorder?.SetValue(IsVisibleProperty, true);
             e.Handled = true;
         }
     }
@@ -270,9 +264,7 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
             _isDragging = false;
             UpdateAttachedControlBounds();
 
-            if (_partCustomBorder != null)
-                _partCustomBorder.IsVisible = false;
-
+            _partCustomBorder?.SetValue(IsVisibleProperty, false);
             e.Pointer.Capture(null);
         }
     }
@@ -324,9 +316,6 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
         return (w, h, l, t);
     }
 
-    /// <summary>
-    /// Копирует текущие размеры и координаты в AttachedControl.
-    /// </summary>
     public void UpdateAttachedControlBounds()
     {
         AttachedControl.Width = Width - AnchorPadding * 2;
