@@ -3,6 +3,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
 
@@ -24,7 +25,8 @@ public class VisualEditingLayer : TemplatedControl
 
         if (_canvas != null)
         {
-            AddHandler(PointerPressedEvent, OnCanvasPointerPressed, RoutingStrategies.Bubble);
+            // Используем туннельную маршрутизацию для обработки клика до того, как он попадёт в дочерние элементы
+            AddHandler(PointerPressedEvent, OnCanvasPointerPressed, RoutingStrategies.Tunnel);
         }
     }
 
@@ -33,14 +35,16 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is VisualEditingLayer)
-        {
-            ClearSelectedItems();
-        }
+        // Игнорируем клики по VisualEditingLayerItem или его потомкам
+        if (e.Source is VisualEditingLayerItem ||
+            (e.Source as Control)?.FindAncestorOfType<VisualEditingLayerItem>() != null)
+            return;
+
+        ClearSelectedItems();
     }
 
     /// <summary>
-    /// Снимает выделение и сбрасывает ZIndex у всех элементов.
+    /// Снимает выделение со всех элементов.
     /// </summary>
     public void ClearSelectedItems()
     {
@@ -51,7 +55,6 @@ public class VisualEditingLayer : TemplatedControl
             if (child is VisualEditingLayerItem item)
             {
                 item.IsSelected = false;
-                item.ZIndex = 0;
             }
         }
     }
@@ -128,7 +131,6 @@ public class VisualEditingLayer : TemplatedControl
         if (sender is VisualEditingLayerItem item)
         {
             ClearSelectedItems();
-            item.ZIndex = 1;
             item.IsSelected = true;
         }
 

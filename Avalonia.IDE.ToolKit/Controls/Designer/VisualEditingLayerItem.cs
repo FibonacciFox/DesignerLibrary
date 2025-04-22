@@ -26,10 +26,10 @@ public class VisualEditingLayerItem : TemplatedControl, ISelectable
     private const double AnchorPadding = 6;
 
     public static readonly StyledProperty<double> StepSizeByXProperty =
-        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByX), AnchorPadding);
+        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByX), 8);
 
     public static readonly StyledProperty<double> StepSizeByYProperty =
-        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByY), AnchorPadding);
+        AvaloniaProperty.Register<VisualEditingLayerItem, double>(nameof(StepSizeByY), 8);
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<ListBoxItem>();
