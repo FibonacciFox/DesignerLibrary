@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
@@ -130,48 +132,43 @@ namespace DesignerLibrary
 
         //Заглушка для развлечения, данный код рассматривать как юмор и не будет входить в конечный продукт
         private void RunButton_Click(object? sender, RoutedEventArgs e)
-{
-    var previewWindow = new Window
-    {
-        Title = "Preview",
-        Width = DisignerLayer.Width,
-        Height = DisignerLayer.Height,
-        Background = Brushes.White
-    };
-
-    var rootCanvas = new Canvas();
-
-    foreach (var element in DisignerLayer.Children)
-    {
-        if (element is Control control)
         {
-            var clone = CloneControl(control);
-
-            if (clone != null)
+            var previewWindow = new Window
             {
-                Layout.SetX(clone, Layout.GetX(control) ?? 0);
-                Layout.SetY(clone, Layout.GetY(control) ?? 0);
-                rootCanvas.Children.Add(clone);
+                Title = "Preview",
+                Width = DisignerLayer.Width,
+                Height = DisignerLayer.Height,
+                Background = Brushes.White
+            };
+            
+            var rootCanvas = new Canvas();
+
+            foreach (var element in DisignerLayer.Children)
+            {
+                if (element is { } control)
+                {
+                    var clone = CloneControl(control);
+
+                    if (clone != null)
+                    {
+                        Layout.SetX(clone, Layout.GetX(control) ?? 0);
+                        Layout.SetY(clone, Layout.GetY(control) ?? 0);
+                        rootCanvas.Children.Add(clone);
+                    }
+                }
             }
+
+            previewWindow.Content = rootCanvas;
+
+            previewWindow.Show(this);
         }
-    }
 
-    previewWindow.Content = new ScrollViewer
-    {
-        Content = rootCanvas
-    };
-
-    previewWindow.Show();
-}
 
 /// <summary>
 /// Примитивный клонер — вручную клонирует базовые свойства.
 /// </summary>
 private Control? CloneControl(Control original)
 {
-    if (original is Button b)
-        return new Button { Content = b.Content, Width = b.Width, Height = b.Height };
-
     if (original is TextBox t)
         return new TextBox { Text = t.Text, Width = t.Width, Height = t.Height };
 
@@ -179,10 +176,30 @@ private Control? CloneControl(Control original)
         return new TextBlock { Text = tb.Text, Width = tb.Width, Height = tb.Height };
 
     if (original is CheckBox cb)
-        return new CheckBox { Content = cb.Content, Width = cb.Width, Height = cb.Height };
+        return new CheckBox
+        {
+            Content = cb.Content,
+            IsChecked = cb.IsChecked,
+            Width = cb.Width,
+            Height = cb.Height
+        };
 
     if (original is RadioButton rb)
-        return new RadioButton { Content = rb.Content, Width = rb.Width, Height = rb.Height };
+        return new RadioButton
+        {
+            Content = rb.Content,
+            IsChecked = rb.IsChecked,
+            Width = rb.Width,
+            Height = rb.Height
+        };
+
+    if (original is Button b)
+        return new Button
+        {
+            Content = b.Content,
+            Width = b.Width,
+            Height = b.Height
+        };
 
     if (original is Slider s)
         return new Slider { Width = s.Width, Height = s.Height, Value = s.Value };

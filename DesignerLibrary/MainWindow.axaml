@@ -77,7 +77,13 @@
                             <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
                                 <Canvas Width="640" Height="483" Name="DisignerLayer" >
-                                    <Panel HorizontalAlignment="Left" VerticalAlignment="Top" toolKit:Layout.X="200" toolKit:Layout.Y="200" Background="White" />
+                                    <Canvas Width="400" Height="90" Background="White" toolKit:Layout.X="10" toolKit:Layout.Y="10" >
+                                        <Button Width="300" toolKit:Layout.X="10" toolKit:Layout.Y="10" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red">Исправить вложенность и позиционку</Button>
+                                    </Canvas>
+                                    
+                                    <Panel Background="White" toolKit:Layout.X="200" toolKit:Layout.Y="200">
+                                        
+                                    </Panel>
                                 </Canvas>
                             </Panel>
                             <designer:VisualEditingLayer Name="VisualLayer" />

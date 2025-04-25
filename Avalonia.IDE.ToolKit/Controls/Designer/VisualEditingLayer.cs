@@ -25,7 +25,6 @@ public class VisualEditingLayer : TemplatedControl
 
         if (_canvas != null)
         {
-            // Используем туннельную маршрутизацию для обработки клика до того, как он попадёт в дочерние элементы
             AddHandler(PointerPressedEvent, OnCanvasPointerPressed, RoutingStrategies.Tunnel);
         }
     }
@@ -35,7 +34,6 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        // Игнорируем клики по VisualEditingItem или его потомкам
         if (e.Source is VisualEditingItem ||
             (e.Source as Control)?.FindAncestorOfType<VisualEditingItem>() != null)
             return;
@@ -53,39 +51,35 @@ public class VisualEditingLayer : TemplatedControl
         foreach (var child in _canvas.Children)
         {
             if (child is VisualEditingItem item)
-            {
                 item.IsSelected = false;
-            }
         }
     }
 
     /// <summary>
     /// Добавляет контрол в слой и оборачивает его в <see cref="VisualEditingItem"/>.
-    /// Устанавливает Layout.X/Y и размеры по умолчанию, если они отсутствуют.
+    /// Автоматически позиционирует элемент, даже если он вложен в панель.
     /// </summary>
     public void AddItem(Control attachedControl)
     {
         if (_canvas == null || attachedControl == null)
             return;
 
-        // Получаем позицию из Layout.X/Y или устанавливаем по умолчанию
-        var x = Layout.GetX(attachedControl) ?? 100;
-        var y = Layout.GetY(attachedControl) ?? 100;
+        // Получаем визуальные координаты контрола относительно слоя
+        var position = attachedControl.TranslatePoint(new Point(0, 0), this) ?? new Point(100, 100);
 
-        x = SnapToGrid(x, 8); // Привязка к сетке
-        y = SnapToGrid(y, 8);
+        var x = SnapToGrid(position.X, 8);
+        var y = SnapToGrid(position.Y, 8);
 
         Layout.SetX(attachedControl, x);
         Layout.SetY(attachedControl, y);
 
-        // Размеры по умолчанию
         if (double.IsNaN(attachedControl.Width) || attachedControl.Width == 0)
             attachedControl.Width = 100;
 
         if (double.IsNaN(attachedControl.Height) || attachedControl.Height == 0)
             attachedControl.Height = 40;
 
-        var layerItem = new VisualEditingItem
+        var item = new VisualEditingItem
         {
             BorderBrush = Brushes.DarkSlateGray,
             Background = Brushes.Transparent,
@@ -94,23 +88,31 @@ public class VisualEditingLayer : TemplatedControl
             StepSizeByX = 8,
             StepSizeByY = 8,
             AttachedControl = attachedControl,
-            Width = attachedControl.Width,
-            Height = attachedControl.Height,
-            Focusable = true
+            Focusable = true,
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new[]
+                {
+                    new MenuItem { Header = "Копировать" },
+                    new MenuItem { Header = "Удалить" },
+                    new MenuItem { Header = "Закрепить" },
+                    new MenuItem { Header = "На задний план" }
+                }
+            }
         };
 
-        Layout.SetX(layerItem, x);
-        Layout.SetY(layerItem, y);
+        Layout.SetX(item, x);
+        Layout.SetY(item, y);
 
-        _canvas.Children.Add(layerItem);
-        layerItem.Focus();
+        _canvas.Children.Add(item);
+        item.Focus();
 
-        layerItem.AddHandler(PointerPressedEvent, OnLayerItemPointerPressed, RoutingStrategies.Bubble);
-        layerItem.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Bubble);
+        item.AddHandler(PointerPressedEvent, OnLayerItemPointerPressed, RoutingStrategies.Bubble);
+        item.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Bubble);
     }
 
     /// <summary>
-    /// Обрабатывает нажатие клавиши — удаляет элемент по клавише Delete.
+    /// Обрабатывает удаление элемента по клавише Delete.
     /// </summary>
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
