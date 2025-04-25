@@ -84,7 +84,7 @@
             <ControlTemplate>
                 <Grid>
                     <!-- Контент и рамка -->
-                    <Grid Margin="6">
+                    <Grid Margin="{TemplateBinding  AnchorSize}">
                         <Rectangle Name="PART_CustomBorder"
                                    Stroke="{TemplateBinding BorderBrush}"
                                    StrokeThickness="{TemplateBinding BorderThickness}"

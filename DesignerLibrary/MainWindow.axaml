@@ -12,11 +12,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="80"/> <!-- Фиксированная высота для консоли -->
+            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         
         <!-- Панель управления -->
@@ -62,6 +63,17 @@
             <Button Content="Run" Width="60" Click="RunButton_Click"/>
         </StackPanel>
         
+        <!-- Панель свойств -->
+        <Border Grid.Column="2" Grid.Row="1" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
+            <StackPanel>
+                <TextBlock Text="X:" />
+                <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
+
+                <TextBlock Text="Y:" />
+                <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+            </StackPanel>
+        </Border>
+        
         <!-- Панель дизайна -->
         <DockPanel Grid.Column="1" Grid.Row="1">
             <Border>
@@ -73,19 +85,17 @@
                                                AllowAutoHide="False" 
                                                HorizontalScrollBarVisibility="Visible" 
                                                VerticalScrollBarVisibility="Visible">
+                        
                         <Grid>
-                            <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            
+                            <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top" >
                                 <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
                                 <Canvas Width="640" Height="483" Name="DisignerLayer" >
-                                    <Canvas Width="400" Height="90" Background="White" toolKit:Layout.X="10" toolKit:Layout.Y="10" >
-                                        <Button Width="300" toolKit:Layout.X="10" toolKit:Layout.Y="10" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red">Исправить вложенность и позиционку</Button>
-                                    </Canvas>
-                                    
-                                    <Panel Background="White" toolKit:Layout.X="200" toolKit:Layout.Y="200">
-                                        
+                                    <Panel Name="TestPanel" Background="White" toolKit:Layout.X="100" toolKit:Layout.Y="200">
                                     </Panel>
                                 </Canvas>
                             </Panel>
+                            
                             <designer:VisualEditingLayer Name="VisualLayer" />
                         </Grid>
                     </controls:ScalingContainer>

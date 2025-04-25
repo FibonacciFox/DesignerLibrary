@@ -36,8 +36,7 @@ public enum AnchorType
 [PseudoClasses(":selected", ":drag", ":resize")]
 public class VisualEditingItem : TemplatedControl, ISelectable
 {
-    private const double AnchorPadding = 6;
-
+    
     public static readonly StyledProperty<double> StepSizeByXProperty =
         AvaloniaProperty.Register<VisualEditingItem, double>(nameof(StepSizeByX), 8);
 
@@ -49,10 +48,13 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
     public static readonly StyledProperty<Control> AttachedControlProperty =
         AvaloniaProperty.Register<VisualEditingItem, Control>(nameof(AttachedControl));
+    
+    public static readonly StyledProperty<int> AnchorSizeProperty =
+        AvaloniaProperty.Register<VisualEditingItem, int>(nameof(AnchorSize), 6);
 
     public new static readonly StyledProperty<double> BorderThicknessProperty =
         AvaloniaProperty.Register<VisualEditingItem, double>(nameof(BorderThickness));
-
+    
     static VisualEditingItem()
     {
         AttachedControlProperty.Changed.AddClassHandler<VisualEditingItem>((x, e) => x.OnAttachedControlChanged(e));
@@ -104,6 +106,12 @@ public class VisualEditingItem : TemplatedControl, ISelectable
         get => GetValue(BorderThicknessProperty);
         set => SetValue(BorderThicknessProperty, value);
     }
+    
+    public  int AnchorSize
+    {
+        get => GetValue(AnchorSizeProperty);
+        set => SetValue(AnchorSizeProperty, value);
+    }
 
     /// <summary>
     /// Обновляет псевдокласс :selected при изменении IsSelected.
@@ -133,13 +141,13 @@ public class VisualEditingItem : TemplatedControl, ISelectable
                 ApplyInitialLayout();
 
             _widthSub = newControl.GetObservable(WidthProperty)
-                .Subscribe(w => Width = w + AnchorPadding * 2);
+                .Subscribe(w => Width = w + AnchorSize * 2);
             _heightSub = newControl.GetObservable(HeightProperty)
-                .Subscribe(h => Height = h + AnchorPadding * 2);
+                .Subscribe(h => Height = h + AnchorSize * 2);
             _xSub = newControl.GetObservable(Layout.XProperty)
-                .Subscribe(x => Layout.SetX(this, (x ?? 0) - AnchorPadding));
+                .Subscribe(x => Layout.SetX(this, (x ?? 0) - AnchorSize));
             _ySub = newControl.GetObservable(Layout.YProperty)
-                .Subscribe(y => Layout.SetY(this, (y ?? 0) - AnchorPadding));
+                .Subscribe(y => Layout.SetY(this, (y ?? 0) - AnchorSize));
         }
     }
 
@@ -151,11 +159,11 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
     private void ApplyInitialLayout()
     {
-        Width = AttachedControl.Width + AnchorPadding * 2;
-        Height = AttachedControl.Height + AnchorPadding * 2;
+        Width = AttachedControl.Width + AnchorSize * 2;
+        Height = AttachedControl.Height + AnchorSize * 2;
 
-        Layout.SetX(this, (Layout.GetX(AttachedControl) ?? 0) - AnchorPadding);
-        Layout.SetY(this, (Layout.GetY(AttachedControl) ?? 0) - AnchorPadding);
+        Layout.SetX(this, (Layout.GetX(AttachedControl) ?? 0) - AnchorSize);
+        Layout.SetY(this, (Layout.GetY(AttachedControl) ?? 0) - AnchorSize);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -344,11 +352,11 @@ public class VisualEditingItem : TemplatedControl, ISelectable
     /// </summary>
     public void UpdateAttachedControlBounds()
     {
-        AttachedControl.Width = Width - AnchorPadding * 2;
-        AttachedControl.Height = Height - AnchorPadding * 2;
+        AttachedControl.Width = Width - AnchorSize * 2;
+        AttachedControl.Height = Height - AnchorSize * 2;
 
-        Layout.SetX(AttachedControl, (Layout.GetX(this) ?? 0) + AnchorPadding);
-        Layout.SetY(AttachedControl, (Layout.GetY(this) ?? 0) + AnchorPadding);
+        Layout.SetX(AttachedControl, (Layout.GetX(this) ?? 0) + AnchorSize);
+        Layout.SetY(AttachedControl, (Layout.GetY(this) ?? 0) + AnchorSize);
     }
 
     private double SnapToGrid(double value, double gridSize)
