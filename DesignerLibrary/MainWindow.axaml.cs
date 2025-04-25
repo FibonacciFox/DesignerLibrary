@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
 using Avalonia.IDE.ToolKit.Controls;
 using Avalonia.IDE.ToolKit.Services;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -127,5 +127,93 @@ namespace DesignerLibrary
 
         private double SnapToGrid(double value, double gridSize) =>
             Math.Round(value / gridSize) * gridSize;
+
+        //Заглушка для развлечения, данный код рассматривать как юмор и не будет входить в конечный продукт
+        private void RunButton_Click(object? sender, RoutedEventArgs e)
+{
+    var previewWindow = new Window
+    {
+        Title = "Preview",
+        Width = DisignerLayer.Width,
+        Height = DisignerLayer.Height,
+        Background = Brushes.White
+    };
+
+    var rootCanvas = new Canvas();
+
+    foreach (var element in DisignerLayer.Children)
+    {
+        if (element is Control control)
+        {
+            var clone = CloneControl(control);
+
+            if (clone != null)
+            {
+                Layout.SetX(clone, Layout.GetX(control) ?? 0);
+                Layout.SetY(clone, Layout.GetY(control) ?? 0);
+                rootCanvas.Children.Add(clone);
+            }
+        }
+    }
+
+    previewWindow.Content = new ScrollViewer
+    {
+        Content = rootCanvas
+    };
+
+    previewWindow.Show();
+}
+
+/// <summary>
+/// Примитивный клонер — вручную клонирует базовые свойства.
+/// </summary>
+private Control? CloneControl(Control original)
+{
+    if (original is Button b)
+        return new Button { Content = b.Content, Width = b.Width, Height = b.Height };
+
+    if (original is TextBox t)
+        return new TextBox { Text = t.Text, Width = t.Width, Height = t.Height };
+
+    if (original is TextBlock tb)
+        return new TextBlock { Text = tb.Text, Width = tb.Width, Height = tb.Height };
+
+    if (original is CheckBox cb)
+        return new CheckBox { Content = cb.Content, Width = cb.Width, Height = cb.Height };
+
+    if (original is RadioButton rb)
+        return new RadioButton { Content = rb.Content, Width = rb.Width, Height = rb.Height };
+
+    if (original is Slider s)
+        return new Slider { Width = s.Width, Height = s.Height, Value = s.Value };
+
+    if (original is ProgressBar p)
+        return new ProgressBar { Width = p.Width, Height = p.Height, Value = p.Value };
+
+    if (original is ComboBox c)
+        return new ComboBox { ItemsSource = c.Items, Width = c.Width, Height = c.Height };
+
+    if (original is StackPanel sp)
+        return new StackPanel { Width = sp.Width, Height = sp.Height, Background = sp.Background };
+
+    if (original is Canvas cv)
+        return new Canvas { Width = cv.Width, Height = cv.Height, Background = cv.Background };
+
+    if (original is DockPanel dp)
+        return new DockPanel { Width = dp.Width, Height = dp.Height, Background = dp.Background };
+
+    if (original is Grid g)
+        return new Grid { Width = g.Width, Height = g.Height, Background = g.Background };
+
+    if (original is Calendar cal)
+        return new Calendar { Width = cal.Width, Height = cal.Height };
+
+    if (original is Image img)
+        return new Image { Source = img.Source, Width = img.Width, Height = img.Height };
+
+    return null;
+}
+
+
     }
 }

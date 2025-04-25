@@ -30,12 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="VisualEditorDecoratorItem.axaml.cs">
-        <DependentUpon>VisualEditorDecoratorItems.axaml</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Avalonia.IDE.ToolKit\Avalonia.IDE.ToolKit.csproj" />
     </ItemGroup>
 

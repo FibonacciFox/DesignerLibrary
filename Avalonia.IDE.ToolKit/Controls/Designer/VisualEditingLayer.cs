@@ -8,7 +8,7 @@ using Avalonia.VisualTree;
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
 
 /// <summary>
-/// Слой визуального редактирования, содержащий редактируемые элементы <see cref="VisualEditingLayerItem"/>.
+/// Слой визуального редактирования, содержащий редактируемые элементы <see cref="VisualEditingItem"/>.
 /// Позволяет размещать, перемещать и удалять элементы в режиме конструктора.
 /// </summary>
 public class VisualEditingLayer : TemplatedControl
@@ -35,9 +35,9 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        // Игнорируем клики по VisualEditingLayerItem или его потомкам
-        if (e.Source is VisualEditingLayerItem ||
-            (e.Source as Control)?.FindAncestorOfType<VisualEditingLayerItem>() != null)
+        // Игнорируем клики по VisualEditingItem или его потомкам
+        if (e.Source is VisualEditingItem ||
+            (e.Source as Control)?.FindAncestorOfType<VisualEditingItem>() != null)
             return;
 
         ClearSelectedItems();
@@ -52,7 +52,7 @@ public class VisualEditingLayer : TemplatedControl
 
         foreach (var child in _canvas.Children)
         {
-            if (child is VisualEditingLayerItem item)
+            if (child is VisualEditingItem item)
             {
                 item.IsSelected = false;
             }
@@ -60,7 +60,7 @@ public class VisualEditingLayer : TemplatedControl
     }
 
     /// <summary>
-    /// Добавляет контрол в слой и оборачивает его в <see cref="VisualEditingLayerItem"/>.
+    /// Добавляет контрол в слой и оборачивает его в <see cref="VisualEditingItem"/>.
     /// Устанавливает Layout.X/Y и размеры по умолчанию, если они отсутствуют.
     /// </summary>
     public void AddItem(Control attachedControl)
@@ -85,7 +85,7 @@ public class VisualEditingLayer : TemplatedControl
         if (double.IsNaN(attachedControl.Height) || attachedControl.Height == 0)
             attachedControl.Height = 40;
 
-        var layerItem = new VisualEditingLayerItem
+        var layerItem = new VisualEditingItem
         {
             BorderBrush = Brushes.DarkSlateGray,
             Background = Brushes.Transparent,
@@ -114,7 +114,7 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (sender is VisualEditingLayerItem item && e.Key == Key.Delete && item.IsSelected)
+        if (sender is VisualEditingItem item && e.Key == Key.Delete && item.IsSelected)
         {
             if (item.AttachedControl?.Parent is Panel parent)
                 parent.Children.Remove(item.AttachedControl);
@@ -128,7 +128,7 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     private void OnLayerItemPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is VisualEditingLayerItem item)
+        if (sender is VisualEditingItem item)
         {
             ClearSelectedItems();
             item.IsSelected = true;

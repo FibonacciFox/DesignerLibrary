@@ -11,12 +11,4 @@
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Update="Controls\VisualMesh.cs">
-        <DependentUpon>VisualMesh.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
-
-
 </Project>

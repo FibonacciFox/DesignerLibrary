@@ -59,6 +59,7 @@
                     <ComboBoxItem Content="200%"/>
                 </ComboBox.Items>
             </ComboBox>
+            <Button Content="Run" Width="60" Click="RunButton_Click"/>
         </StackPanel>
         
         <!-- Панель дизайна -->
