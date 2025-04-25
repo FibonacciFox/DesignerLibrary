@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer">
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer"
+        xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters">
     
     <Design.PreviewWith>
         <toolKit:VisualEditingItem Width="200" Height="100"
@@ -9,14 +10,18 @@
                                         Background="LightGray"
                                         IsSelected="True"/>
     </Design.PreviewWith>
+    
+    <Styles.Resources>
+        <converters:ThicknessConverter x:Key="ThicknessConverter"/>
+    </Styles.Resources>
 
     <!-- Общие стили якорей -->
     <Style Selector="Button.Anchor">
         <Setter Property="Background" Value="Black"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="0"/>
-        <Setter Property="Width" Value="6"/>
-        <Setter Property="Height" Value="6"/>
+        <Setter Property="Width" Value="{Binding AnchorSize, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter Property="Height" Value="{Binding AnchorSize, RelativeSource={RelativeSource TemplatedParent}}" />
     </Style>
 
     <!-- Hover эффект -->
@@ -84,7 +89,7 @@
             <ControlTemplate>
                 <Grid>
                     <!-- Контент и рамка -->
-                    <Grid Margin="{TemplateBinding  AnchorSize}">
+                    <Grid Margin="{TemplateBinding  AnchorSize , Converter={StaticResource ThicknessConverter}}">
                         <Rectangle Name="PART_CustomBorder"
                                    Stroke="{TemplateBinding BorderBrush}"
                                    StrokeThickness="{TemplateBinding BorderThickness}"
