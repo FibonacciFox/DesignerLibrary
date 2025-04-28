@@ -48,8 +48,8 @@
         <!-- Панель инструментов -->
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5">
             <TextBlock Text="Сетка [X:Y]:" VerticalAlignment="Center" Margin="5,0"/>
-            <TextBox Width="30" Text="8" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
-            <TextBox Width="30" Text="8" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="{Binding MeshSizeX, ElementName=DisignerLayer}" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="{Binding MeshSizeY, ElementName=DisignerLayer}" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
             <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="5,0"/>
             <ComboBox Width="85" SelectedIndex="0" Name="ScaleBox">
                 <ComboBox.Items>
@@ -75,33 +75,25 @@
         </Border>
         
         <!-- Панель дизайна -->
-        <DockPanel Grid.Column="1" Grid.Row="1">
-            <Border>
-                <Grid Background="LightSlateGray">
-                    <controls:VisualMesh Name="GridControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.5" DrawMode="Lines" MeshBrush="DarkGray"/>
-                    <controls:ScalingContainer Name="DesignPanel" 
-                                               ScrollChanged="DesignPanel_OnScrollChanged"
-                                               ScaleFactor="1"
-                                               AllowAutoHide="False" 
-                                               HorizontalScrollBarVisibility="Visible" 
-                                               VerticalScrollBarVisibility="Visible">
-                        
-                        <Grid>
-                            
-                            <Panel Background="SlateGray" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                                <controls:VisualMesh Width="640" Height="483" Name="GridControl2" MeshSizeX="{Binding #MeshSizeX.Text}" MeshSizeY="{Binding #MeshSizeY.Text}" MeshThickness="1" DrawMode="Dots" MeshBrush="Black"/>
-                                <Canvas Width="640" Height="483" Name="DisignerLayer" >
-                                    <Panel Name="TestPanel" Background="White" toolKit:Layout.X="100" toolKit:Layout.Y="200">
-                                    </Panel>
-                                </Canvas>
-                            </Panel>
-                            
-                            <designer:VisualEditingLayer Name="VisualLayer" />
-                        </Grid>
-                    </controls:ScalingContainer>
-                </Grid> 
-            </Border>
-        </DockPanel>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <controls:VisualMesh Name="VisualMeshControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
+            <controls:ScalingContainer Name="DesignPanel"
+                                       ScaleFactor="1"
+                                       AllowAutoHide="False"
+                                       HorizontalScrollBarVisibility="Visible"
+                                       VerticalScrollBarVisibility="Visible">
+                <designer:UiDesigner Name="UiDesignerControl" >
+                    <designer:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="300" Height="300">
+                        <Button HorizontalAlignment="Left" 
+                                VerticalAlignment="Top"
+                                Name="TestPanel"
+                                toolKit:Layout.X="50" 
+                                toolKit:Layout.Y="50" 
+                                Content="Test"/>
+                    </designer:MeshPanel>
+                </designer:UiDesigner>
+            </controls:ScalingContainer>
+        </Grid>
 
         <!-- Консоль -->
         <ScrollViewer Grid.Column="1" Grid.Row="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">

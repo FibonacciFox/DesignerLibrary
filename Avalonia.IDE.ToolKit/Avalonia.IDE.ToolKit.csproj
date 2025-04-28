@@ -11,5 +11,23 @@
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Controls\Designer\ScalingContainer.cs">
+        <DependentUpon>ScalingContainer.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\Designer\UiDesigner.cs">
+        <DependentUpon>UiDesigner.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\Designer\VisualEditingItem.cs">
+        <DependentUpon>VisualEditingItem.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\Designer\VisualEditingLayer.cs">
+        <DependentUpon>VisualEditingLayer.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\VisualMesh.cs">
+        <DependentUpon>VisualMesh.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 
 </Project>

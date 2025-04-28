@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace DesignerLibrary;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {

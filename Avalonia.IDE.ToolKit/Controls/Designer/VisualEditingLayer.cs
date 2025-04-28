@@ -94,8 +94,8 @@ public class VisualEditingLayer : TemplatedControl
             StepSizeByX = 8,
             StepSizeByY = 8,
             AttachedControl = attachedControl,
-           //Width = attachedControl.Width,
-          //  Height = attachedControl.Height,
+            Width = attachedControl.Width,
+            Height = attachedControl.Height,
             Focusable = true
         };
 
@@ -116,7 +116,7 @@ public class VisualEditingLayer : TemplatedControl
     {
         if (sender is VisualEditingItem item && e.Key == Key.Delete && item.IsSelected)
         {
-            if (item.AttachedControl?.Parent is Panel parent)
+            if (item.AttachedControl?.Parent is MeshPanel parent)
                 parent.Children.Remove(item.AttachedControl);
 
             _canvas?.Children.Remove(item);
