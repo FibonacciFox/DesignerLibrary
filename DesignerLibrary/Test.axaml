@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DesignerLibrary.Test"
+        Title="Test">
+    <Grid>
+        <controls:VisualMesh Name="GridControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
+        <controls:ScalingContainer Name="DesignPanel"
+                                   ScaleFactor="1"
+                                   AllowAutoHide="False"
+                                   HorizontalScrollBarVisibility="Visible"
+                                   VerticalScrollBarVisibility="Visible">
+            <designer:UiDesigner Name="UiDesignerControl" >
+                <designer:MeshPanel Background="DarkGray" Name="DisignerLayer" Width="300" Height="300">
+                    <Button Name="TestPanel"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            toolKit:Layout.X="50" 
+                            toolKit:Layout.Y="50" 
+                            Content="Test"/>
+                </designer:MeshPanel>
+            </designer:UiDesigner>
+        </controls:ScalingContainer>
+    </Grid>
+</Window>

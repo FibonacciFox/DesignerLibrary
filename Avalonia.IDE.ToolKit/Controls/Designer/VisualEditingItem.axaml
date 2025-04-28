@@ -1,0 +1,131 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer"
+        xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters">
+    
+    <Design.PreviewWith>
+        <toolKit:VisualEditingItem Width="200" Height="100"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        Background="LightGray"
+                                        IsSelected="True"/>
+    </Design.PreviewWith>
+    
+    <Styles.Resources>
+        <converters:ThicknessConverter x:Key="ThicknessConverter"/>
+    </Styles.Resources>
+
+    <!-- Общие стили якорей -->
+    <Style Selector="Button.Anchor">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Width" Value="{Binding AnchorSize, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter Property="Height" Value="{Binding AnchorSize, RelativeSource={RelativeSource TemplatedParent}}" />
+    </Style>
+
+    <!-- Hover эффект -->
+    <Style Selector="Button.Anchor:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="DarkRed"/>
+    </Style>
+
+    <!-- ZIndex по умолчанию -->
+    <Style Selector="toolKit|VisualEditingItem">
+        <Setter Property="ZIndex" Value="0"/>
+    </Style>
+
+    <!-- ZIndex при выделении пофиксить -->
+    <Style Selector="toolKit|VisualEditingItem:selected">
+        <!--    <Setter Property="ZIndex" Value="999"/> -->
+    </Style>
+
+    <!-- Стили при перемещении -->
+    <Style Selector="toolKit|VisualEditingItem:drag Button.Anchor">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+
+    <!-- Стили при ресайзе -->
+    <Style Selector="toolKit|VisualEditingItem:resize Button.Anchor">
+        <Setter Property="Background" Value="Black"/>
+    </Style>
+
+    <!-- Показываем рамку при перемещении или ресайзе -->
+    <Style Selector="toolKit|VisualEditingItem:drag Rectangle#PART_CustomBorder">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="toolKit|VisualEditingItem:resize Rectangle#PART_CustomBorder">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+
+    <!-- Курсоры -->
+    <Style Selector="Button.Anchor[Tag=TopLeft]">
+        <Setter Property="Cursor" Value="TopLeftCorner"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=TopCenter]">
+        <Setter Property="Cursor" Value="TopSide"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=TopRight]">
+        <Setter Property="Cursor" Value="TopRightCorner"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=RightCenter]">
+        <Setter Property="Cursor" Value="RightSide"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=BottomRight]">
+        <Setter Property="Cursor" Value="BottomRightCorner"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=BottomCenter]">
+        <Setter Property="Cursor" Value="BottomSide"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=BottomLeft]">
+        <Setter Property="Cursor" Value="BottomLeftCorner"/>
+    </Style>
+    <Style Selector="Button.Anchor[Tag=LeftCenter]">
+        <Setter Property="Cursor" Value="LeftSide"/>
+    </Style>
+
+    <!-- Шаблон VisualEditingLayerItem -->
+    <Style Selector="toolKit|VisualEditingItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <!-- Контент и рамка -->
+                    <Grid Margin="{TemplateBinding  AnchorSize , Converter={StaticResource ThicknessConverter}}">
+                        <Rectangle Name="PART_CustomBorder"
+                                   Stroke="{TemplateBinding BorderBrush}"
+                                   StrokeThickness="{TemplateBinding BorderThickness}"
+                                   StrokeDashArray="5,2"
+                                   IsVisible="False"/>
+                        <ContentPresenter x:Name="PART_Content"
+                                          Background="{TemplateBinding Background}"/>
+                    </Grid>
+
+                    <!-- Якоря -->
+                    <Button Classes="Anchor" Name="TopLeftAnchor" Tag="TopLeft"
+                            HorizontalAlignment="Left" VerticalAlignment="Top"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="TopCenterAnchor" Tag="TopCenter"
+                            HorizontalAlignment="Center" VerticalAlignment="Top"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="TopRightAnchor" Tag="TopRight"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="RightCenterAnchor" Tag="RightCenter"
+                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomRightAnchor" Tag="BottomRight"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomCenterAnchor" Tag="BottomCenter"
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="BottomLeftAnchor" Tag="BottomLeft"
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                    <Button Classes="Anchor" Name="LeftCenterAnchor" Tag="LeftCenter"
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            IsVisible="{TemplateBinding IsSelected}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

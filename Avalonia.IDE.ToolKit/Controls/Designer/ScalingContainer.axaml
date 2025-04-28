@@ -1,0 +1,45 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls">
+    <Design.PreviewWith>
+        <Border Width="400" Height="400">
+            <controls:ScalingContainer AllowAutoHide="False" 
+                                       BorderThickness="1"
+                                       HorizontalScrollBarVisibility="Visible"
+                                       VerticalScrollBarVisibility="Visible"
+                                       Background="GhostWhite"/>
+        </Border>
+    </Design.PreviewWith>
+
+    <Styles>
+        <Design.PreviewWith>
+            <controls:ScalingContainer />
+        </Design.PreviewWith>
+        <Style Selector="controls|ScalingContainer">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Name="PART_Border" >
+                    <ScrollViewer Background="Transparent"
+                                  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+                                  Offset="{TemplateBinding Offset , Mode=TwoWay}"
+                                  Extent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Extent, Mode=OneWayToSource}"
+                                  Viewport="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Viewport, Mode=OneWayToSource}"
+                                  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+                                  AllowAutoHide="{TemplateBinding AllowAutoHide}"
+                                  Name="PART_ScrollViewer">
+                        <LayoutTransformControl Name="PART_LayoutTransform">
+                            <ContentPresenter Background="{TemplateBinding Background}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}" 
+                                Name="PART_ContentPresenter"/>
+                        </LayoutTransformControl>
+                    </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </Styles>
+</Styles>

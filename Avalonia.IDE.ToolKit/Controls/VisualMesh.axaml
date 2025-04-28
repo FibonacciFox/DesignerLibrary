@@ -1,0 +1,19 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls">
+    <Design.PreviewWith>
+        <controls:VisualMesh Width="400" Height="400" Background="Bisque"  BorderBrush="Brown" BorderThickness="1" />
+    </Design.PreviewWith>
+    
+    <Style Selector="controls|VisualMesh">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Background="Transparent"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
