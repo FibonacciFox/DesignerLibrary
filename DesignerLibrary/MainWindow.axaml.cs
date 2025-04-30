@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
 using Avalonia.IDE.ToolKit.Controls;
+using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.IDE.ToolKit.Services;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -53,6 +54,7 @@ public partial class MainWindow : Window
             { "Image", () => new Image
                 {
                     Source = new Bitmap(AssetLoader.Open(new Uri("avares://DesignerLibrary/Assets/Logo.png"))),
+                    Stretch = Stretch.Fill,
                     Width = 100,
                     Height = 100
                 }
@@ -198,7 +200,8 @@ public partial class MainWindow : Window
             {
                 Content = b.Content,
                 Width = b.Width,
-                Height = b.Height
+                Height = b.Height,
+                Background = b.Background
             };
 
         if (original is Slider s)

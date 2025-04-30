@@ -68,17 +68,7 @@ public class VisualEditingLayer : TemplatedControl
         if (_canvas == null || attachedControl == null)
             return;
 
-        // Получаем позицию из Layout.X/Y или устанавливаем по умолчанию
-        var x = Layout.GetX(attachedControl) ?? 100;
-        var y = Layout.GetY(attachedControl) ?? 100;
-
-        x = SnapToGrid(x, 8); // Привязка к сетке
-        y = SnapToGrid(y, 8);
-
-        Layout.SetX(attachedControl, x);
-        Layout.SetY(attachedControl, y);
-
-        // Размеры по умолчанию
+        // Установка размеров по умолчанию
         if (double.IsNaN(attachedControl.Width) || attachedControl.Width == 0)
             attachedControl.Width = 100;
 
@@ -99,15 +89,14 @@ public class VisualEditingLayer : TemplatedControl
             Focusable = true
         };
 
-        Layout.SetX(layerItem, x);
-        Layout.SetY(layerItem, y);
-
         _canvas.Children.Add(layerItem);
         layerItem.Focus();
 
         layerItem.AddHandler(PointerPressedEvent, OnLayerItemPointerPressed, RoutingStrategies.Bubble);
         layerItem.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Bubble);
     }
+
+
 
     /// <summary>
     /// Обрабатывает нажатие клавиши — удаляет элемент по клавише Delete.

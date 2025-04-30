@@ -159,12 +159,27 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
     private void ApplyInitialLayout()
     {
+        if (AttachedControl == null || Parent is not Visual visualParent)
+            return;
+
+        // На случай, если визуальные деревья разные
+        var root = TopLevel.GetTopLevel(this) ?? visualParent;
+
+        var attachedPoint = AttachedControl.TranslatePoint(new Point(0, 0), root);
+        var layerPoint = this.TranslatePoint(new Point(0, 0), root);
+
+        if (attachedPoint != null && layerPoint != null)
+        {
+            var relative = attachedPoint.Value - layerPoint.Value;
+
+            Layout.SetX(this, relative.X - AnchorSize);
+            Layout.SetY(this, relative.Y - AnchorSize);
+        }
+
         Width = AttachedControl.Width + AnchorSize * 2;
         Height = AttachedControl.Height + AnchorSize * 2;
-
-        Layout.SetX(this, (Layout.GetX(AttachedControl) ?? 0) - AnchorSize);
-        Layout.SetY(this, (Layout.GetY(AttachedControl) ?? 0) - AnchorSize);
     }
+
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

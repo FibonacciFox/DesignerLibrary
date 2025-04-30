@@ -103,7 +103,7 @@ public class MeshPanel : Control, IChildIndexProvider
 
     private void DrawMesh(DrawingContext context, Rect bounds)
     {
-        if (MeshSizeX <= 0 || MeshSizeY <= 0 || MeshThickness <= 0 || MeshBrush == null)
+        if (MeshSizeX <= 0 || MeshSizeY <= 0 || MeshThickness <= 0)
             return;
 
         var scale = VisualRoot?.RenderScaling ?? 1.0;

@@ -5,9 +5,13 @@
         xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
         xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
+    <Window.Resources>
+        <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -71,28 +75,42 @@
 
                 <TextBlock Text="Layout.Y:" />
                 <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+                
+                <TextBlock Text="Background:" />
+                <ColorPicker 
+                    Classes="has-value-text"
+                    Opacity="1"
+                    Color="{Binding Background, ElementName=TestPanel, Converter={StaticResource BrushToColorConverter} , Mode=OneWayToSource }" />
+                
+                <TextBlock Text="Content:" />
+                <TextBox Text="{Binding Content, ElementName=Button1}" />
             </StackPanel>
         </Border>
         
         <!-- Панель дизайна -->
         <Grid Grid.Row="1" Grid.Column="1">
             <controls:VisualMesh Name="VisualMeshControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
-            <controls:ScalingContainer Name="DesignPanel"
+            <designer:ScalingContainer Name="DesignPanel"
                                        ScaleFactor="1"
                                        AllowAutoHide="False"
                                        HorizontalScrollBarVisibility="Visible"
                                        VerticalScrollBarVisibility="Visible">
                 <designer:UiDesigner Name="UiDesignerControl" >
-                    <designer:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="300" Height="300">
-                        <Button HorizontalAlignment="Left" 
-                                VerticalAlignment="Top"
-                                Name="TestPanel"
-                                toolKit:Layout.X="50" 
-                                toolKit:Layout.Y="50" 
-                                Content="Test"/>
+                    <designer:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
+                        <Panel Name="TestPanel"
+                               Width="250"
+                               Height="250"
+                               Background="White"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               toolKit:Layout.X="50" 
+                               toolKit:Layout.Y="40">
+                            <Button HorizontalAlignment="Left"
+                                    VerticalAlignment="Top" Name="Button1" Content="Button1" Width="100" Height="30"/>
+                        </Panel>
                     </designer:MeshPanel>
                 </designer:UiDesigner>
-            </controls:ScalingContainer>
+            </designer:ScalingContainer>
         </Grid>
 
         <!-- Консоль -->

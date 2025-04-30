@@ -5,7 +5,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
-namespace Avalonia.IDE.ToolKit.Controls
+namespace Avalonia.IDE.ToolKit.Controls.Designer
 {
     /// <summary>
     /// A control that allows content to be scaled and scrolled.
