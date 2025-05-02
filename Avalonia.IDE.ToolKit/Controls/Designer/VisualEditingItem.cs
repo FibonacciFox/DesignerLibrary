@@ -161,12 +161,9 @@ public class VisualEditingItem : TemplatedControl, ISelectable
     {
         if (AttachedControl == null || Parent is not Visual visualParent)
             return;
-
-        // На случай, если визуальные деревья разные
-        var root = TopLevel.GetTopLevel(this) ?? visualParent;
-
-        var attachedPoint = AttachedControl.TranslatePoint(new Point(0, 0), root);
-        var layerPoint = this.TranslatePoint(new Point(0, 0), root);
+      
+        var attachedPoint = AttachedControl.TranslatePoint(new Point(0, 0), visualParent);
+        var layerPoint = this.TranslatePoint(new Point(0, 0), visualParent);
 
         if (attachedPoint != null && layerPoint != null)
         {
