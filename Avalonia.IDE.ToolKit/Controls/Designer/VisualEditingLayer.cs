@@ -63,7 +63,7 @@ public class VisualEditingLayer : TemplatedControl
     /// Добавляет контрол в слой и оборачивает его в <see cref="VisualEditingItem"/>.
     /// Устанавливает Layout.X/Y и размеры по умолчанию, если они отсутствуют.
     /// </summary>
-    public void AddItem(Control attachedControl)
+    public void AttachItem(Control attachedControl)
     {
         if (_canvas == null || attachedControl == null)
             return;

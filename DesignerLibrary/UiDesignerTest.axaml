@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DesignerLibrary.UiDesignerTest"
+        Title="UiDesignerTest">
+    <Grid>
+            <!-- UiDesigner главный элемент редактора -->
+            <designer:UiDesigner Name="UiDesignerControl" >
+                <!-- MeshPanel и ее производные, в будущем будет использоваться как контейнер для добавления Ui элементов и компоновки интерфейсов -->
+               
+                <designer:MeshPanel Background="DarkGray"
+                                    Name="DisignerLayer" 
+                                    Width="400" 
+                                    Height="400">
+                    <!-- UI элементы добавляемые для проектирования формы или собственного контрола -->
+                    <Panel Name="TestPanel"
+                               Width="250"
+                               Height="250"
+                               Background="White"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top">
+                    </Panel>
+                    <Button  HorizontalAlignment="Left"
+                             VerticalAlignment="Top"
+                             CornerRadius="0"
+                             Name="Button1" 
+                             Content="Button1"
+                             Width="100" 
+                             Height="30"/>
+                </designer:MeshPanel>
+            </designer:UiDesigner>
+    </Grid>
+</Window>

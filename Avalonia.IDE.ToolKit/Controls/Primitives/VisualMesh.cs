@@ -1,7 +1,7 @@
-using Avalonia.Controls.Primitives;
+using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace Avalonia.IDE.ToolKit.Controls;
+namespace Avalonia.IDE.ToolKit.Controls.Primitives;
 
 /// <summary>
 /// Способы отрисовки сетки.
@@ -20,80 +20,103 @@ public enum GridDrawMode
 }
 
 /// <summary>
-/// Контрол для отрисовки визуальной сетки.
+/// Контрол, рисующий визуальную сетку.
+/// Используется как базовый класс для панелей, собственных контролов и редакторов.
 /// </summary>
-public class VisualMesh : TemplatedControl
+public class VisualMesh : Control
 {
-    public static readonly StyledProperty<int> MeshSizeXProperty =
-        AvaloniaProperty.Register<VisualMesh, int>(nameof(MeshSizeX), 8);
+    /// <summary>
+    /// Размер ячейки сетки (ширина и высота).
+    /// </summary>
+    public static readonly StyledProperty<Size> MeshSizeProperty =
+        AvaloniaProperty.Register<VisualMesh, Size>(nameof(MeshSize), new Size(8, 8));
 
-    public static readonly StyledProperty<int> MeshSizeYProperty =
-        AvaloniaProperty.Register<VisualMesh, int>(nameof(MeshSizeY), 8);
-
+    /// <summary>
+    /// Режим отрисовки сетки (точки или пунктирные линии).
+    /// </summary>
     public static readonly StyledProperty<GridDrawMode> DrawModeProperty =
         AvaloniaProperty.Register<VisualMesh, GridDrawMode>(nameof(DrawMode), GridDrawMode.Dots);
 
+    /// <summary>
+    /// Толщина линий или размер точек сетки.
+    /// </summary>
     public static readonly StyledProperty<double> MeshThicknessProperty =
         AvaloniaProperty.Register<VisualMesh, double>(nameof(MeshThickness), 1.0);
 
+    /// <summary>
+    /// Кисть для отрисовки сетки.
+    /// </summary>
     public static readonly StyledProperty<IBrush> MeshBrushProperty =
         AvaloniaProperty.Register<VisualMesh, IBrush>(nameof(MeshBrush), Brushes.Black);
+
+    /// <summary>
+    /// Фоновая кисть контрола.
+    /// </summary>
+    public static readonly StyledProperty<IBrush?> BackgroundProperty =
+        AvaloniaProperty.Register<VisualMesh, IBrush?>(nameof(Background));
 
     static VisualMesh()
     {
         AffectsRender<VisualMesh>(
-            MeshSizeXProperty,
-            MeshSizeYProperty,
+            MeshSizeProperty,
             DrawModeProperty,
             MeshThicknessProperty,
             MeshBrushProperty,
-            BackgroundProperty // Чтобы фон тоже перерисовывался при изменении
+            BackgroundProperty
         );
     }
 
-    /// <summary>
-    /// Ширина ячейки сетки.
-    /// </summary>
-    public int MeshSizeX
+    /// <inheritdoc cref="MeshSizeProperty"/>
+    public Size MeshSize
     {
-        get => GetValue(MeshSizeXProperty);
-        set => SetValue(MeshSizeXProperty, value);
+        get => GetValue(MeshSizeProperty);
+        set => SetValue(MeshSizeProperty, value);
     }
 
     /// <summary>
-    /// Высота ячейки сетки.
+    /// Ширина ячейки сетки (обёртка над MeshSize.Width).
     /// </summary>
-    public int MeshSizeY
+    public double MeshWidth
     {
-        get => GetValue(MeshSizeYProperty);
-        set => SetValue(MeshSizeYProperty, value);
+        get => MeshSize.Width;
+        set => MeshSize = new Size(value, MeshSize.Height);
     }
 
     /// <summary>
-    /// Режим отрисовки сетки.
+    /// Высота ячейки сетки (обёртка над MeshSize.Height).
     /// </summary>
+    public double MeshHeight
+    {
+        get => MeshSize.Height;
+        set => MeshSize = new Size(MeshSize.Width, value);
+    }
+
+    /// <inheritdoc cref="DrawModeProperty"/>
     public GridDrawMode DrawMode
     {
         get => GetValue(DrawModeProperty);
         set => SetValue(DrawModeProperty, value);
     }
 
-    /// <summary>
-    /// Толщина линий или размер точек.
-    /// </summary>
+    /// <inheritdoc cref="MeshThicknessProperty"/>
     public double MeshThickness
     {
         get => GetValue(MeshThicknessProperty);
         set => SetValue(MeshThicknessProperty, value);
     }
 
-    /// <summary>
-    /// Кисть для рисования сетки.
-    /// </summary>
+    /// <inheritdoc cref="MeshBrushProperty"/>
     public IBrush MeshBrush
     {
         get => GetValue(MeshBrushProperty);
         set => SetValue(MeshBrushProperty, value);
+    }
+
+    /// <inheritdoc cref="BackgroundProperty"/>
+    public IBrush? Background
+    {
+        get => GetValue(BackgroundProperty);
+        set => SetValue(BackgroundProperty, value);
     }
 
     /// <summary>
@@ -101,23 +124,19 @@ public class VisualMesh : TemplatedControl
     /// </summary>
     public override void Render(DrawingContext context)
     {
-        base.Render(context);
-
         var bounds = new Rect(Bounds.Size);
 
-        // Заливаем фон
-        if (Background != null)
-        {
-            context.FillRectangle(Background, bounds);
-        }
+        // Заливка фона
+        if (Background is { } bg)
+            context.FillRectangle(bg, bounds);
 
-        if (MeshSizeX <= 0 || MeshSizeY <= 0 || MeshThickness <= 0)
+        if (MeshSize.Width <= 0 || MeshSize.Height <= 0 || MeshThickness <= 0)
             return;
 
         var scale = VisualRoot?.RenderScaling ?? 1.0;
-        int stepX = (int)Math.Round(MeshSizeX * scale);
-        int stepY = (int)Math.Round(MeshSizeY * scale);
-        double thickness = MeshThickness * scale;
+        var stepX = MeshSize.Width * scale;
+        var stepY = MeshSize.Height * scale;
+        var thickness = MeshThickness * scale;
 
         if (DrawMode == GridDrawMode.Lines)
         {
@@ -144,5 +163,7 @@ public class VisualMesh : TemplatedControl
                 }
             }
         }
+
+        base.Render(context);
     }
 }

@@ -25,7 +25,7 @@ public class UiDesigner : TemplatedControl
         base.OnApplyTemplate(e);
 
         _panel = e.NameScope.Find<Canvas>("PART_Workspace");
-        _editingLayer = e.NameScope.Find<VisualEditingLayer>("PART_EditingLayer");
+        _editingLayer = e.NameScope.Find<VisualEditingLayer>("PART_VisualEditingLayer");
 
         if (_panel != null)
         {

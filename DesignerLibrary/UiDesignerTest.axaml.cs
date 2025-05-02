@@ -5,16 +5,16 @@ using Avalonia.Threading;
 
 namespace DesignerLibrary;
 
-public partial class Test : Window
+public partial class UiDesignerTest : Window
 {
-    public Test()
+    public UiDesignerTest()
     {
         InitializeComponent();
         
         Dispatcher.UIThread.Post(() =>
         {
-            UiDesignerControl.EditingLayer.AddItem(TestPanel);
-            UiDesignerControl.EditingLayer.AddItem(Button1);
+            UiDesignerControl.EditingLayer.AttachItem(TestPanel);
+            UiDesignerControl.EditingLayer.AttachItem(Button1);
             
             var root = UiDesignerControl;
             var positionA = Button1.TranslatePoint(new Point(0, 0), root);
@@ -29,7 +29,7 @@ public partial class Test : Window
         
         // UiDesignerControl.Loaded += (_, _) =>
         // {
-        //     UiDesignerControl.EditingLayer.AddItem(TestPanel);
+        //     UiDesignerControl.EditingLayer.AttachItem(TestPanel);
         // };
         
 

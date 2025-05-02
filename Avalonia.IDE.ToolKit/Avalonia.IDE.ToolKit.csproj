@@ -24,9 +24,6 @@
       <Compile Update="Controls\Designer\VisualEditingLayer.cs">
         <DependentUpon>VisualEditingLayer.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Controls\VisualMesh.cs">
-        <DependentUpon>VisualMesh.axaml</DependentUpon>
-      </Compile>
     </ItemGroup>
 
 

@@ -1,13 +1,15 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer">
+        xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer"
+        xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives">
     
     <Style Selector="designer|UiDesigner">
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
-                    <Canvas x:Name="PART_Workspace" />
-                    <designer:VisualEditingLayer x:Name="PART_EditingLayer" />
+                    <primitives:VisualMesh x:Name="PART_VisualMesh" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MeshSize="24,24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
+                    <Canvas x:Name="PART_Workspace" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    <designer:VisualEditingLayer x:Name="PART_VisualEditingLayer"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 </Grid>
             </ControlTemplate>
         </Setter>

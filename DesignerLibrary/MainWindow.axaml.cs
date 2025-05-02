@@ -66,7 +66,7 @@ public partial class MainWindow : Window
 
         logicalChildren.ChildAdded += control =>
         {
-            UiDesignerControl.EditingLayer.AddItem(control);
+            UiDesignerControl.EditingLayer.AttachItem(control);
             AppendToConsole($"Added: {control.GetType().Name} in {control.Parent?.GetType().Name}");
         };
 

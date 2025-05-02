@@ -2,10 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:Avalonia.IDE.ToolKit.Controls;assembly=Avalonia.IDE.ToolKit"
         xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters;assembly=Avalonia.IDE.ToolKit"
+        xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -52,8 +52,8 @@
         <!-- Панель инструментов -->
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="#EFEFEF" Margin="2" Spacing="5">
             <TextBlock Text="Сетка [X:Y]:" VerticalAlignment="Center" Margin="5,0"/>
-            <TextBox Width="30" Text="{Binding MeshSizeX, ElementName=DisignerLayer}" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
-            <TextBox Width="30" Text="{Binding MeshSizeY, ElementName=DisignerLayer}" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="{Binding MeshWidth, ElementName=DisignerLayer, Mode=TwoWay}" Name="MeshSizeX" VerticalAlignment="Center" Margin="5,0"/>
+            <TextBox Width="30" Text="{Binding MeshHeight, ElementName=DisignerLayer, Mode=TwoWay}" Name="MeshSizeY" VerticalAlignment="Center" Margin="5,0"/>
             <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="5,0"/>
             <ComboBox Width="85" SelectedIndex="0" Name="ScaleBox">
                 <ComboBox.Items>
@@ -89,7 +89,7 @@
         
         <!-- Панель дизайна -->
         <Grid Grid.Row="1" Grid.Column="1">
-            <controls:VisualMesh Name="VisualMeshControl" MeshSizeX="24" MeshSizeY="24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
+            <primitives:VisualMesh Name="VisualMeshControl" MeshSize="24,24" MeshThickness="0.6" Background="LightGray" DrawMode="Lines" MeshBrush="Black"/>
             <designer:ScalingContainer Name="DesignPanel"
                                        ScaleFactor="1"
                                        AllowAutoHide="False"
