@@ -1,11 +1,10 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Avalonia.Controls;
-using Avalonia.IDE.ToolKit.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
-namespace Avalonia.IDE.ToolKit.Controls.Designer;
+namespace Avalonia.IDE.ToolKit.Controls.Primitives;
 
 /// <summary>
 /// Панель с визуальной сеткой и поддержкой вложенных элементов.
