@@ -20,8 +20,8 @@ public enum GridDrawMode
 }
 
 /// <summary>
-/// Контрол, рисующий визуальную сетку.
-/// Используется как базовый класс для панелей, собственных контролов и редакторов.
+/// Контрол, рисующий визуальную сетку для помощи в позиционировании UI-элементов.
+/// Используется в конструкторах форм или контролов.
 /// </summary>
 public class VisualMesh : Control
 {
@@ -30,6 +30,12 @@ public class VisualMesh : Control
     /// </summary>
     public static readonly StyledProperty<Size> MeshSizeProperty =
         AvaloniaProperty.Register<VisualMesh, Size>(nameof(MeshSize), new Size(8, 8));
+
+    /// <summary>
+    /// Смещение сетки по X и Y.
+    /// </summary>
+    public static readonly StyledProperty<Point> MeshOffsetProperty =
+        AvaloniaProperty.Register<VisualMesh, Point>(nameof(MeshOffset), new Point(0, 0));
 
     /// <summary>
     /// Режим отрисовки сетки (точки или пунктирные линии).
@@ -44,6 +50,12 @@ public class VisualMesh : Control
         AvaloniaProperty.Register<VisualMesh, double>(nameof(MeshThickness), 1.0);
 
     /// <summary>
+    /// Прозрачность сетки (от 0 до 1).
+    /// </summary>
+    public static readonly StyledProperty<double> MeshOpacityProperty =
+        AvaloniaProperty.Register<VisualMesh, double>(nameof(MeshOpacity), 1.0);
+
+    /// <summary>
     /// Кисть для отрисовки сетки.
     /// </summary>
     public static readonly StyledProperty<IBrush> MeshBrushProperty =
@@ -55,22 +67,45 @@ public class VisualMesh : Control
     public static readonly StyledProperty<IBrush?> BackgroundProperty =
         AvaloniaProperty.Register<VisualMesh, IBrush?>(nameof(Background));
 
+    private readonly Pen _pen;
+    private GeometryGroup? _cachedDotGeometry;
+    private Size _lastBounds;
+    private Size _lastMeshSize;
+    private Point _lastMeshOffset;
+    private double _lastMeshThickness;
+
     static VisualMesh()
     {
         AffectsRender<VisualMesh>(
             MeshSizeProperty,
+            MeshOffsetProperty,
             DrawModeProperty,
             MeshThicknessProperty,
+            MeshOpacityProperty,
             MeshBrushProperty,
             BackgroundProperty
         );
+    }
+
+    public VisualMesh()
+    {
+        _pen = new Pen(MeshBrush, MeshThickness)
+        {
+            DashStyle = new DashStyle(new double[] { 1, 5 }, 0)
+        };
     }
 
     /// <inheritdoc cref="MeshSizeProperty"/>
     public Size MeshSize
     {
         get => GetValue(MeshSizeProperty);
-        set => SetValue(MeshSizeProperty, value);
+        set
+        {
+            if (value.Width <= 0 || value.Height <= 0)
+                throw new ArgumentException("MeshSize dimensions must be positive.");
+            SetValue(MeshSizeProperty, value);
+            InvalidateCachedGeometry();
+        }
     }
 
     /// <summary>
@@ -91,6 +126,17 @@ public class VisualMesh : Control
         set => MeshSize = new Size(MeshSize.Width, value);
     }
 
+    /// <inheritdoc cref="MeshOffsetProperty"/>
+    public Point MeshOffset
+    {
+        get => GetValue(MeshOffsetProperty);
+        set
+        {
+            SetValue(MeshOffsetProperty, value);
+            InvalidateCachedGeometry();
+        }
+    }
+
     /// <inheritdoc cref="DrawModeProperty"/>
     public GridDrawMode DrawMode
     {
@@ -102,14 +148,37 @@ public class VisualMesh : Control
     public double MeshThickness
     {
         get => GetValue(MeshThicknessProperty);
-        set => SetValue(MeshThicknessProperty, value);
+        set
+        {
+            if (value <= 0)
+                throw new ArgumentException("MeshThickness must be positive.");
+            SetValue(MeshThicknessProperty, value);
+            _pen.Thickness = value * (VisualRoot?.RenderScaling ?? 1.0);
+            InvalidateCachedGeometry();
+        }
+    }
+
+    /// <inheritdoc cref="MeshOpacityProperty"/>
+    public double MeshOpacity
+    {
+        get => GetValue(MeshOpacityProperty);
+        set
+        {
+            if (value < 0 || value > 1)
+                throw new ArgumentException("MeshOpacity must be between 0 and 1.");
+            SetValue(MeshOpacityProperty, value);
+        }
     }
 
     /// <inheritdoc cref="MeshBrushProperty"/>
     public IBrush MeshBrush
     {
         get => GetValue(MeshBrushProperty);
-        set => SetValue(MeshBrushProperty, value);
+        set
+        {
+            SetValue(MeshBrushProperty, value);
+            _pen.Brush = value;
+        }
     }
 
     /// <inheritdoc cref="BackgroundProperty"/>
@@ -117,6 +186,36 @@ public class VisualMesh : Control
     {
         get => GetValue(BackgroundProperty);
         set => SetValue(BackgroundProperty, value);
+    }
+
+    /// <summary>
+    /// Сбрасывает кэшированную геометрию для режима Dots.
+    /// </summary>
+    private void InvalidateCachedGeometry()
+    {
+        _cachedDotGeometry = null;
+    }
+
+    /// <summary>
+    /// Возвращает ближайшую точку сетки для заданной позиции.
+    /// </summary>
+    /// <param name="position">Позиция в координатах контрола.</param>
+    /// <returns>Ближайшая точка сетки.</returns>
+    public Point GetNearestGridPoint(Point position)
+    {
+        if (MeshSize.Width <= 0 || MeshSize.Height <= 0)
+            return position;
+
+        var scale = VisualRoot?.RenderScaling ?? 1.0;
+        var offsetX = MeshOffset.X * scale;
+        var offsetY = MeshOffset.Y * scale;
+        var stepX = MeshSize.Width * scale;
+        var stepY = MeshSize.Height * scale;
+
+        var x = Math.Round((position.X - offsetX) / stepX) * stepX + offsetX;
+        var y = Math.Round((position.Y - offsetY) / stepY) * stepY + offsetY;
+
+        return new Point(x, y);
     }
 
     /// <summary>
@@ -137,30 +236,48 @@ public class VisualMesh : Control
         var stepX = MeshSize.Width * scale;
         var stepY = MeshSize.Height * scale;
         var thickness = MeshThickness * scale;
+        var offsetX = MeshOffset.X * scale;
+        var offsetY = MeshOffset.Y * scale;
 
-        if (DrawMode == GridDrawMode.Lines)
+        // Выравнивание для чёткости
+        var pixelOffset = thickness % 2 == 0 ? 0.0 : 0.5;
+
+        // Применение прозрачности
+        using (context.PushOpacity(MeshOpacity))
         {
-            var pen = new Pen(MeshBrush, thickness)
+            if (DrawMode == GridDrawMode.Lines)
             {
-                DashStyle = new DashStyle(new double[] { 1, 5 }, 0)
-            };
+                for (double x = pixelOffset + offsetX; x <= bounds.Width; x += stepX)
+                    context.DrawLine(_pen, new Point(x, 0), new Point(x, bounds.Height));
 
-            for (double x = 0.5; x <= bounds.Width; x += stepX)
-                context.DrawLine(pen, new Point(x, 0), new Point(x, bounds.Height));
-
-            for (double y = 0.5; y <= bounds.Height; y += stepY)
-                context.DrawLine(pen, new Point(0, y), new Point(bounds.Width, y));
-        }
-        else if (DrawMode == GridDrawMode.Dots)
-        {
-            var dotSize = new Size(thickness, thickness);
-
-            for (double x = 0; x <= bounds.Width; x += stepX)
+                for (double y = pixelOffset + offsetY; y <= bounds.Height; y += stepY)
+                    context.DrawLine(_pen, new Point(0, y), new Point(bounds.Width, y));
+            }
+            else if (DrawMode == GridDrawMode.Dots)
             {
-                for (double y = 0; y <= bounds.Height; y += stepY)
+                if (_cachedDotGeometry == null || _lastBounds != bounds.Size ||
+                    _lastMeshSize != MeshSize || _lastMeshOffset != MeshOffset ||
+                    _lastMeshThickness != MeshThickness)
                 {
-                    context.FillRectangle(MeshBrush, new Rect(new Point(x, y), dotSize));
+                    _cachedDotGeometry = new GeometryGroup();
+                    var dotSize = new Size(thickness, thickness);
+
+                    for (double x = pixelOffset + offsetX; x <= bounds.Width; x += stepX)
+                    {
+                        for (double y = pixelOffset + offsetY; y <= bounds.Height; y += stepY)
+                        {
+                            var rect = new Rect(new Point(x - thickness / 2, y - thickness / 2), dotSize);
+                            _cachedDotGeometry.Children.Add(new RectangleGeometry(rect));
+                        }
+                    }
+
+                    _lastBounds = bounds.Size;
+                    _lastMeshSize = MeshSize;
+                    _lastMeshOffset = MeshOffset;
+                    _lastMeshThickness = MeshThickness;
                 }
+
+                context.DrawGeometry(MeshBrush, null, _cachedDotGeometry);
             }
         }
 
