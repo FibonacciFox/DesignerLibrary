@@ -29,6 +29,11 @@ namespace Avalonia.IDE.ToolKit.Services
         event Action<Control> ChildRemoved;
 
         /// <summary>
+        /// Occurs when a log message is generated about monitoring actions.
+        /// </summary>
+        event Action<string> LogMessage;
+
+        /// <summary>
         /// Gets the collection of logical children being monitored.
         /// </summary>
         ObservableCollection<Control> LogicalChildren { get; }

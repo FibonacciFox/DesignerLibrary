@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Mime;
-using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
-using Avalonia.IDE.ToolKit.Controls;
 using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.IDE.ToolKit.Services;
 using Avalonia.Interactivity;
@@ -62,7 +60,12 @@ public partial class MainWindow : Window
             { "Calendar", () => new Calendar() },
         };
 
-        var logicalChildren = new LogicalChildrenMonitorService(DisignerLayer, new[] { typeof(AccessText) });
+        var logicalChildren = new LogicalChildrenMonitorService(
+            control: DisignerLayer,
+            excludedTypes: new[] { typeof(AccessText), typeof(ContentPresenter) },
+            additionalFilter: c => c.Tag?.ToString() != "Ignore",
+            pollingInterval: TimeSpan.FromSeconds(0.3),
+            monitorScope: MonitorScope.AllDescendants);
 
         logicalChildren.ChildAdded += control =>
         {
@@ -74,7 +77,8 @@ public partial class MainWindow : Window
         {
             AppendToConsole($"Removed: {control.GetType().Name}");
         };
-
+        
+        
         logicalChildren.StartMonitoring();
     }
 

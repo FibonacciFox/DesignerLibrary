@@ -84,19 +84,20 @@
                 
                 <TextBlock Text="Content:" />
                 <TextBox Text="{Binding Content, ElementName=Button1}" />
+                <TextBlock Text="Name:" />
+                <TextBox Text="{Binding Name, ElementName=Button1}" />
             </StackPanel>
         </Border>
         
         <!-- Панель дизайна -->
         <Grid Grid.Row="1" Grid.Column="1">
-            <primitives:VisualMesh Name="VisualMeshControl" MeshSize="24,24" MeshThickness="0.6" Background="LightGray" DrawMode="Lines" MeshBrush="Black"/>
             <designer:ScalingContainer Name="DesignPanel"
                                        ScaleFactor="1"
                                        AllowAutoHide="False"
                                        HorizontalScrollBarVisibility="Visible"
                                        VerticalScrollBarVisibility="Visible">
                 <designer:UiDesigner Name="UiDesignerControl" >
-                    <designer:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
+                    <primitives:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
                         <Panel Name="TestPanel"
                                Width="250"
                                Height="250"
@@ -108,7 +109,7 @@
                             <Button HorizontalAlignment="Left"
                                     VerticalAlignment="Top" Name="Button1" Content="Button1" Width="100" Height="30"/>
                         </Panel>
-                    </designer:MeshPanel>
+                    </primitives:MeshPanel>
                 </designer:UiDesigner>
             </designer:ScalingContainer>
         </Grid>
