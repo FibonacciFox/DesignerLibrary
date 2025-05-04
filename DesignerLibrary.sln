@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignerLibrary", "Designer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.IDE.ToolKit", "Avalonia.IDE.ToolKit\Avalonia.IDE.ToolKit.csproj", "{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.IDE.ToolKit.Tests", "Avalonia.IDE.ToolKit.Tests\Avalonia.IDE.ToolKit.Tests.csproj", "{44517555-8296-4EBD-9CE3-361291BECD78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C29BB79-33DC-4058-8B12-D5E2E8195AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44517555-8296-4EBD-9CE3-361291BECD78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44517555-8296-4EBD-9CE3-361291BECD78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44517555-8296-4EBD-9CE3-361291BECD78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44517555-8296-4EBD-9CE3-361291BECD78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

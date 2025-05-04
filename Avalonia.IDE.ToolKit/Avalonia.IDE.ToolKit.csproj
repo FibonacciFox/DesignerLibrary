@@ -25,6 +25,5 @@
         <DependentUpon>VisualEditingLayer.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
-
-
+    
 </Project>

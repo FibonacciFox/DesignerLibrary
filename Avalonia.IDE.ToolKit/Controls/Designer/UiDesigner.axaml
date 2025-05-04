@@ -8,7 +8,7 @@
             <ControlTemplate>
                 <Grid>
                     <primitives:VisualMesh x:Name="PART_VisualMesh" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MeshSize="24,24" MeshThickness="0.6" DrawMode="Lines" MeshBrush="Black"/>
-                    <Canvas x:Name="PART_Workspace" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    <Canvas IsHitTestVisible="False" x:Name="PART_Workspace" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                     <designer:VisualEditingLayer x:Name="PART_VisualEditingLayer"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 </Grid>
             </ControlTemplate>

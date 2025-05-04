@@ -34,7 +34,7 @@ public partial class MainWindow : Window
                 _ => 1
             };
         };
-
+        
         _controlFactory = new Dictionary<string, Func<Control>>
         {
             { "Button", () => new Button { Content = "New Button" } },

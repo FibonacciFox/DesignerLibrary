@@ -70,11 +70,17 @@
         <!-- Панель свойств -->
         <Border Grid.Column="2" Grid.Row="1" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
             <StackPanel>
+                <TextBlock Text="PANEL TEST RELOAD POS" />
                 <TextBlock Text="Layout.X:" />
                 <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
-
+                
                 <TextBlock Text="Layout.Y:" />
                 <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+                
+                <TextBlock Text="HorizontalAlignment:" />
+                <TextBox Text="{Binding HorizontalAlignment, ElementName=TestPanel}" />
+                <TextBlock Text="VerticalAlignment:" />
+                <TextBox Text="{Binding VerticalAlignment, ElementName=TestPanel}" />
                 
                 <TextBlock Text="Background:" />
                 <ColorPicker 
@@ -82,10 +88,6 @@
                     Opacity="1"
                     Color="{Binding Background, ElementName=TestPanel, Converter={StaticResource BrushToColorConverter} , Mode=OneWayToSource }" />
                 
-                <TextBlock Text="Content:" />
-                <TextBox Text="{Binding Content, ElementName=Button1}" />
-                <TextBlock Text="Name:" />
-                <TextBox Text="{Binding Name, ElementName=Button1}" />
             </StackPanel>
         </Border>
         
@@ -106,8 +108,6 @@
                                VerticalAlignment="Top"
                                toolKit:Layout.X="50" 
                                toolKit:Layout.Y="40">
-                            <Button HorizontalAlignment="Left"
-                                    VerticalAlignment="Top" Name="Button1" Content="Button1" Width="100" Height="30"/>
                         </Panel>
                     </primitives:MeshPanel>
                 </designer:UiDesigner>

@@ -1,9 +1,26 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Threading;
 
 namespace DesignerLibrary;
+
+/// <summary>
+/// Вспомогательный класс для работы с перечислениями в XAML.
+/// </summary>
+public static class EnumHelper
+{
+    /// <summary>
+    /// Возвращает все значения перечисления <see cref="HorizontalAlignment"/>.
+    /// </summary>
+    public static HorizontalAlignment[]? HorizontalAlignments => Enum.GetValues(typeof(HorizontalAlignment)) as HorizontalAlignment[];
+    
+    /// <summary>
+    /// Возвращает все значения перечисления <see cref="HorizontalAlignment"/>.
+    /// </summary>
+    public static VerticalAlignment[]? VerticalAlignments => Enum.GetValues(typeof(VerticalAlignment)) as VerticalAlignment[];
+}
 
 public partial class UiDesignerTest : Window
 {
@@ -13,17 +30,8 @@ public partial class UiDesignerTest : Window
         
         Dispatcher.UIThread.Post(() =>
         {
-            UiDesignerControl.EditingLayer.AttachItem(TestPanel);
-            UiDesignerControl.EditingLayer.AttachItem(Button1);
-            
-            var root = UiDesignerControl;
-            var positionA = Button1.TranslatePoint(new Point(0, 0), root);
-            var positionB = UiDesignerControl.EditingLayer.TranslatePoint(new Point(0, 0), root);
-            if (positionA != null && positionB != null)
-            {
-                var relativePosition = positionA.Value - positionB.Value;
-                Console.WriteLine(relativePosition);
-            }
+            UiDesignerControl.EditingLayer.AttachItem(DisignerLayer);
+           // UiDesignerControl.EditingLayer.AttachItem(Button1);
             
         }, DispatcherPriority.Loaded);
         

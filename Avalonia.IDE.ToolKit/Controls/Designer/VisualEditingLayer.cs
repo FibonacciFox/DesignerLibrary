@@ -127,8 +127,4 @@ public class VisualEditingLayer : TemplatedControl
         e.Handled = true;
     }
 
-    private double SnapToGrid(double value, double gridSize)
-    {
-        return Math.Round(value / gridSize) * gridSize;
-    }
 }

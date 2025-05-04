@@ -4,6 +4,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Threading;
+using System.Reactive.Disposables;
 
 namespace Avalonia.IDE.ToolKit;
 
@@ -16,24 +17,24 @@ namespace Avalonia.IDE.ToolKit;
 public static class Layout
 {
     /// <summary>
-    /// Задаёт или получает координату X.
-    /// В <see cref="Canvas"/> применяет <see cref="Canvas.LeftProperty"/>.
+    /// Получает или задаёт координату X.
+    /// В <see cref="Canvas"/> применяется <see cref="Canvas.LeftProperty"/>.
     /// </summary>
     public static readonly AttachedProperty<double?> XProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "X", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
 
     /// <summary>
-    /// Задаёт или получает координату Y.
-    /// В <see cref="Canvas"/> применяет <see cref="Canvas.TopProperty"/>.
+    /// Получает или задаёт координату Y.
+    /// В <see cref="Canvas"/> применяется <see cref="Canvas.TopProperty"/>.
     /// </summary>
     public static readonly AttachedProperty<double?> YProperty =
         AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
             "Y", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
 
-    private static readonly AttachedProperty<bool> IsSubscribedProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, bool>(
-            "IsSubscribed", typeof(Layout), false);
+    private static readonly AttachedProperty<CompositeDisposable?> SubscriptionsProperty =
+        AvaloniaProperty.RegisterAttached<AvaloniaObject, CompositeDisposable?>(
+            "Subscriptions", typeof(Layout));
 
     static Layout()
     {
@@ -42,10 +43,8 @@ public static class Layout
     }
 
     /// <summary>
-    /// Обрабатывает изменение значения <c>X</c> или <c>Y</c>.
+    /// Обрабатывает изменения свойств <c>X</c> или <c>Y</c>.
     /// </summary>
-    /// <param name="e">Информация об изменении свойства.</param>
-    /// <param name="isX">True для оси X, false — для Y.</param>
     private static void OnPositionChanged(AvaloniaPropertyChangedEventArgs e, bool isX)
     {
         if (e.Sender is Control control)
@@ -56,42 +55,67 @@ public static class Layout
     }
 
     /// <summary>
-    /// Инициализирует подписку на изменения выравнивания или Canvas-свойств.
+    /// Инициализирует подписки на изменения выравнивания или свойств Canvas.
     /// </summary>
-    /// <param name="control">Контрол, к которому применяется позиционирование.</param>
     private static void EnsureInitialized(Control control)
     {
-        if (!control.GetValue(IsSubscribedProperty))
+        if (control.GetValue(SubscriptionsProperty) != null)
+            return;
+
+        var subscriptions = new CompositeDisposable();
+        control.SetValue(SubscriptionsProperty, subscriptions);
+
+        // Обрабатывает отключение для очистки подписок
+        control.DetachedFromVisualTree += (_, _) =>
         {
-            control.SetValue(IsSubscribedProperty, true);
+            subscriptions.Dispose();
+            control.SetValue(SubscriptionsProperty, null);
+        };
 
-            if (IsInsideCanvas(control))
-            {
-                control.GetPropertyChangedObservable(Canvas.LeftProperty)
-                       .Subscribe(_ => SyncFromCanvas(control, isX: true));
-                control.GetPropertyChangedObservable(Canvas.TopProperty)
-                       .Subscribe(_ => SyncFromCanvas(control, isX: false));
-            }
-            else
-            {
-                control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
-                       .Subscribe(_ => OnAlignmentChanged(control, isX: true));
-                control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
-                       .Subscribe(_ => OnAlignmentChanged(control, isX: false));
-            }
+        // Подписка на изменения Canvas или выравнивания
+        if (IsInsideCanvas(control))
+        {
+            subscriptions.Add(control.GetPropertyChangedObservable(Canvas.LeftProperty)
+                .Subscribe(_ => SyncFromCanvas(control, isX: true)));
+            subscriptions.Add(control.GetPropertyChangedObservable(Canvas.TopProperty)
+                .Subscribe(_ => SyncFromCanvas(control, isX: false)));
+        }
+        else
+        {
+            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
+                .Subscribe(_ => OnAlignmentChanged(control, isX: true)));
+            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
+                .Subscribe(_ => OnAlignmentChanged(control, isX: false)));
+        }
 
-            if (control.GetVisualRoot() == null)
-                control.AttachedToVisualTree += FirstLayoutInit;
-            else
-                FirstLayoutInit(control, EventArgs.Empty);
+        // Немедленное применение начальной позиции, если она задана
+        var x = GetX(control);
+        var y = GetY(control);
+        if (!double.IsNaN(x ?? double.NaN))
+            ApplyAxis(control, isX: true);
+        if (!double.IsNaN(y ?? double.NaN))
+            ApplyAxis(control, isX: false);
+
+        // Настройка начального layout
+        if (control.GetVisualRoot() == null)
+        {
+            void OnAttached(object? sender, VisualTreeAttachmentEventArgs e)
+            {
+                control.AttachedToVisualTree -= OnAttached;
+                FirstLayoutInit(control);
+            }
+            control.AttachedToVisualTree += OnAttached;
+            subscriptions.Add(Disposable.Create(() => control.AttachedToVisualTree -= OnAttached));
+        }
+        else
+        {
+            FirstLayoutInit(control);
         }
     }
 
     /// <summary>
     /// Синхронизирует значение X или Y из Canvas.Left/Top в Layout.X/Y.
     /// </summary>
-    /// <param name="control">Целевой контрол.</param>
-    /// <param name="isX">True для X, false — для Y.</param>
     private static void SyncFromCanvas(Control control, bool isX)
     {
         if (!IsInsideCanvas(control))
@@ -104,10 +128,8 @@ public static class Layout
     }
 
     /// <summary>
-    /// Обрабатывает изменение выравнивания и синхронизирует координаты.
+    /// Обрабатывает изменения выравнивания и синхронизирует координаты.
     /// </summary>
-    /// <param name="control">Контрол, выравнивание которого изменилось.</param>
-    /// <param name="isX">True для X, false — для Y.</param>
     private static void OnAlignmentChanged(Control control, bool isX)
     {
         Dispatcher.UIThread.Post(() =>
@@ -135,10 +157,8 @@ public static class Layout
     }
 
     /// <summary>
-    /// Применяет значение X или Y к контролу, в зависимости от типа контейнера.
+    /// Применяет значение X или Y к контролу в зависимости от типа контейнера.
     /// </summary>
-    /// <param name="control">Целевой контрол.</param>
-    /// <param name="isX">True для X, false — для Y.</param>
     private static void ApplyAxis(Control control, bool isX)
     {
         var x = GetX(control) ?? 0;
@@ -165,16 +185,11 @@ public static class Layout
     }
 
     /// <summary>
-    /// Выполняет начальную установку координат после первого layout-прохода.
+    /// Выполняет начальную настройку координат после первого прохода layout.
     /// </summary>
-    private static void FirstLayoutInit(object? sender, EventArgs e)
+    private static void FirstLayoutInit(Control control)
     {
-        if (sender is not Control control)
-            return;
-
-        control.AttachedToVisualTree -= FirstLayoutInit;
-
-        void OnLayoutReady(object? _, EventArgs __)
+        void OnLayoutReady(object? s, EventArgs e)
         {
             control.LayoutUpdated -= OnLayoutReady;
 
@@ -184,7 +199,6 @@ public static class Layout
             {
                 if (control.HorizontalAlignment != HorizontalAlignment.Left)
                     SetX(control, pos.Value.X);
-
                 if (control.VerticalAlignment != VerticalAlignment.Top)
                     SetY(control, pos.Value.Y);
             }
@@ -197,10 +211,13 @@ public static class Layout
     }
 
     /// <summary>
-    /// Возвращает визуальную позицию контрола внутри родителя.
+    /// Определяет, находится ли контрол внутри <see cref="Canvas"/>.
     /// </summary>
-    /// <param name="control">Контрол для вычисления позиции.</param>
-    /// <returns>Точка начала контрола относительно родителя.</returns>
+    private static bool IsInsideCanvas(Control control) => control.GetVisualParent() is Canvas;
+
+    /// <summary>
+    /// Получает визуальную позицию контрола относительно родителя.
+    /// </summary>
     private static Point? GetVisualPosition(Control control)
     {
         var parent = control.GetVisualParent();
@@ -210,40 +227,22 @@ public static class Layout
     }
 
     /// <summary>
-    /// Определяет, находится ли контрол внутри <see cref="Canvas"/>.
-    /// </summary>
-    /// <param name="control">Контрол для проверки.</param>
-    /// <returns>True, если родитель — Canvas.</returns>
-    private static bool IsInsideCanvas(Control control)
-    {
-        return control.GetVisualParent() is Canvas;
-    }
-
-    /// <summary>
     /// Получает значение Layout.X.
     /// </summary>
-    /// <param name="obj">Объект, к которому привязано свойство.</param>
-    /// <returns>Текущее значение X.</returns>
     public static double? GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
 
     /// <summary>
     /// Устанавливает значение Layout.X.
     /// </summary>
-    /// <param name="obj">Объект, к которому привязано свойство.</param>
-    /// <param name="value">Новое значение X.</param>
     public static void SetX(AvaloniaObject obj, double? value) => obj.SetValue(XProperty, value);
 
     /// <summary>
     /// Получает значение Layout.Y.
     /// </summary>
-    /// <param name="obj">Объект, к которому привязано свойство.</param>
-    /// <returns>Текущее значение Y.</returns>
     public static double? GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
 
     /// <summary>
     /// Устанавливает значение Layout.Y.
     /// </summary>
-    /// <param name="obj">Объект, к которому привязано свойство.</param>
-    /// <param name="value">Новое значение Y.</param>
     public static void SetY(AvaloniaObject obj, double? value) => obj.SetValue(YProperty, value);
 }

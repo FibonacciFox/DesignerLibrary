@@ -5,34 +5,53 @@
         xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
+        xmlns:designerLibrary="clr-namespace:DesignerLibrary"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.UiDesignerTest"
         Title="UiDesignerTest">
-    <Grid>
-            <!-- UiDesigner главный элемент редактора -->
-            <designer:UiDesigner Name="UiDesignerControl" >
+    <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- UiDesigner главный элемент редактора -->
+            <designer:UiDesigner Grid.Column="0" Name="UiDesignerControl" >
                 <!-- MeshPanel и ее производные, в будущем будет использоваться как контейнер для добавления Ui элементов и компоновки интерфейсов -->
                
                 <primitives:MeshPanel Background="DarkGray"
+                                    toolKit:Layout.X = "100"
+                                    toolKit:Layout.Y = "100"
                                     Name="DisignerLayer" 
-                                    Width="400" 
-                                    Height="400">
+                                    Width="600" 
+                                    Height="600">
                     <!-- UI элементы добавляемые для проектирования формы или собственного контрола -->
                     <Panel Name="TestPanel"
-                               Width="250"
-                               Height="250"
-                               Background="White"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Top">
+                               Width="100"
+                               Height="100"
+                               Background="LightSlateGray"
+                               HorizontalAlignment="{Binding SelectedItem, ElementName=HorizontalAlignmentComboBox, Mode=TwoWay}"
+                               VerticalAlignment="{Binding SelectedItem, ElementName=VerticalAlignmentComboBox, Mode=TwoWay}">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Panel</TextBlock>
                     </Panel>
-                    <Button  HorizontalAlignment="Left"
-                             VerticalAlignment="Top"
-                             CornerRadius="0"
-                             Name="Button1" 
-                             Content="Button1"
-                             Width="100" 
-                             Height="30"/>
                 </primitives:MeshPanel>
             </designer:UiDesigner>
+        
+        <Border Grid.Column="1" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
+            <StackPanel>
+                <TextBlock Text="PANEL TEST RELOAD POS" />
+                <TextBlock Text="Layout.X:" />
+                <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
+                
+                <TextBlock Text="Layout.Y:" />
+                <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+                
+                <TextBlock Text="HorizontalAlignment:" />
+                <ComboBox x:Name="HorizontalAlignmentComboBox"
+                          ItemsSource="{x:Static designerLibrary:EnumHelper.HorizontalAlignments}"
+                          SelectedItem="{Binding HorizontalAlignment, ElementName=TestPanel, Mode=TwoWay}" />
+                <TextBlock Text="VerticalAlignment:" />
+                <ComboBox x:Name="VerticalAlignmentComboBox"
+                          ItemsSource="{x:Static designerLibrary:EnumHelper.VerticalAlignments}"
+                          SelectedItem="{Binding VerticalAlignment, ElementName=TestPanel, Mode=TwoWay}"/>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Window>
