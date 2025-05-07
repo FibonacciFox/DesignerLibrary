@@ -6,6 +6,7 @@
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters;assembly=Avalonia.IDE.ToolKit"
         xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
+        xmlns:designerLibrary="clr-namespace:DesignerLibrary"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -71,6 +72,19 @@
         <Border Grid.Column="2" Grid.Row="1" Background="#EFEFEF" Margin="10" Padding="10" CornerRadius="5">
             <StackPanel>
                 <TextBlock Text="PANEL TEST RELOAD POS" />
+                
+                <TextBlock Text="Width:" />
+                <StackPanel Orientation="Horizontal" Spacing="3">
+                    <TextBox Text="{Binding Width, ElementName=TestPanel}" />
+                    <Button Click="Button_OnClick_AutoWidth">Auto</Button>
+                </StackPanel>
+                
+                <TextBlock Text="Height:" />
+                <StackPanel Orientation="Horizontal" Spacing="3">
+                    <TextBox Text="{Binding Height, ElementName=TestPanel}" />
+                    <Button Click="Button_OnClick_AutoHeight_Auto">Auto</Button>
+                </StackPanel>
+                
                 <TextBlock Text="Layout.X:" />
                 <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
                 
@@ -78,9 +92,13 @@
                 <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
                 
                 <TextBlock Text="HorizontalAlignment:" />
-                <TextBox Text="{Binding HorizontalAlignment, ElementName=TestPanel}" />
+                <ComboBox x:Name="HorizontalAlignmentComboBox"
+                          ItemsSource="{x:Static designerLibrary:EnumHelper.HorizontalAlignments}"
+                          SelectedItem="{Binding HorizontalAlignment, ElementName=TestPanel, Mode=TwoWay}" />
                 <TextBlock Text="VerticalAlignment:" />
-                <TextBox Text="{Binding VerticalAlignment, ElementName=TestPanel}" />
+                <ComboBox x:Name="VerticalAlignmentComboBox"
+                          ItemsSource="{x:Static designerLibrary:EnumHelper.VerticalAlignments}"
+                          SelectedItem="{Binding VerticalAlignment, ElementName=TestPanel, Mode=TwoWay}"/>
                 
                 <TextBlock Text="Background:" />
                 <ColorPicker 

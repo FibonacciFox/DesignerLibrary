@@ -78,13 +78,13 @@ public static class Layout
         else
         {
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: true)));
+                .Subscribe(_ => OnAlignmentChanged(control, isX: true)));
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: false)));
+                .Subscribe(_ => OnAlignmentChanged(control, isX: false)));
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.WidthProperty)
-                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: true)));
+                .Subscribe(_ => OnSizeChanged(control, isX: true)));
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HeightProperty)
-                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: false)));
+                .Subscribe(_ => OnSizeChanged(control, isX: false)));
         }
 
         // Немедленное применение начальной позиции, если она задана
@@ -127,9 +127,9 @@ public static class Layout
     }
 
     /// <summary>
-    /// Обрабатывает изменения выравнивания или размеров и синхронирует координаты.
+    /// Обрабатывает изменения выравнивания и синхронизирует координаты.
     /// </summary>
-    private static void OnAlignmentOrSizeChanged(Control control, bool isX)
+    private static void OnAlignmentChanged(Control control, bool isX)
     {
         Dispatcher.UIThread.Post(() =>
         {
@@ -149,6 +149,37 @@ public static class Layout
                     SetY(control, pos?.Y + offset.Y ?? 0);
                 else
                     SetY(control, 0);
+            }
+
+            ApplyAxis(control, isX);
+        }, DispatcherPriority.Loaded);
+    }
+
+    /// <summary>
+    /// Обрабатывает изменения размеров и синхронизирует координаты.
+    /// </summary>
+    private static void OnSizeChanged(Control control, bool isX)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var pos = GetVisualPosition(control);
+            var offset = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
+
+            if (isX && control.HorizontalAlignment == HorizontalAlignment.Right)
+            {
+                var currentX = GetX(control);
+                if (!double.IsNaN(currentX) && pos != null)
+                {
+                    SetX(control, pos.Value.X + offset.X);
+                }
+            }
+            else if (!isX && control.VerticalAlignment == VerticalAlignment.Bottom)
+            {
+                var currentY = GetY(control);
+                if (!double.IsNaN(currentY) && pos != null)
+                {
+                    SetY(control, pos.Value.Y + offset.Y);
+                }
             }
 
             ApplyAxis(control, isX);
