@@ -241,10 +241,12 @@ public partial class MainWindow : Window
     private void Button_OnClick_AutoWidth(object? sender, RoutedEventArgs e)
     {
         TestPanel.Width = double.NaN;
+        TestPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
     }
 
     private void Button_OnClick_AutoHeight_Auto(object? sender, RoutedEventArgs e)
     {
         TestPanel.Height = double.NaN;
+        TestPanel.VerticalAlignment = VerticalAlignment.Stretch;
     }
 }

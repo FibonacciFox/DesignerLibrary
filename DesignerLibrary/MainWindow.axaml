@@ -126,6 +126,11 @@
                                VerticalAlignment="Top"
                                toolKit:Layout.X="50" 
                                toolKit:Layout.Y="40">
+                            <TextBlock  HorizontalAlignment="Left"
+                                        VerticalAlignment="Top" 
+                                        toolKit:Layout.X="0"
+                                        toolKit:Layout.Y="0"
+                                        Text="PANEL"/>
                         </Panel>
                     </primitives:MeshPanel>
                 </designer:UiDesigner>

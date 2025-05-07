@@ -56,6 +56,12 @@
                 <TextBlock Text="Layout.Y:" />
                 <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
                 
+                <TextBlock Text="Layout.DesignX:" />
+                <TextBox IsReadOnly="True" Text="{Binding (toolKit:Layout.DesignX), ElementName=TestPanel}" />
+                
+                <TextBlock Text="Layout.DesignY:" />
+                <TextBox  IsReadOnly="True"  Text="{Binding (toolKit:Layout.DesignY), ElementName=TestPanel}" />
+                
                 <TextBlock Text="HorizontalAlignment:" />
                 <ComboBox x:Name="HorizontalAlignmentComboBox"
                           ItemsSource="{x:Static designerLibrary:EnumHelper.HorizontalAlignments}"

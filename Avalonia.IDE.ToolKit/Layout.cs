@@ -1,278 +1,187 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Threading;
-using System.Reactive.Disposables;
+using Avalonia.IDE.ToolKit.Controls.Designer;
 
 namespace Avalonia.IDE.ToolKit;
 
 /// <summary>
 /// Предоставляет attached-свойства <c>Layout.X</c> и <c>Layout.Y</c>
-/// для управления позиционированием элементов внутри различных контейнеров.
-/// При размещении в <see cref="Canvas"/> используются <c>Canvas.Left</c> и <c>Canvas.Top</c>,
-/// в остальных случаях применяется <see cref="TranslateTransform"/> при <c>HorizontalAlignment.Left</c> и <c>VerticalAlignment.Top</c>.
+/// для абсолютного позиционирования элементов внутри различных контейнеров.
+/// В <see cref="Canvas"/> используются <c>Canvas.Left</c> и <c>Canvas.Top</c>,
+/// в остальных случаях применяется <see cref="TranslateTransform"/> при выравнивании Left/Top.
+/// Также предоставляет <c>DesignX</c> и <c>DesignY</c> — позицию относительно <see cref="UiDesigner"/>.
 /// </summary>
 public static class Layout
 {
     /// <summary>
-    /// Получает или задаёт координату X.
-    /// В <see cref="Canvas"/> применяется <see cref="Canvas.LeftProperty"/>.
+    /// Задаёт или получает координату X элемента.
+    /// Используется при выравнивании по левому краю или при размещении внутри <see cref="Canvas"/>.
     /// </summary>
-    public static readonly AttachedProperty<double> XProperty = AvaloniaProperty.RegisterAttached<Control, double>("X", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
-   
-    /// <summary>
-    /// Получает или задаёт координату Y.
-    /// В <see cref="Canvas"/> применяется <see cref="Canvas.TopProperty"/>.
-    /// </summary>
-    public static readonly AttachedProperty<double> YProperty = AvaloniaProperty.RegisterAttached<Control, double>("Y", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
+    public static readonly AttachedProperty<double> XProperty =
+        AvaloniaProperty.RegisterAttached<Control, double>(
+            "X", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
 
-    private static readonly AttachedProperty<CompositeDisposable?> SubscriptionsProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, CompositeDisposable?>(
-            "Subscriptions", typeof(Layout));
+    /// <summary>
+    /// Задаёт или получает координату Y элемента.
+    /// Используется при выравнивании по верхнему краю или при размещении внутри <see cref="Canvas"/>.
+    /// </summary>
+    public static readonly AttachedProperty<double> YProperty =
+        AvaloniaProperty.RegisterAttached<Control, double>(
+            "Y", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>
+    /// Получает координату X относительно <see cref="UiDesigner"/>.
+    /// Это read-only свойство, вычисляемое при каждом layout-проходе.
+    /// </summary>
+    public static readonly AttachedProperty<double> DesignXProperty =
+        AvaloniaProperty.RegisterAttached<Control, double>(
+            "DesignX", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.OneWay);
+
+    /// <summary>
+    /// Получает координату Y относительно <see cref="UiDesigner"/>.
+    /// Это read-only свойство, вычисляемое при каждом layout-проходе.
+    /// </summary>
+    public static readonly AttachedProperty<double> DesignYProperty =
+        AvaloniaProperty.RegisterAttached<Control, double>(
+            "DesignY", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.OneWay);
 
     static Layout()
     {
-        XProperty.Changed.Subscribe(e => OnPositionChanged(e, isX: true));
-        YProperty.Changed.Subscribe(e => OnPositionChanged(e, isX: false));
+        XProperty.Changed.Subscribe(e => OnPositionChanged(e.Sender as Control));
+        YProperty.Changed.Subscribe(e => OnPositionChanged(e.Sender as Control));
     }
 
     /// <summary>
-    /// Обрабатывает изменения свойств <c>X</c> или <c>Y</c>.
+    /// Обрабатывает явное изменение свойства X или Y.
     /// </summary>
-    private static void OnPositionChanged(AvaloniaPropertyChangedEventArgs e, bool isX)
+    /// <param name="control">Контрол, к которому привязано свойство.</param>
+    private static void OnPositionChanged(Control? control)
     {
-        if (e.Sender is Control control)
-        {
-            EnsureInitialized(control);
-            ApplyAxis(control, isX);
-        }
-    }
-
-    /// <summary>
-    /// Инициализирует подписки на изменения выравнивания, размеров или свойств Canvas.
-    /// </summary>
-    private static void EnsureInitialized(Control control)
-    {
-        if (control.GetValue(SubscriptionsProperty) != null)
+        if (control == null)
             return;
 
-        var subscriptions = new CompositeDisposable();
-        control.SetValue(SubscriptionsProperty, subscriptions);
+        control.LayoutUpdated -= OnLayoutUpdated;
+        control.LayoutUpdated += OnLayoutUpdated;
 
-        // Обрабатывает отключение для очистки подписок
-        control.DetachedFromVisualTree += (_, _) =>
-        {
-            subscriptions.Dispose();
-            control.SetValue(SubscriptionsProperty, null);
-        };
-
-        // Подписка на изменения Canvas или выравнивания и размеров
-        if (IsInsideCanvas(control))
-        {
-            subscriptions.Add(control.GetPropertyChangedObservable(Canvas.LeftProperty)
-                .Subscribe(_ => SyncFromCanvas(control, isX: true)));
-            subscriptions.Add(control.GetPropertyChangedObservable(Canvas.TopProperty)
-                .Subscribe(_ => SyncFromCanvas(control, isX: false)));
-        }
-        else
-        {
-            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentChanged(control, isX: true)));
-            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentChanged(control, isX: false)));
-            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.WidthProperty)
-                .Subscribe(_ => OnSizeChanged(control, isX: true)));
-            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HeightProperty)
-                .Subscribe(_ => OnSizeChanged(control, isX: false)));
-        }
-
-        // Немедленное применение начальной позиции, если она задана
-        var x = GetX(control);
-        var y = GetY(control);
-        if (!double.IsNaN(x))
-            ApplyAxis(control, isX: true);
-        if (!double.IsNaN(y))
-            ApplyAxis(control, isX: false);
-
-        // Настройка начального layout
-        if (control.GetVisualRoot() == null)
-        {
-            void OnAttached(object? sender, VisualTreeAttachmentEventArgs e)
-            {
-                control.AttachedToVisualTree -= OnAttached;
-                FirstLayoutInit(control);
-            }
-            control.AttachedToVisualTree += OnAttached;
-            subscriptions.Add(Disposable.Create(() => control.AttachedToVisualTree -= OnAttached));
-        }
-        else
-        {
-            FirstLayoutInit(control);
-        }
+        ApplyPosition(control);
+        UpdateDesignPosition(control);
     }
 
     /// <summary>
-    /// Синхронизирует значение X или Y из Canvas.Left/Top в Layout.X/Y.
+    /// Обработчик события <see cref="Layoutable.LayoutUpdated"/>.
+    /// Выполняет пересчёт <c>X/Y</c> при выравнивании ≠ Left/Top и обновляет <c>DesignX/Y</c>.
     /// </summary>
-    private static void SyncFromCanvas(Control control, bool isX)
+    /// <param name="sender">Контрол, обновлённый в layout.</param>
+    /// <param name="e">Параметры события.</param>
+    private static void OnLayoutUpdated(object? sender, EventArgs e)
     {
+        if (sender is not Control control)
+            return;
+
         if (!IsInsideCanvas(control))
-            return;
-
-        if (isX)
-            SetX(control, Canvas.GetLeft(control));
-        else
-            SetY(control, Canvas.GetTop(control));
-    }
-
-    /// <summary>
-    /// Обрабатывает изменения выравнивания и синхронизирует координаты.
-    /// </summary>
-    private static void OnAlignmentChanged(Control control, bool isX)
-    {
-        Dispatcher.UIThread.Post(() =>
         {
-            var pos = GetVisualPosition(control);
-            var offset = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
-
-            if (isX)
+            var parent = control.GetVisualParent();
+            if (parent != null)
             {
-                if (control.HorizontalAlignment != HorizontalAlignment.Left)
-                    SetX(control, pos?.X + offset.X ?? 0);
-                else
-                    SetX(control, 0);
-            }
-            else
-            {
-                if (control.VerticalAlignment != VerticalAlignment.Top)
-                    SetY(control, pos?.Y + offset.Y ?? 0);
-                else
-                    SetY(control, 0);
-            }
-
-            ApplyAxis(control, isX);
-        }, DispatcherPriority.Loaded);
-    }
-
-    /// <summary>
-    /// Обрабатывает изменения размеров и синхронизирует координаты.
-    /// </summary>
-    private static void OnSizeChanged(Control control, bool isX)
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            var pos = GetVisualPosition(control);
-            var offset = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
-
-            if (isX && control.HorizontalAlignment == HorizontalAlignment.Right)
-            {
-                var currentX = GetX(control);
-                if (!double.IsNaN(currentX) && pos != null)
+                var pos = control.TranslatePoint(new Point(0, 0), parent);
+                if (pos.HasValue)
                 {
-                    SetX(control, pos.Value.X + offset.X);
+                    if (control.HorizontalAlignment != HorizontalAlignment.Left)
+                        SetX(control, pos.Value.X);
+
+                    if (control.VerticalAlignment != VerticalAlignment.Top)
+                        SetY(control, pos.Value.Y);
                 }
             }
-            else if (!isX && control.VerticalAlignment == VerticalAlignment.Bottom)
-            {
-                var currentY = GetY(control);
-                if (!double.IsNaN(currentY) && pos != null)
-                {
-                    SetY(control, pos.Value.Y + offset.Y);
-                }
-            }
+        }
 
-            ApplyAxis(control, isX);
-        }, DispatcherPriority.Loaded);
+        ApplyPosition(control);
+        UpdateDesignPosition(control);
     }
 
     /// <summary>
-    /// Применяет значение X или Y к контролу в зависимости от типа контейнера.
+    /// Применяет значение X/Y к контролу через <see cref="TranslateTransform"/>
+    /// или через <see cref="Canvas.Left"/> / <see cref="Canvas.Top"/>.
     /// </summary>
-    private static void ApplyAxis(Control control, bool isX)
+    /// <param name="control">Целевой контрол.</param>
+    private static void ApplyPosition(Control control)
     {
         var x = GetX(control);
         var y = GetY(control);
 
         if (IsInsideCanvas(control))
         {
-            if (isX) Canvas.SetLeft(control, x);
-            else Canvas.SetTop(control, y);
-
+            if (!double.IsNaN(x)) Canvas.SetLeft(control, x);
+            if (!double.IsNaN(y)) Canvas.SetTop(control, y);
             control.RenderTransform = null;
         }
         else
         {
             var transform = control.RenderTransform as TranslateTransform ?? new TranslateTransform();
-
-            if (isX)
-                transform.X = control.HorizontalAlignment == HorizontalAlignment.Left ? x : 0;
-            else
-                transform.Y = control.VerticalAlignment == VerticalAlignment.Top ? y : 0;
-
+            transform.X = control.HorizontalAlignment == HorizontalAlignment.Left ? x : 0;
+            transform.Y = control.VerticalAlignment == VerticalAlignment.Top ? y : 0;
             control.RenderTransform = transform;
         }
     }
 
     /// <summary>
-    /// Выполняет начальную настройку координат после первого прохода layout.
+    /// Обновляет позицию относительно <see cref="UiDesigner"/> в свойства <c>DesignX</c> и <c>DesignY</c>.
     /// </summary>
-    private static void FirstLayoutInit(Control control)
+    /// <param name="control">Целевой контрол.</param>
+    private static void UpdateDesignPosition(Control control)
     {
-        void OnLayoutReady(object? s, EventArgs e)
+        Dispatcher.UIThread.Post(() =>
         {
-            control.LayoutUpdated -= OnLayoutReady;
-
-            var pos = GetVisualPosition(control);
-
-            if (pos != null && !IsInsideCanvas(control))
+            var designer = control.FindAncestorOfType<UiDesigner>();
+            if (designer != null)
             {
-                if (control.HorizontalAlignment != HorizontalAlignment.Left)
-                    SetX(control, pos.Value.X);
-                if (control.VerticalAlignment != VerticalAlignment.Top)
-                    SetY(control, pos.Value.Y);
+                var position = control.TranslatePoint(new Point(0, 0), designer);
+                if (position.HasValue)
+                {
+                    SetDesignX(control, position.Value.X);
+                    SetDesignY(control, position.Value.Y);
+                    return;
+                }
             }
 
-            ApplyAxis(control, isX: true);
-            ApplyAxis(control, isX: false);
-        }
-
-        control.LayoutUpdated += OnLayoutReady;
+            SetDesignX(control, double.NaN);
+            SetDesignY(control, double.NaN);
+        }, DispatcherPriority.Loaded);
     }
 
     /// <summary>
     /// Определяет, находится ли контрол внутри <see cref="Canvas"/>.
     /// </summary>
-    private static bool IsInsideCanvas(Control control) => control.GetVisualParent() is Canvas;
-
-    /// <summary>
-    /// Получает визуальную позицию контрола относительно родителя.
-    /// </summary>
-    private static Point? GetVisualPosition(Control control)
+    /// <param name="control">Контрол для проверки.</param>
+    /// <returns>True, если родитель — <see cref="Canvas"/>.</returns>
+    private static bool IsInsideCanvas(Control control)
     {
-        var parent = control.GetVisualParent();
-        return parent is { } visualParent
-            ? control.TranslatePoint(new Point(0, 0), visualParent)
-            : null;
+        return control.GetVisualParent() is Canvas;
     }
 
-    /// <summary>
-    /// Получает значение Layout.X.
-    /// </summary>
+    /// <summary> Получает значение свойства <c>Layout.X</c>. </summary>
     public static double GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
 
-    /// <summary>
-    /// Устанавливает значение Layout.X.
-    /// </summary>
+    /// <summary> Устанавливает значение свойства <c>Layout.X</c>. </summary>
     public static void SetX(AvaloniaObject obj, double value) => obj.SetValue(XProperty, value);
 
-    /// <summary>
-    /// Получает значение Layout.Y.
-    /// </summary>
+    /// <summary> Получает значение свойства <c>Layout.Y</c>. </summary>
     public static double GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
 
-    /// <summary>
-    /// Устанавливает значение Layout.Y.
-    /// </summary>
+    /// <summary> Устанавливает значение свойства <c>Layout.Y</c>. </summary>
     public static void SetY(AvaloniaObject obj, double value) => obj.SetValue(YProperty, value);
+
+    /// <summary> Получает значение свойства <c>Layout.DesignX</c>. </summary>
+    public static double GetDesignX(AvaloniaObject obj) => obj.GetValue(DesignXProperty);
+
+    /// <summary> Получает значение свойства <c>Layout.DesignY</c>. </summary>
+    public static double GetDesignY(AvaloniaObject obj) => obj.GetValue(DesignYProperty);
+
+    private static void SetDesignX(AvaloniaObject obj, double value) => obj.SetValue(DesignXProperty, value);
+    private static void SetDesignY(AvaloniaObject obj, double value) => obj.SetValue(DesignYProperty, value);
 }
