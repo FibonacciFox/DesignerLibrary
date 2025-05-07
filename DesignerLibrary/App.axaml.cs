@@ -16,6 +16,8 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow();
+            var design = new LayoutTest();
+            design.Show();
         }
 
         base.OnFrameworkInitializationCompleted();

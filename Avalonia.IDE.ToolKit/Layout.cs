@@ -20,20 +20,15 @@ public static class Layout
     /// Получает или задаёт координату X.
     /// В <see cref="Canvas"/> применяется <see cref="Canvas.LeftProperty"/>.
     /// </summary>
-    public static readonly AttachedProperty<double?> XProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
-            "X", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
-
+    public static readonly AttachedProperty<double> XProperty = AvaloniaProperty.RegisterAttached<Control, double>("X", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
+   
     /// <summary>
     /// Получает или задаёт координату Y.
     /// В <see cref="Canvas"/> применяется <see cref="Canvas.TopProperty"/>.
     /// </summary>
-    public static readonly AttachedProperty<double?> YProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, double?>(
-            "Y", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
+    public static readonly AttachedProperty<double> YProperty = AvaloniaProperty.RegisterAttached<Control, double>("Y", typeof(Layout), double.NaN, inherits: false, defaultBindingMode: BindingMode.TwoWay);
 
-    private static readonly AttachedProperty<CompositeDisposable?> SubscriptionsProperty =
-        AvaloniaProperty.RegisterAttached<AvaloniaObject, CompositeDisposable?>(
+    private static readonly AttachedProperty<CompositeDisposable?> SubscriptionsProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, CompositeDisposable?>(
             "Subscriptions", typeof(Layout));
 
     static Layout()
@@ -55,7 +50,7 @@ public static class Layout
     }
 
     /// <summary>
-    /// Инициализирует подписки на изменения выравнивания или свойств Canvas.
+    /// Инициализирует подписки на изменения выравнивания, размеров или свойств Canvas.
     /// </summary>
     private static void EnsureInitialized(Control control)
     {
@@ -72,7 +67,7 @@ public static class Layout
             control.SetValue(SubscriptionsProperty, null);
         };
 
-        // Подписка на изменения Canvas или выравнивания
+        // Подписка на изменения Canvas или выравнивания и размеров
         if (IsInsideCanvas(control))
         {
             subscriptions.Add(control.GetPropertyChangedObservable(Canvas.LeftProperty)
@@ -83,17 +78,21 @@ public static class Layout
         else
         {
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HorizontalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentChanged(control, isX: true)));
+                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: true)));
             subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.VerticalAlignmentProperty)
-                .Subscribe(_ => OnAlignmentChanged(control, isX: false)));
+                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: false)));
+            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.WidthProperty)
+                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: true)));
+            subscriptions.Add(control.GetPropertyChangedObservable(Layoutable.HeightProperty)
+                .Subscribe(_ => OnAlignmentOrSizeChanged(control, isX: false)));
         }
 
         // Немедленное применение начальной позиции, если она задана
         var x = GetX(control);
         var y = GetY(control);
-        if (!double.IsNaN(x ?? double.NaN))
+        if (!double.IsNaN(x))
             ApplyAxis(control, isX: true);
-        if (!double.IsNaN(y ?? double.NaN))
+        if (!double.IsNaN(y))
             ApplyAxis(control, isX: false);
 
         // Настройка начального layout
@@ -128,9 +127,9 @@ public static class Layout
     }
 
     /// <summary>
-    /// Обрабатывает изменения выравнивания и синхронизирует координаты.
+    /// Обрабатывает изменения выравнивания или размеров и синхронирует координаты.
     /// </summary>
-    private static void OnAlignmentChanged(Control control, bool isX)
+    private static void OnAlignmentOrSizeChanged(Control control, bool isX)
     {
         Dispatcher.UIThread.Post(() =>
         {
@@ -161,8 +160,8 @@ public static class Layout
     /// </summary>
     private static void ApplyAxis(Control control, bool isX)
     {
-        var x = GetX(control) ?? 0;
-        var y = GetY(control) ?? 0;
+        var x = GetX(control);
+        var y = GetY(control);
 
         if (IsInsideCanvas(control))
         {
@@ -229,20 +228,20 @@ public static class Layout
     /// <summary>
     /// Получает значение Layout.X.
     /// </summary>
-    public static double? GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
+    public static double GetX(AvaloniaObject obj) => obj.GetValue(XProperty);
 
     /// <summary>
     /// Устанавливает значение Layout.X.
     /// </summary>
-    public static void SetX(AvaloniaObject obj, double? value) => obj.SetValue(XProperty, value);
+    public static void SetX(AvaloniaObject obj, double value) => obj.SetValue(XProperty, value);
 
     /// <summary>
     /// Получает значение Layout.Y.
     /// </summary>
-    public static double? GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
+    public static double GetY(AvaloniaObject obj) => obj.GetValue(YProperty);
 
     /// <summary>
     /// Устанавливает значение Layout.Y.
     /// </summary>
-    public static void SetY(AvaloniaObject obj, double? value) => obj.SetValue(YProperty, value);
+    public static void SetY(AvaloniaObject obj, double value) => obj.SetValue(YProperty, value);
 }

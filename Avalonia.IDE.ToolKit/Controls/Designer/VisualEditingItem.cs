@@ -145,9 +145,9 @@ public class VisualEditingItem : TemplatedControl, ISelectable
             _heightSub = newControl.GetObservable(HeightProperty)
                 .Subscribe(h => Height = h + AnchorSize * 2);
             _xSub = newControl.GetObservable(Layout.XProperty)
-                .Subscribe(x => Layout.SetX(this, (x ?? 0) - AnchorSize));
+                .Subscribe(x => Layout.SetX(this, x - AnchorSize));
             _ySub = newControl.GetObservable(Layout.YProperty)
-                .Subscribe(y => Layout.SetY(this, (y ?? 0) - AnchorSize));
+                .Subscribe(y => Layout.SetY(this, y - AnchorSize));
         }
     }
 
@@ -230,8 +230,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
         _originalWidth = Width;
         _originalHeight = Height;
-        _originalLeft = Layout.GetX(this) ?? 0;
-        _originalTop = Layout.GetY(this) ?? 0;
+        _originalLeft = Layout.GetX(this);
+        _originalTop = Layout.GetY(this);
 
         PseudoClasses.Set(":resize", true);
     }
@@ -276,7 +276,7 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
         _isDragging = true;
         _dragStartPoint = e.GetCurrentPoint((Visual?)Parent);
-        _originalPosition = new Point(Layout.GetX(this) ?? 0, Layout.GetY(this) ?? 0);
+        _originalPosition = new Point(Layout.GetX(this), Layout.GetY(this));
 
         e.Pointer.Capture((IInputElement)sender!);
     }
@@ -367,8 +367,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
         AttachedControl.Width = Width - AnchorSize * 2;
         AttachedControl.Height = Height - AnchorSize * 2;
 
-        Layout.SetX(AttachedControl, (Layout.GetX(this) ?? 0) + AnchorSize);
-        Layout.SetY(AttachedControl, (Layout.GetY(this) ?? 0) + AnchorSize);
+        Layout.SetX(AttachedControl, (Layout.GetX(this)) + AnchorSize);
+        Layout.SetY(AttachedControl, (Layout.GetY(this)) + AnchorSize);
     }
 
     private double SnapToGrid(double value, double gridSize)

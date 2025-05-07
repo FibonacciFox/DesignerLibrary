@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
 
@@ -22,9 +23,9 @@ public static class EnumHelper
     public static VerticalAlignment[]? VerticalAlignments => Enum.GetValues(typeof(VerticalAlignment)) as VerticalAlignment[];
 }
 
-public partial class UiDesignerTest : Window
+public partial class LayoutTest : Window
 {
-    public UiDesignerTest()
+    public LayoutTest()
     {
         InitializeComponent();
         
@@ -41,5 +42,15 @@ public partial class UiDesignerTest : Window
         // };
         
 
+    }
+
+    private void Button_OnClick_AutoWidth(object? sender, RoutedEventArgs e)
+    {
+        TestPanel.Width = double.NaN;
+    }
+
+    private void Button_OnClick_AutoHeight_Auto(object? sender, RoutedEventArgs e)
+    {
+        TestPanel.Height = double.NaN;
     }
 }

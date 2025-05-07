@@ -157,8 +157,8 @@ public partial class MainWindow : Window
 
                 if (clone != null)
                 {
-                    Layout.SetX(clone, Layout.GetX(control) ?? 0);
-                    Layout.SetY(clone, Layout.GetY(control) ?? 0);
+                    Layout.SetX(clone, Layout.GetX(control) );
+                    Layout.SetY(clone, Layout.GetY(control));
                     rootCanvas.Children.Add(clone);
                 }
             }
