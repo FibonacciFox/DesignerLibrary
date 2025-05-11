@@ -16,8 +16,8 @@
                 <!-- MeshPanel и ее производные, в будущем будет использоваться как контейнер для добавления Ui элементов и компоновки интерфейсов -->
                
                 <primitives:MeshPanel Background="DarkGray"
-                                    toolKit:Layout.X = "100"
-                                    toolKit:Layout.Y = "100"
+                                    toolKit:Layout.X = "200"
+                                    toolKit:Layout.Y = "50"
                                     Name="DisignerLayer" 
                                     Width="600" 
                                     Height="600">
@@ -28,7 +28,7 @@
                         HorizontalAlignment="{Binding SelectedItem, ElementName=HorizontalAlignmentComboBox, Mode=TwoWay}"
                         VerticalAlignment="{Binding SelectedItem, ElementName=VerticalAlignmentComboBox, Mode=TwoWay}"
                         toolKit:Layout.X="0" toolKit:Layout.Y="0">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Panel</TextBlock>
+                        <TextBlock x:Name="TextBlock1" toolKit:Layout.X="0" toolKit:Layout.Y="0" HorizontalAlignment="Left" VerticalAlignment="Top">Panel</TextBlock>
                     </Panel>
                 </primitives:MeshPanel>
             </designer:UiDesigner>
@@ -57,10 +57,10 @@
                 <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.DesignX:" />
-                <TextBox IsReadOnly="True" Text="{Binding (toolKit:Layout.DesignX), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (toolKit:Layout.DesignX), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.DesignY:" />
-                <TextBox  IsReadOnly="True"  Text="{Binding (toolKit:Layout.DesignY), ElementName=TestPanel}" />
+                <TextBox  Text="{Binding (toolKit:Layout.DesignY), ElementName=TestPanel}" />
                 
                 <TextBlock Text="HorizontalAlignment:" />
                 <ComboBox x:Name="HorizontalAlignmentComboBox"

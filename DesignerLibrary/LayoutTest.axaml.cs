@@ -17,6 +17,7 @@ public partial class LayoutTest : Window
         {
             UiDesignerControl.EditingLayer.AttachItem(DisignerLayer);
             //UiDesignerControl.EditingLayer.AttachItem(TestPanel);
+            //UiDesignerControl.EditingLayer.AttachItem(TextBlock1);
             
         }, DispatcherPriority.Loaded);
         
