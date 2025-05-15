@@ -89,8 +89,22 @@ public static class Layout
         if (control == null)
             return;
 
+        // Если ещё не прикреплён к визуальному дереву — ждём события
+        if (control.GetVisualRoot() is null)
+        {
+            void Handler(object? s, VisualTreeAttachmentEventArgs e)
+            {
+                control.AttachedToVisualTree -= Handler;
+                // Переносим выполнение на UI-поток — визуальное дерево гарантировано готово
+                Dispatcher.UIThread.Post(() => OnDesignPositionChanged(control));
+            }
+
+            control.AttachedToVisualTree += Handler;
+            return;
+        }
+
         Visual? reference = control.FindAncestorOfType<UiDesigner>() as Visual
-                         ?? control.GetVisualRoot() as Visual;
+                            ?? control.GetVisualRoot() as Visual;
 
         var parent = control.GetVisualParent();
         if (reference == null || parent == null)
@@ -111,6 +125,7 @@ public static class Layout
             }
         }
     }
+
 
     /// <summary>
     /// Обрабатывает layout-проход: обновляет X/Y и DesignX/DesignY на основе текущей позиции.

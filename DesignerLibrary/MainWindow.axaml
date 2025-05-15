@@ -117,20 +117,20 @@
                                        HorizontalScrollBarVisibility="Visible"
                                        VerticalScrollBarVisibility="Visible">
                 <designer:UiDesigner Name="UiDesignerControl" >
-                    <primitives:MeshPanel Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
+                    <primitives:MeshPanel toolKit:Layout.X="10" toolKit:Layout.Y="10" Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
                         <Panel Name="TestPanel"
                                Width="250"
                                Height="250"
                                Background="White"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               toolKit:Layout.X="50" 
-                               toolKit:Layout.Y="40">
-                            <TextBlock  HorizontalAlignment="Left"
-                                        VerticalAlignment="Top" 
-                                        toolKit:Layout.X="0"
-                                        toolKit:Layout.Y="0"
-                                        Text="PANEL"/>
+                               toolKit:Layout.X="50" toolKit:Layout.Y="40">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Background="DimGray" toolKit:Layout.X="0" toolKit:Layout.Y="0" Spacing="6">
+                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                            </StackPanel>
                         </Panel>
                     </primitives:MeshPanel>
                 </designer:UiDesigner>

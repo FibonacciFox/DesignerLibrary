@@ -66,27 +66,17 @@ public class VisualEditingLayer : TemplatedControl
     /// </summary>
     public void AttachItem(Control attachedControl)
     {
-        if (_canvas == null || attachedControl == null)
+        if (_canvas == null)
             return;
-
-        // Установка размеров по умолчанию
-        if (double.IsNaN(attachedControl.Width) || attachedControl.Width == 0)
-            attachedControl.Width = 100;
-
-        if (double.IsNaN(attachedControl.Height) || attachedControl.Height == 0)
-            attachedControl.Height = 40;
 
         var layerItem = new VisualEditingItem
         {
             BorderBrush = Brushes.DarkSlateGray,
             Background = Brushes.Transparent,
             BorderThickness = 1,
-            IsSelected = true,
             StepSizeByX = 8,
             StepSizeByY = 8,
             AttachedControl = attachedControl,
-            Width = attachedControl.Width,
-            Height = attachedControl.Height,
             Focusable = true
         };
 

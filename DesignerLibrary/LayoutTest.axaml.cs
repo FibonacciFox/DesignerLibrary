@@ -16,8 +16,8 @@ public partial class LayoutTest : Window
         Dispatcher.UIThread.Post(() =>
         {
             UiDesignerControl.EditingLayer.AttachItem(DisignerLayer);
-            //UiDesignerControl.EditingLayer.AttachItem(TestPanel);
-            //UiDesignerControl.EditingLayer.AttachItem(TextBlock1);
+            UiDesignerControl.EditingLayer.AttachItem(TestPanel);
+            UiDesignerControl.EditingLayer.AttachItem(TextBlock1);
             
         }, DispatcherPriority.Loaded);
         
@@ -25,19 +25,9 @@ public partial class LayoutTest : Window
         // {
         //     UiDesignerControl.EditingLayer.AttachItem(TestPanel);
         // };
-        
-        
-        TestPanel.LayoutUpdated += UiDesignerControlOnLayoutUpdated;
-        
-        
 
     }
-
-    private int i = 0;
-    private void UiDesignerControlOnLayoutUpdated(object? sender, EventArgs e)
-    {
-        Console.WriteLine($"TestPanelUpdated: {i++}");
-    }
+    
 
     private void Button_OnClick_AutoWidth(object? sender, RoutedEventArgs e)
     {

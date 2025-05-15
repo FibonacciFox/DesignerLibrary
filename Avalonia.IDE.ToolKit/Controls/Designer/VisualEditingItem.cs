@@ -140,15 +140,39 @@ public class VisualEditingItem : TemplatedControl, ISelectable
             else
                 ApplyInitialLayout();
 
-            _widthSub = newControl.GetObservable(WidthProperty)
-                .Subscribe(w => Width = w + AnchorSize * 2);
-            _heightSub = newControl.GetObservable(HeightProperty)
-                .Subscribe(h => Height = h + AnchorSize * 2);
-            _xSub = newControl.GetObservable(Layout.XProperty)
-                .Subscribe(x => Layout.SetX(this, x - AnchorSize));
-            _ySub = newControl.GetObservable(Layout.YProperty)
-                .Subscribe(y => Layout.SetY(this, y - AnchorSize));
+            
+            _widthSub = newControl.GetObservable(BoundsProperty)
+                .Subscribe(w => UpdateSizeFromWidthAttachedControl());
+            _heightSub = newControl.GetObservable(BoundsProperty)
+                .Subscribe(h => UpdateSizeFromHeightAttachedControl());
+
+            
+            _xSub = newControl.GetObservable(Layout.DesignXProperty)
+                .Subscribe(x => Layout.SetDesignX(this, x - AnchorSize));
+            _ySub = newControl.GetObservable(Layout.DesignYProperty)
+                .Subscribe(y => Layout.SetDesignY(this, y - AnchorSize));
         }
+    }
+    
+    private void UpdateSizeFromWidthAttachedControl()
+    {
+        double width = !double.IsNaN(AttachedControl.Width)
+            ? AttachedControl.Width
+            : AttachedControl.Bounds.Width;
+
+        Console.WriteLine(AttachedControl.Bounds.Width);
+        Width = width + AnchorSize * 2;
+        
+    }
+    
+    private void UpdateSizeFromHeightAttachedControl()
+    {
+        double height = !double.IsNaN(AttachedControl.Height)
+            ? AttachedControl.Height
+            : AttachedControl.Bounds.Height;
+        Console.WriteLine(AttachedControl.Bounds.Height);
+        Height = height + AnchorSize * 2;
+        
     }
 
     private void OnFirstAttach(object? sender, VisualTreeAttachmentEventArgs e)
@@ -159,22 +183,14 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
     private void ApplyInitialLayout()
     {
-        if (AttachedControl == null || Parent is not Visual visualParent)
+        if (Parent is not Visual)
             return;
       
-        var attachedPoint = AttachedControl.TranslatePoint(new Point(0, 0), visualParent);
-        var layerPoint = this.TranslatePoint(new Point(0, 0), visualParent);
+        Layout.SetX(this, Layout.GetDesignX(AttachedControl) - AnchorSize);
+        Layout.SetY(this, Layout.GetDesignY(AttachedControl) - AnchorSize);
 
-        if (attachedPoint != null && layerPoint != null)
-        {
-            var relative = attachedPoint.Value - layerPoint.Value;
-
-            Layout.SetX(this, relative.X - AnchorSize);
-            Layout.SetY(this, relative.Y - AnchorSize);
-        }
-
-        Width = AttachedControl.Width + AnchorSize * 2;
-        Height = AttachedControl.Height + AnchorSize * 2;
+        UpdateSizeFromWidthAttachedControl();
+        UpdateSizeFromHeightAttachedControl();
     }
 
 
@@ -364,11 +380,13 @@ public class VisualEditingItem : TemplatedControl, ISelectable
     /// </summary>
     public void UpdateAttachedControlBounds()
     {
+      
         AttachedControl.Width = Width - AnchorSize * 2;
         AttachedControl.Height = Height - AnchorSize * 2;
+        
 
-        Layout.SetX(AttachedControl, (Layout.GetX(this)) + AnchorSize);
-        Layout.SetY(AttachedControl, (Layout.GetY(this)) + AnchorSize);
+        Layout.SetDesignX(AttachedControl, (Layout.GetX(this)) + AnchorSize);
+        Layout.SetDesignY(AttachedControl, (Layout.GetY(this)) + AnchorSize);
     }
 
     private double SnapToGrid(double value, double gridSize)
