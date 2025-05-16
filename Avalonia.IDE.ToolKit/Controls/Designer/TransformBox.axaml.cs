@@ -8,14 +8,11 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer;
 /// <summary>
 /// Контрол для визуального редактирования размеров и положения другого контрола.
 /// </summary>
-[PseudoClasses(":selected")]
-public class TransformBox : TemplatedControl
+[PseudoClasses(":selected", ":drag", ":resize")]
+public class TransformBox : TemplatedControl, ISelectable
 {
-    public static readonly StyledProperty<double> StepSizeByXProperty =
-        AvaloniaProperty.Register<TransformBox, double>(nameof(StepSizeByX), 8);
-
-    public static readonly StyledProperty<double> StepSizeByYProperty =
-        AvaloniaProperty.Register<TransformBox, double>(nameof(StepSizeByY), 8);
+    public static readonly StyledProperty<Size> GridStepProperty =
+        AvaloniaProperty.Register<TransformBox, Size>(nameof(GridStep), new Size(8, 8));
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<TransformBox>();
@@ -29,16 +26,10 @@ public class TransformBox : TemplatedControl
     public new static readonly StyledProperty<double> BorderThicknessProperty =
         AvaloniaProperty.Register<TransformBox, double>(nameof(BorderThickness));
 
-    public double StepSizeByX
+    public Size GridStep
     {
-        get => GetValue(StepSizeByXProperty);
-        set => SetValue(StepSizeByXProperty, value);
-    }
-
-    public double StepSizeByY
-    {
-        get => GetValue(StepSizeByYProperty);
-        set => SetValue(StepSizeByYProperty, value);
+        get => GetValue(GridStepProperty);
+        set => SetValue(GridStepProperty, value);
     }
 
     public bool IsSelected
@@ -74,19 +65,23 @@ public class TransformBox : TemplatedControl
             if (thumb.Classes.Contains("Anchor") && thumb.Tag is string tag &&
                 Enum.TryParse<AnchorType>(tag, out var anchorType))
             {
-                thumb.DragDelta += (s, ev) => HandleResize(anchorType, ev.Vector);
+                thumb.DragStarted += (_, _) => PseudoClasses.Set(":resize", true);
+                thumb.DragDelta += (_, ev) => HandleResize(anchorType, ev.Vector);
+                thumb.DragCompleted += (_, _) => PseudoClasses.Set(":resize", false);
             }
             else if (thumb.Name == "PART_MoveThumb")
             {
-                thumb.DragDelta += (s, ev) => HandleMove(ev.Vector);
+                thumb.DragStarted += (_, _) => PseudoClasses.Set(":drag", true);
+                thumb.DragDelta += (_, ev) => HandleMove(ev.Vector);
+                thumb.DragCompleted += (_, _) => PseudoClasses.Set(":drag", false);
             }
         }
     }
 
     private void HandleResize(AnchorType anchor, Vector delta)
     {
-        var dx = SnapToGrid(delta.X, StepSizeByX);
-        var dy = SnapToGrid(delta.Y, StepSizeByY);
+        var dx = SnapToGrid(delta.X, GridStep.Width);
+        var dy = SnapToGrid(delta.Y, GridStep.Height);
 
         var newWidth = Width;
         var newHeight = Height;
@@ -95,21 +90,21 @@ public class TransformBox : TemplatedControl
 
         if (anchor.ToString().Contains("Left"))
         {
-            newWidth = Math.Max(StepSizeByX, Width - dx);
+            newWidth = Math.Max(GridStep.Width, Width - dx);
             newX += dx;
         }
         if (anchor.ToString().Contains("Right"))
         {
-            newWidth = Math.Max(StepSizeByX, Width + dx);
+            newWidth = Math.Max(GridStep.Width, Width + dx);
         }
         if (anchor.ToString().Contains("Top"))
         {
-            newHeight = Math.Max(StepSizeByY, Height - dy);
+            newHeight = Math.Max(GridStep.Height, Height - dy);
             newY += dy;
         }
         if (anchor.ToString().Contains("Bottom"))
         {
-            newHeight = Math.Max(StepSizeByY, Height + dy);
+            newHeight = Math.Max(GridStep.Height, Height + dy);
         }
 
         Width = newWidth;
@@ -120,8 +115,8 @@ public class TransformBox : TemplatedControl
 
     private void HandleMove(Vector delta)
     {
-        var dx = SnapToGrid(delta.X, StepSizeByX);
-        var dy = SnapToGrid(delta.Y, StepSizeByY);
+        var dx = SnapToGrid(delta.X, GridStep.Width);
+        var dy = SnapToGrid(delta.Y, GridStep.Height);
 
         var x = Layout.GetX(this);
         var y = Layout.GetY(this);

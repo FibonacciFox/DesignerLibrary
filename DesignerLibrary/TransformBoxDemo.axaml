@@ -18,9 +18,9 @@
                               Height="100"
                               toolKit1:Layout.X = "100"
                               toolKit1:Layout.Y="100"
+                              Background="LightGray"
                               BorderBrush="Black"
                               BorderThickness="1"
-                              Background="LightGray"
                               IsSelected="True" />
     </Canvas>
 </Window>
