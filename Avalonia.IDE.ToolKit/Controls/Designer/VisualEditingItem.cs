@@ -9,22 +9,6 @@ using Avalonia.VisualTree;
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
 
 /// <summary>
-/// Тип точки якоря, определяющий направление изменения размеров.
-/// </summary>
-public enum AnchorType
-{
-    None,
-    TopLeft,
-    TopCenter,
-    TopRight,
-    RightCenter,
-    BottomRight,
-    BottomCenter,
-    BottomLeft,
-    LeftCenter
-}
-
-/// <summary>
 /// Контрол-обёртка для визуального редактирования размеров и положения другого контрола.
 /// Поддерживает псевдоклассы:
 /// <list type="bullet">
@@ -385,8 +369,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
         AttachedControl.Height = Height - AnchorSize * 2;
         
 
-        Layout.SetDesignX(AttachedControl, (Layout.GetX(this)) + AnchorSize);
-        Layout.SetDesignY(AttachedControl, (Layout.GetY(this)) + AnchorSize);
+        Layout.SetDesignX(AttachedControl, Layout.GetX(this) + AnchorSize);
+        Layout.SetDesignY(AttachedControl, Layout.GetY(this) + AnchorSize);
     }
 
     private double SnapToGrid(double value, double gridSize)

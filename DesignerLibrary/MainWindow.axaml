@@ -125,11 +125,12 @@
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
                                toolKit:Layout.X="50" toolKit:Layout.Y="40">
-                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Background="DimGray" toolKit:Layout.X="0" toolKit:Layout.Y="0" Spacing="6">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Background="DimGray" toolKit:Layout.X="0" toolKit:Layout.Y="0" Spacing="6">
                                 <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
                                 <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
                                 <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
                                 <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                                <Thumb Width="30" Height="30" Background="Black"></Thumb>
                             </StackPanel>
                         </Panel>
                     </primitives:MeshPanel>

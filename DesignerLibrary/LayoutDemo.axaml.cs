@@ -7,9 +7,9 @@ using Avalonia.Threading;
 
 namespace DesignerLibrary;
 
-public partial class LayoutTest : Window
+public partial class LayoutDemo : Window
 {
-    public LayoutTest()
+    public LayoutDemo()
     {
         InitializeComponent();
         

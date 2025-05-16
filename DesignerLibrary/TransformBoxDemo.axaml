@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
+             xmlns:toolKit1="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+             xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
+             Title="TransformBoxDemo"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DesignerLibrary.TransformBoxDemo">
+    <Canvas>
+        <primitives:MeshPanel Background="DarkGray"
+                              toolKit1:Layout.X = "0"
+                              toolKit1:Layout.Y = "0"
+                              Width="600" 
+                              Height="600"/>
+        <toolKit:TransformBox Width="200"
+                              Height="100"
+                              toolKit1:Layout.X = "100"
+                              toolKit1:Layout.Y="100"
+                              BorderBrush="Black"
+                              BorderThickness="1"
+                              Background="LightGray"
+                              IsSelected="True" />
+    </Canvas>
+</Window>

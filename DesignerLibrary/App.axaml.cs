@@ -16,8 +16,10 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow();
-            var design = new LayoutTest();
+            var design = new LayoutDemo();
+            var tranformBox = new TransformBoxDemo();
             design.Show();
+            tranformBox.Show();
         }
 
         base.OnFrameworkInitializationCompleted();

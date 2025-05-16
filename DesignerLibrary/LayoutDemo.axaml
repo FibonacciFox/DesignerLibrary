@@ -7,8 +7,8 @@
         xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
         xmlns:designerLibrary="clr-namespace:DesignerLibrary"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="DesignerLibrary.LayoutTest"
-        Title="LayoutTest">
+        x:Class="DesignerLibrary.LayoutDemo"
+        Title="LayoutDemo">
     <Grid ColumnDefinitions="*,Auto">
         
         <!-- UiDesigner главный элемент редактора -->

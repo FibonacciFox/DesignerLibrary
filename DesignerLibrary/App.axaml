@@ -10,6 +10,7 @@
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/ScalingContainer.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/VisualEditingLayer.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/VisualEditingItem.axaml"/>
+        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/TransformBox.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/UiDesigner.axaml"/>
     </Application.Styles>
 </Application>
