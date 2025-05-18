@@ -8,7 +8,7 @@
              Title="TransformBoxDemo"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DesignerLibrary.TransformBoxDemo">
-    <Canvas>
+    <Canvas >
         <primitives:MeshPanel Background="DarkGray"
                               toolKit1:Layout.X = "0"
                               toolKit1:Layout.Y = "0"
@@ -46,7 +46,6 @@
                               toolKit1:Layout.Y="150"
                               Background="Transparent"
                               BorderBrush="Black"
-                              BorderThickness="1"
-                              IsSelected="True" />
+                              BorderThickness="1"/>
     </Canvas>
 </Window>

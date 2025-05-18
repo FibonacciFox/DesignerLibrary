@@ -12,5 +12,6 @@
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/VisualEditingItem.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/TransformBox.axaml"/>
         <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/UiDesigner.axaml"/>
+        <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/CanvasSelectingItemsControl.axaml"/>
     </Application.Styles>
 </Application>

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.IDE.ToolKit;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Rendering.Composition;
 
@@ -31,7 +32,9 @@ public partial class TransformBoxDemo : Window
     private void Attach(object? sender, RoutedEventArgs e)
     {
         TransformBox1.Target = sender as Button;
+        TransformBox1.IsSelected = true;
         Layout.SetX(TransformBox1, Layout.GetX(TransformBox1.Target) - TransformBox1.AnchorSize);
         Layout.SetY(TransformBox1, Layout.GetY(TransformBox1.Target) - TransformBox1.AnchorSize);
     }
+    
 }
