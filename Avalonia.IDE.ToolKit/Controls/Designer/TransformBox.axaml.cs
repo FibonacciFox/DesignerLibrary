@@ -72,11 +72,13 @@ public class TransformBox : TemplatedControl, ISelectable
                     Width = control.Bounds.Width + AnchorSize * 2;
                     Height = control.Bounds.Height + AnchorSize * 2;
 
-                    Console.WriteLine($"Target ready: Bounds {control.Bounds.Width}x{control.Bounds.Height} Current Width/Height: {control.Width}x{control.Height}");
+                    var width =  double.IsNaN(control.Width) ? "Auto" : control.Width.ToString();
+                    var height = double.IsNaN(control.Height) ? "Auto" : control.Height.ToString();
+
+                    Console.WriteLine($"Target ready: Bounds.Width:{control.Bounds.Width} Bounds.Height:{control.Bounds.Height} Current Width:{width} Height:{height}");
                 }, DispatcherPriority.Loaded);
             }
         });
-
 
         foreach (var thumb in this.GetTemplateChildren().OfType<Thumb>())
         {
@@ -137,8 +139,15 @@ public class TransformBox : TemplatedControl, ISelectable
         Layout.SetY(Target, _targetPosY);
     }
 
+    //Теперь HandleResize учитывает AnchorSize при проверке минимального размера — и не позволяет TransformBox стать меньше, чем minContentSize + AnchorSize * 2.
     private void HandleResize(AnchorType anchor, Vector delta)
     {
+        const double minContentSize = 6;
+        var minTotalWidth = minContentSize + AnchorSize * 2;
+        var minTotalHeight = minContentSize + AnchorSize * 2;
+        
+        
+
         var dx = SnapToGrid(delta.X, GridStep.Width);
         var dy = SnapToGrid(delta.Y, GridStep.Height);
 
@@ -149,29 +158,45 @@ public class TransformBox : TemplatedControl, ISelectable
 
         if (anchor.ToString().Contains("Left"))
         {
-            newWidth = Math.Max(GridStep.Width, Width - dx);
-            newX += dx;
+            var widthCandidate = Width - dx;
+            if (widthCandidate >= minTotalWidth)
+            {
+                newWidth = widthCandidate;
+                newX += dx;
 
-            _targetWidth = Math.Max(GridStep.Width, _targetWidth - dx);
-            _targetPosX += dx;
+                _targetWidth = Math.Max(GridStep.Width, _targetWidth - dx);
+                _targetPosX += dx;
+            }
         }
         if (anchor.ToString().Contains("Right"))
         {
-            newWidth = Math.Max(GridStep.Width, Width + dx);
-            _targetWidth = Math.Max(GridStep.Width, _targetWidth + dx);
+            var widthCandidate = Width + dx;
+            if (widthCandidate >= minTotalWidth)
+            {
+                newWidth = widthCandidate;
+                _targetWidth = Math.Max(GridStep.Width, _targetWidth + dx);
+            }
         }
         if (anchor.ToString().Contains("Top"))
         {
-            newHeight = Math.Max(GridStep.Height, Height - dy);
-            newY += dy;
+            var heightCandidate = Height - dy;
+            if (heightCandidate >= minTotalHeight)
+            {
+                newHeight = heightCandidate;
+                newY += dy;
 
-            _targetHeight = Math.Max(GridStep.Height, _targetHeight - dy);
-            _targetPosY += dy;
+                _targetHeight = Math.Max(GridStep.Height, _targetHeight - dy);
+                _targetPosY += dy;
+            }
         }
         if (anchor.ToString().Contains("Bottom"))
         {
-            newHeight = Math.Max(GridStep.Height, Height + dy);
-            _targetHeight = Math.Max(GridStep.Height, _targetHeight + dy);
+            var heightCandidate = Height + dy;
+            if (heightCandidate >= minTotalHeight)
+            {
+                newHeight = heightCandidate;
+                _targetHeight = Math.Max(GridStep.Height, _targetHeight + dy);
+            }
         }
 
         Width = newWidth;
