@@ -14,11 +14,37 @@
                               toolKit1:Layout.Y = "0"
                               Width="600" 
                               Height="600"/>
+        
+        <Button Content="Button"
+                CornerRadius="0"
+                Name="Button1"
+                Click="Attach"
+                toolKit1:Layout.X = "50"
+                toolKit1:Layout.Y = "50"/>
+        
+        <Button Content="Button"
+                CornerRadius="0"
+                Name="Button2"
+                Click="Attach"
+                toolKit1:Layout.X = "50"
+                toolKit1:Layout.Y = "100"/>
+        
+        <Button Content="Button"
+                CornerRadius="0"
+                Name="Button3"
+                Click="Attach"
+                toolKit1:Layout.X = "50"
+                toolKit1:Layout.Y = "150"/>
+        
+        
+        <Image Name="Image1"/>
+        
         <toolKit:TransformBox Width="200"
                               Height="100"
-                              toolKit1:Layout.X = "100"
-                              toolKit1:Layout.Y="100"
-                              Background="LightGray"
+                              Name="TransformBox1"
+                              toolKit1:Layout.X = "150"
+                              toolKit1:Layout.Y="150"
+                              Background="Transparent"
                               BorderBrush="Black"
                               BorderThickness="1"
                               IsSelected="True" />

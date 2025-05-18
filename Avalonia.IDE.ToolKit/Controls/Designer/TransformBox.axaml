@@ -35,7 +35,7 @@
     <Style Selector="Thumb.Anchor:pressed">
         <Setter Property="Background" Value="Green" />
     </Style>
-
+    
     <!-- Курсоры якорей -->
     <Style Selector="Thumb.Anchor[Tag=TopLeft]">
         <Setter Property="Cursor" Value="TopLeftCorner" />
@@ -64,20 +64,17 @@
 
     <!-- Стиль TransformBox -->
     <Style Selector="toolKit|TransformBox">
+        <Setter Property="MinHeight" Value="8"/>
+        <Setter Property="MinWidth" Value="8"/>
         <Setter Property="ZIndex" Value="0" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
                     <!-- Контент и рамка с якорями -->
                     <Grid Margin="{TemplateBinding AnchorSize, Converter={StaticResource ThicknessConverter}}">
-                        <Rectangle Name="PART_CustomBorder"
-                                   Stroke="{TemplateBinding BorderBrush}"
-                                   StrokeThickness="{TemplateBinding BorderThickness}"
-                                   StrokeDashArray="5,2"
-                                   IsVisible="False" />
-
+                        
                         <!-- Thumb для перемещения -->
-                        <Thumb x:Name="PART_MoveThumb" Cursor="SizeAll" Background="{TemplateBinding Background}">
+                        <Thumb x:Name="PART_MoveThumb" Background="{TemplateBinding Background}">
                             <Thumb.Template>
                                 <ControlTemplate>
                                     <ContentPresenter x:Name="PART_Content"
@@ -85,6 +82,12 @@
                                 </ControlTemplate>
                             </Thumb.Template>
                         </Thumb>
+                        
+                        <Rectangle Name="PART_CustomBorder"
+                                   Stroke="{TemplateBinding BorderBrush}"
+                                   StrokeThickness="{TemplateBinding BorderThickness}"
+                                   StrokeDashArray="5,2"
+                                   IsVisible="False" />
                     </Grid>
 
                     <!-- Якоря (Thumb) -->
@@ -120,4 +123,17 @@
     <Style Selector="toolKit|TransformBox:selected">
         <Setter Property="ZIndex" Value="999" />
     </Style>
+    
+    <Style Selector="toolKit|TransformBox:drag Thumb#PART_MoveThumb">
+        <Setter Property="Cursor" Value="SizeAll"/>
+    </Style>
+    
+    <Style Selector="toolKit|TransformBox:drag Rectangle#PART_CustomBorder">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    
+    <Style Selector="toolKit|TransformBox:resize Rectangle#PART_CustomBorder">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    
 </Styles>
