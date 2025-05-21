@@ -1,7 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer;
@@ -9,7 +11,7 @@ namespace Avalonia.IDE.ToolKit.Controls.Designer;
 /// <summary>
 /// Контрол для визуального редактирования размеров и положения другого контрола.
 /// </summary>
-[PseudoClasses(":selected", ":drag", ":resize")]
+[PseudoClasses(":selected", ":pressed", ":active", ":drag", ":resize")]
 public class TransformBox : TemplatedControl, ISelectable
 {
     public static readonly StyledProperty<Size> GridStepProperty =
@@ -17,9 +19,12 @@ public class TransformBox : TemplatedControl, ISelectable
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<TransformBox>();
-
+    
     public static readonly StyledProperty<Control> TargetProperty =
         AvaloniaProperty.Register<TransformBox, Control>(nameof(Target));
+    
+    public static readonly StyledProperty<bool> IsActiveProperty =
+        AvaloniaProperty.Register<TransformBox, bool>(nameof(IsActive));
 
     public static readonly StyledProperty<int> AnchorSizeProperty =
         AvaloniaProperty.Register<TransformBox, int>(nameof(AnchorSize), 6);
@@ -37,6 +42,12 @@ public class TransformBox : TemplatedControl, ISelectable
     {
         get => GetValue(IsSelectedProperty);
         set => SetValue(IsSelectedProperty, value);
+    }
+    
+    public bool IsActive
+    {
+        get => GetValue(IsActiveProperty);
+        set => SetValue(IsActiveProperty, value);
     }
 
     public Control Target
@@ -58,11 +69,18 @@ public class TransformBox : TemplatedControl, ISelectable
     }
 
     private double _targetPosX, _targetPosY, _targetWidth, _targetHeight;
+    
+    static TransformBox()
+    {
+        SelectableMixin.Attach<TransformBox>(IsSelectedProperty);
+        PressedMixin.Attach<TransformBox>();
+        FocusableProperty.OverrideDefaultValue<TransformBox>(true);
+    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
+      
         this.GetObservable(TargetProperty).Subscribe(control =>
         {
             if (control != null)
@@ -74,8 +92,25 @@ public class TransformBox : TemplatedControl, ISelectable
 
                     var width =  double.IsNaN(control.Width) ? "Auto" : control.Width.ToString();
                     var height = double.IsNaN(control.Height) ? "Auto" : control.Height.ToString();
-
                     Console.WriteLine($"Target ready: Bounds.Width:{control.Bounds.Width} Bounds.Height:{control.Bounds.Height} Current Width:{width} Height:{height}");
+                    
+                    //заглушка для начальной синхронизации позиции
+                    Layout.SetX(this, Layout.GetX(Target) - AnchorSize);
+                    Layout.SetY(this, Layout.GetY(Target) - AnchorSize);
+                    
+                    AddHandler(PointerPressedEvent, (s, e) =>
+                    {
+                        var lastMouseButton = e.GetCurrentPoint(this).Properties.PointerUpdateKind;
+                        Console.WriteLine(lastMouseButton);
+                    
+                        if (ItemsControl.ItemsControlFromItemContainer(this) is CanvasSelectingItemsControl selecting)
+                        {
+                            selecting.TrySelectItem(this, e);
+                            Focus();
+                        }
+                    
+                    }, RoutingStrategies.Tunnel);
+                    
                 }, DispatcherPriority.Loaded);
             }
         });
@@ -121,20 +156,30 @@ public class TransformBox : TemplatedControl, ISelectable
 
     private void CacheTargetState()
     {
+        if (Target == null)
+            return;
+
         _targetWidth = Target.Bounds.Width;
         _targetHeight = Target.Bounds.Height;
         _targetPosX = Layout.GetX(Target);
         _targetPosY = Layout.GetY(Target);
     }
 
+
     private void ApplyTargetSize()
     {
+        if (Target == null)
+            return;
+        
         Target.Width = _targetWidth;
         Target.Height = _targetHeight;
     }
 
     private void ApplyTargetPosition()
     {
+        if (Target == null)
+            return;
+        
         Layout.SetX(Target, _targetPosX);
         Layout.SetY(Target, _targetPosY);
     }
@@ -225,4 +270,5 @@ public class TransformBox : TemplatedControl, ISelectable
     {
         return Math.Floor(value / gridSize) * gridSize;
     }
+
 }

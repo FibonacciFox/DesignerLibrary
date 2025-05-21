@@ -12,10 +12,18 @@ public partial class TransformBoxDemo : Window
     public TransformBoxDemo()
     {
         InitializeComponent();
+        
+        CanvasSelectingItemsControl1.SelectionMode = SelectionMode.Multiple;
+        PointerPressed += (sender, args) => CanvasSelectingItemsControl1.UnselectAll();
 
-        //Button1.LayoutUpdated += (sender, args) => _ = TakeScreenshotAsync(Button1, Image1);
+        DoubleTapped += (sender, args) =>
+        {
+            CanvasSelectingItemsControl1.SelectAll();
+            
+            args.Handled = true;
+        };
     }
-
+    
     public async Task TakeScreenshotAsync(Control control, Image targetImage)
     {
         // Получаем визуальный элемент для Composition API
@@ -31,8 +39,9 @@ public partial class TransformBoxDemo : Window
     
     private void Attach(object? sender, RoutedEventArgs e)
     {
-        TransformBox1.Target = sender as Button;
-        TransformBox1.IsSelected = true;
+        var button = sender as Button;
+        TransformBox1.Target = button as Button;
+        
         Layout.SetX(TransformBox1, Layout.GetX(TransformBox1.Target) - TransformBox1.AnchorSize);
         Layout.SetY(TransformBox1, Layout.GetY(TransformBox1.Target) - TransformBox1.AnchorSize);
     }

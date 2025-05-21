@@ -5,11 +5,14 @@
     <Style Selector="local|CanvasSelectingItemsControl">
         <Setter Property="Template">
             <ControlTemplate>
-                <Canvas>
-                    <ItemsPresenter />
-                </Canvas>
+                <ItemsPresenter>
+                    <ItemsPresenter.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsPresenter.ItemsPanel>
+                </ItemsPresenter>
             </ControlTemplate>
         </Setter>
     </Style>
-
 </Styles>

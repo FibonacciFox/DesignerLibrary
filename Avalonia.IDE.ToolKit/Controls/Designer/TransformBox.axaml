@@ -77,8 +77,8 @@
                         <Thumb x:Name="PART_MoveThumb" Background="{TemplateBinding Background}">
                             <Thumb.Template>
                                 <ControlTemplate>
-                                    <ContentPresenter x:Name="PART_Content"
-                                                      Background="{TemplateBinding Background}" />
+                                    <ContentPresenter x:Name="PART_Content" 
+                                                      Background="{TemplateBinding Background}"/>
                                 </ControlTemplate>
                             </Thumb.Template>
                         </Thumb>
@@ -121,9 +121,9 @@
     </Style>
 
     <Style Selector="toolKit|TransformBox:selected">
-        <Setter Property="ZIndex" Value="999" />
+       <!-- <Setter Property="ZIndex" Value="999" /> -->
     </Style>
-    
+
     <Style Selector="toolKit|TransformBox:drag Thumb#PART_MoveThumb">
         <Setter Property="Cursor" Value="SizeAll"/>
     </Style>

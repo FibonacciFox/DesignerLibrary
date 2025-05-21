@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:designer1="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
+        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DesignerLibrary.CanvasSelectingItemsControlDemo"
+        Title="CanvasSelectingItemsControlDemo">
+
+    <Grid>
+        <Button x:Name="Button1" 
+                Content="Button1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                toolKit:Layout.X="10" toolKit:Layout.Y="10"/>
+  
+        <designer1:CanvasSelectingItemsControl>
+                <designer1:TransformBox 
+                    Target="{Binding ElementName=Button1}"
+                    Background="Transparent"
+                    Width="120" Height="60"
+                    IsSelected="True"/>
+        </designer1:CanvasSelectingItemsControl>
+    </Grid>
+
+
+</Window>
