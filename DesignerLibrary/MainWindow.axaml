@@ -7,6 +7,7 @@
         xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters;assembly=Avalonia.IDE.ToolKit"
         xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
         xmlns:designerLibrary="clr-namespace:DesignerLibrary"
+        xmlns:extensions="clr-namespace:Avalonia.IDE.ToolKit.Extensions;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="DesignerLibrary.MainWindow"
         Title="DesignerLibrary">
@@ -86,10 +87,10 @@
                 </StackPanel>
                 
                 <TextBlock Text="Layout.X:" />
-                <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (extensions:Layout.X), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.Y:" />
-                <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (extensions:Layout.Y), ElementName=TestPanel}" />
                 
                 <TextBlock Text="HorizontalAlignment:" />
                 <ComboBox x:Name="HorizontalAlignmentComboBox"
@@ -117,19 +118,19 @@
                                        HorizontalScrollBarVisibility="Visible"
                                        VerticalScrollBarVisibility="Visible">
                 <designer:UiDesigner Name="UiDesignerControl" >
-                    <primitives:MeshPanel toolKit:Layout.X="10" toolKit:Layout.Y="10" Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
+                    <primitives:MeshPanel extensions:Layout.X="10" extensions:Layout.Y="10" Background="SlateGray" Name="DisignerLayer" Width="400" Height="400">
                         <Panel Name="TestPanel"
                                Width="250"
                                Height="250"
                                Background="White"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               toolKit:Layout.X="50" toolKit:Layout.Y="40">
-                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Background="DimGray" toolKit:Layout.X="0" toolKit:Layout.Y="0" Spacing="6">
-                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
-                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
-                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
-                                <Button toolKit:Layout.X="0" toolKit:Layout.Y="0">TEST</Button>
+                               extensions:Layout.X="50" extensions:Layout.Y="40">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Background="DimGray" extensions:Layout.X="0" extensions:Layout.Y="0" Spacing="6">
+                                <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
+                                <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
+                                <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
+                                <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
                                 <Thumb Width="30" Height="30" Background="Black"></Thumb>
                             </StackPanel>
                         </Panel>

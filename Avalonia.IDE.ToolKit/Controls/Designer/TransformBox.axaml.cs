@@ -95,8 +95,8 @@ public class TransformBox : TemplatedControl, ISelectable
                     Console.WriteLine($"Target ready: Bounds.Width:{control.Bounds.Width} Bounds.Height:{control.Bounds.Height} Current Width:{width} Height:{height}");
                     
                     //заглушка для начальной синхронизации позиции
-                    Layout.SetX(this, Layout.GetX(Target) - AnchorSize);
-                    Layout.SetY(this, Layout.GetY(Target) - AnchorSize);
+                    Extensions.Layout.SetX(this, Extensions.Layout.GetX(Target) - AnchorSize);
+                    Extensions.Layout.SetY(this, Extensions.Layout.GetY(Target) - AnchorSize);
                     
                     AddHandler(PointerPressedEvent, (s, e) =>
                     {
@@ -161,8 +161,8 @@ public class TransformBox : TemplatedControl, ISelectable
 
         _targetWidth = Target.Bounds.Width;
         _targetHeight = Target.Bounds.Height;
-        _targetPosX = Layout.GetX(Target);
-        _targetPosY = Layout.GetY(Target);
+        _targetPosX = Extensions.Layout.GetX(Target);
+        _targetPosY = Extensions.Layout.GetY(Target);
     }
 
 
@@ -180,8 +180,8 @@ public class TransformBox : TemplatedControl, ISelectable
         if (Target == null)
             return;
         
-        Layout.SetX(Target, _targetPosX);
-        Layout.SetY(Target, _targetPosY);
+        Extensions.Layout.SetX(Target, _targetPosX);
+        Extensions.Layout.SetY(Target, _targetPosY);
     }
 
     //Теперь HandleResize учитывает AnchorSize при проверке минимального размера — и не позволяет TransformBox стать меньше, чем minContentSize + AnchorSize * 2.
@@ -198,8 +198,8 @@ public class TransformBox : TemplatedControl, ISelectable
 
         var newWidth = Width;
         var newHeight = Height;
-        var newX = Layout.GetX(this);
-        var newY = Layout.GetY(this);
+        var newX = Extensions.Layout.GetX(this);
+        var newY = Extensions.Layout.GetY(this);
 
         if (anchor.ToString().Contains("Left"))
         {
@@ -247,8 +247,8 @@ public class TransformBox : TemplatedControl, ISelectable
         Width = newWidth;
         Height = newHeight;
 
-        Layout.SetX(this, newX);
-        Layout.SetY(this, newY);
+        Extensions.Layout.SetX(this, newX);
+        Extensions.Layout.SetY(this, newY);
     }
 
     private void HandleMove(Vector delta)
@@ -256,11 +256,11 @@ public class TransformBox : TemplatedControl, ISelectable
         var dx = SnapToGrid(delta.X, GridStep.Width);
         var dy = SnapToGrid(delta.Y, GridStep.Height);
 
-        var x = Layout.GetX(this);
-        var y = Layout.GetY(this);
+        var x = Extensions.Layout.GetX(this);
+        var y = Extensions.Layout.GetY(this);
 
-        Layout.SetX(this, x + dx);
-        Layout.SetY(this, y + dy);
+        Extensions.Layout.SetX(this, x + dx);
+        Extensions.Layout.SetY(this, y + dy);
 
         _targetPosX += dx;
         _targetPosY += dy;

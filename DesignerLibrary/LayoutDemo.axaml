@@ -6,6 +6,7 @@
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
         xmlns:primitives="clr-namespace:Avalonia.IDE.ToolKit.Controls.Primitives;assembly=Avalonia.IDE.ToolKit"
         xmlns:designerLibrary="clr-namespace:DesignerLibrary"
+        xmlns:extensions="clr-namespace:Avalonia.IDE.ToolKit.Extensions;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.LayoutDemo"
         Title="LayoutDemo">
@@ -16,8 +17,8 @@
                 <!-- MeshPanel и ее производные, в будущем будет использоваться как контейнер для добавления Ui элементов и компоновки интерфейсов -->
                
                 <primitives:MeshPanel Background="DarkGray"
-                                    toolKit:Layout.X = "200"
-                                    toolKit:Layout.Y = "50"
+                                    extensions:Layout.X = "200"
+                                    extensions:Layout.Y = "50"
                                     Name="DisignerLayer" 
                                     Width="600" 
                                     Height="600">
@@ -27,8 +28,8 @@
                         Background="LightSlateGray"
                         HorizontalAlignment="{Binding SelectedItem, ElementName=HorizontalAlignmentComboBox, Mode=TwoWay}"
                         VerticalAlignment="{Binding SelectedItem, ElementName=VerticalAlignmentComboBox, Mode=TwoWay}"
-                        toolKit:Layout.X="0" toolKit:Layout.Y="0">
-                        <TextBlock x:Name="TextBlock1" toolKit:Layout.X="0" toolKit:Layout.Y="0" HorizontalAlignment="Left" VerticalAlignment="Top">Panel</TextBlock>
+                        extensions:Layout.X="0" extensions:Layout.Y="0">
+                        <TextBlock x:Name="TextBlock1" extensions:Layout.X="0" extensions:Layout.Y="0" HorizontalAlignment="Left" VerticalAlignment="Top">Panel</TextBlock>
                     </Panel>
                 </primitives:MeshPanel>
             </designer:UiDesigner>
@@ -51,16 +52,16 @@
                 
                 
                 <TextBlock Text="Layout.X:" />
-                <TextBox Text="{Binding (toolKit:Layout.X), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (extensions:Layout.X), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.Y:" />
-                <TextBox Text="{Binding (toolKit:Layout.Y), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (extensions:Layout.Y), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.DesignX:" />
-                <TextBox Text="{Binding (toolKit:Layout.DesignX), ElementName=TestPanel}" />
+                <TextBox Text="{Binding (extensions:Layout.DesignX), ElementName=TestPanel}" />
                 
                 <TextBlock Text="Layout.DesignY:" />
-                <TextBox  Text="{Binding (toolKit:Layout.DesignY), ElementName=TestPanel}" />
+                <TextBox  Text="{Binding (extensions:Layout.DesignY), ElementName=TestPanel}" />
                 
                 <TextBlock Text="HorizontalAlignment:" />
                 <ComboBox x:Name="HorizontalAlignmentComboBox"

@@ -28,5 +28,11 @@
         <DependentUpon>CanvasSelectingItemsControl.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Common\" />
+      <Folder Include="Controls\Designer\Behaviors\" />
+      <Folder Include="Controls\Designer\Services\" />
+    </ItemGroup>
     
 </Project>

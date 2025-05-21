@@ -5,6 +5,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit;
 using Avalonia.IDE.ToolKit.Controls.Designer;
+using Avalonia.IDE.ToolKit.Extensions;
 using Avalonia.IDE.ToolKit.Services;
 using Avalonia.Interactivity;
 using Avalonia.Layout;

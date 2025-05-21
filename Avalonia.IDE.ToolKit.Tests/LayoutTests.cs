@@ -4,6 +4,7 @@ using Avalonia.Headless;
 using Avalonia.Media;
 using Avalonia.Headless.XUnit;
 using Avalonia.IDE.ToolKit.Controls.Designer;
+using Avalonia.IDE.ToolKit.Extensions;
 using Avalonia.IDE.ToolKit.Tests;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -33,8 +34,8 @@ public class LayoutTests
     public async Task Applies_XY_In_Grid()
     {
         var panel = new Panel { Width = 100, Height = 100 };
-        Layout.SetX(panel, 20);
-        Layout.SetY(panel, 30);
+        Extensions.Layout.SetX(panel, 20);
+        Extensions.Layout.SetY(panel, 30);
 
         var grid = new Grid { Width = 500, Height = 500 };
         grid.Children.Add(panel);
@@ -57,8 +58,8 @@ public class LayoutTests
     public async Task Applies_XY_In_Canvas()
     {
         var panel = new Panel { Width = 100, Height = 100 };
-        Layout.SetX(panel, 60);
-        Layout.SetY(panel, 80);
+        Extensions.Layout.SetX(panel, 60);
+        Extensions.Layout.SetY(panel, 80);
 
         var canvas = new Canvas();
         canvas.Children.Add(panel);
@@ -79,7 +80,7 @@ public class LayoutTests
     public async Task Updates_Position_On_Alignment_Change()
     {
         var panel = new Panel { Width = 100, Height = 100, HorizontalAlignment = HorizontalAlignment.Right };
-        Layout.SetX(panel, 50);
+        Extensions.Layout.SetX(panel, 50);
 
         var grid = new Grid { Width = 300, Height = 300 };
         grid.Children.Add(panel);
@@ -105,8 +106,8 @@ public class LayoutTests
         var designer = new UiDesigner { Width = 500, Height = 500 };
         var panel = new Panel { Width = 100, Height = 100 };
 
-        Layout.SetX(panel, 40);
-        Layout.SetY(panel, 70);
+        Extensions.Layout.SetX(panel, 40);
+        Extensions.Layout.SetY(panel, 70);
 
         designer.Children.Add(panel);
 
@@ -115,8 +116,8 @@ public class LayoutTests
 
         await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
 
-        var dx = Layout.GetDesignX(panel);
-        var dy = Layout.GetDesignY(panel);
+        var dx = Extensions.Layout.GetDesignX(panel);
+        var dy = Extensions.Layout.GetDesignY(panel);
 
         Assert.True(dx >= 0);
         Assert.True(dy >= 0);
@@ -129,8 +130,8 @@ public class LayoutTests
     public async Task Handles_NaN_Values_Gracefully()
     {
         var panel = new Panel { Width = 100, Height = 100 };
-        Layout.SetX(panel, double.NaN);
-        Layout.SetY(panel, double.NaN);
+        Extensions.Layout.SetX(panel, double.NaN);
+        Extensions.Layout.SetY(panel, double.NaN);
 
         var stack = new StackPanel();
         stack.Children.Add(panel);

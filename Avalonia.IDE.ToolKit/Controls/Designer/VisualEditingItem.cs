@@ -131,10 +131,10 @@ public class VisualEditingItem : TemplatedControl, ISelectable
                 .Subscribe(h => UpdateSizeFromHeightAttachedControl());
 
             
-            _xSub = newControl.GetObservable(Layout.DesignXProperty)
-                .Subscribe(x => Layout.SetDesignX(this, x - AnchorSize));
-            _ySub = newControl.GetObservable(Layout.DesignYProperty)
-                .Subscribe(y => Layout.SetDesignY(this, y - AnchorSize));
+            _xSub = newControl.GetObservable(Extensions.Layout.DesignXProperty)
+                .Subscribe(x => Extensions.Layout.SetDesignX(this, x - AnchorSize));
+            _ySub = newControl.GetObservable(Extensions.Layout.DesignYProperty)
+                .Subscribe(y => Extensions.Layout.SetDesignY(this, y - AnchorSize));
         }
     }
     
@@ -170,8 +170,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
         if (Parent is not Visual)
             return;
       
-        Layout.SetX(this, Layout.GetDesignX(AttachedControl) - AnchorSize);
-        Layout.SetY(this, Layout.GetDesignY(AttachedControl) - AnchorSize);
+        Extensions.Layout.SetX(this, Extensions.Layout.GetDesignX(AttachedControl) - AnchorSize);
+        Extensions.Layout.SetY(this, Extensions.Layout.GetDesignY(AttachedControl) - AnchorSize);
 
         UpdateSizeFromWidthAttachedControl();
         UpdateSizeFromHeightAttachedControl();
@@ -230,8 +230,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
         _originalWidth = Width;
         _originalHeight = Height;
-        _originalLeft = Layout.GetX(this);
-        _originalTop = Layout.GetY(this);
+        _originalLeft = Extensions.Layout.GetX(this);
+        _originalTop = Extensions.Layout.GetY(this);
 
         PseudoClasses.Set(":resize", true);
     }
@@ -248,8 +248,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
             Width = w;
             Height = h;
-            Layout.SetX(this, l);
-            Layout.SetY(this, t);
+            Extensions.Layout.SetX(this, l);
+            Extensions.Layout.SetY(this, t);
 
             e.Handled = true;
         }
@@ -276,7 +276,7 @@ public class VisualEditingItem : TemplatedControl, ISelectable
 
         _isDragging = true;
         _dragStartPoint = e.GetCurrentPoint((Visual?)Parent);
-        _originalPosition = new Point(Layout.GetX(this), Layout.GetY(this));
+        _originalPosition = new Point(Extensions.Layout.GetX(this), Extensions.Layout.GetY(this));
 
         e.Pointer.Capture((IInputElement)sender!);
     }
@@ -292,8 +292,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
             var newX = SnapToGrid(_originalPosition.X + dx, StepSizeByX);
             var newY = SnapToGrid(_originalPosition.Y + dy, StepSizeByY);
 
-            Layout.SetX(this, newX);
-            Layout.SetY(this, newY);
+            Extensions.Layout.SetX(this, newX);
+            Extensions.Layout.SetY(this, newY);
 
             PseudoClasses.Set(":drag", true);
             e.Handled = true;
@@ -369,8 +369,8 @@ public class VisualEditingItem : TemplatedControl, ISelectable
         AttachedControl.Height = Height - AnchorSize * 2;
         
 
-        Layout.SetDesignX(AttachedControl, Layout.GetX(this) + AnchorSize);
-        Layout.SetDesignY(AttachedControl, Layout.GetY(this) + AnchorSize);
+        Extensions.Layout.SetDesignX(AttachedControl, Extensions.Layout.GetX(this) + AnchorSize);
+        Extensions.Layout.SetDesignY(AttachedControl, Extensions.Layout.GetY(this) + AnchorSize);
     }
 
     private double SnapToGrid(double value, double gridSize)

@@ -1,12 +1,12 @@
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.IDE.ToolKit.Controls.Designer;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 using Avalonia.Threading;
-using Avalonia.IDE.ToolKit.Controls.Designer;
+using Avalonia.VisualTree;
 
-namespace Avalonia.IDE.ToolKit;
+namespace Avalonia.IDE.ToolKit.Extensions;
 
 /// <summary>
 /// Предоставляет attached-свойства для абсолютного позиционирования элементов как внутри конструктора, так и в рантайме.

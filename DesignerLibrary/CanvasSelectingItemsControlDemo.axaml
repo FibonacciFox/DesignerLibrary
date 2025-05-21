@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:designer1="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
         xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit;assembly=Avalonia.IDE.ToolKit"
+        xmlns:extensions="clr-namespace:Avalonia.IDE.ToolKit.Extensions;assembly=Avalonia.IDE.ToolKit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DesignerLibrary.CanvasSelectingItemsControlDemo"
         Title="CanvasSelectingItemsControlDemo">
@@ -13,7 +14,7 @@
                 Content="Button1"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                toolKit:Layout.X="10" toolKit:Layout.Y="10"/>
+                extensions:Layout.X="10" extensions:Layout.Y="10"/>
   
         <designer1:CanvasSelectingItemsControl>
                 <designer1:TransformBox 
