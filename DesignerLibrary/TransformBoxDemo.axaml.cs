@@ -14,12 +14,12 @@ public partial class TransformBoxDemo : Window
     {
         InitializeComponent();
         
-        CanvasSelectingItemsControl1.SelectionMode = SelectionMode.Multiple;
-        PointerPressed += (sender, args) => CanvasSelectingItemsControl1.UnselectAll();
+        InteractionLayer1.SelectionMode = SelectionMode.Multiple;
+        PointerPressed += (sender, args) => InteractionLayer1.UnselectAll();
 
         DoubleTapped += (sender, args) =>
         {
-            CanvasSelectingItemsControl1.SelectAll();
+            InteractionLayer1.SelectAll();
             
             args.Handled = true;
         };

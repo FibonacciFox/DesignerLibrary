@@ -5,6 +5,8 @@
             <!-- Add Controls for Previewer Here -->
         </Border>
     </Design.PreviewWith>
+    
+    <StyleInclude Source="avares://Avalonia.IDE.ToolKit/Controls/Designer/Templates/TransformBox.axaml"/>
 
     <Styles.Resources>
         <ResourceDictionary>

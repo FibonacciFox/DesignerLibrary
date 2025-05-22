@@ -3,6 +3,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Templates;
+using Avalonia.IDE.ToolKit.Controls.Designer.Layers;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 
@@ -103,7 +104,7 @@ public class TransformBox : TemplatedControl, ISelectable
                         var lastMouseButton = e.GetCurrentPoint(this).Properties.PointerUpdateKind;
                         Console.WriteLine(lastMouseButton);
                     
-                        if (ItemsControl.ItemsControlFromItemContainer(this) is CanvasSelectingItemsControl selecting)
+                        if (ItemsControl.ItemsControlFromItemContainer(this) is InteractionLayer selecting)
                         {
                             selecting.TrySelectItem(this, e);
                             Focus();

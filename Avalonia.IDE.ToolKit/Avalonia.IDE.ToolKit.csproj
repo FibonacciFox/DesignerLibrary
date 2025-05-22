@@ -24,8 +24,9 @@
       <Compile Update="Controls\Designer\VisualEditingLayer.cs">
         <DependentUpon>VisualEditingLayer.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Controls\Designer\CanvasSelectingItemsControl.cs">
-        <DependentUpon>CanvasSelectingItemsControl.axaml</DependentUpon>
+      <Compile Update="Controls\Designer\Items\TransformBox.axaml.cs">
+        <DependentUpon>TransformBox.axaml</DependentUpon>
+        <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
 
