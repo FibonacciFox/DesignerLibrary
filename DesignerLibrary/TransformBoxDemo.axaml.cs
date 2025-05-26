@@ -14,7 +14,6 @@ public partial class TransformBoxDemo : Window
     {
         InitializeComponent();
         
-        InteractionLayer1.SelectionMode = SelectionMode.Multiple;
         PointerPressed += (sender, args) => InteractionLayer1.UnselectAll();
 
         DoubleTapped += (sender, args) =>

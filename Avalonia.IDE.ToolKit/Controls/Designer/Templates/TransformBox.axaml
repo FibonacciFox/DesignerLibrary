@@ -1,10 +1,10 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer"
-        xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters">
+        xmlns:converters="clr-namespace:Avalonia.IDE.ToolKit.Converters"
+        xmlns:items="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer.Items">
 
     <Design.PreviewWith>
-        <toolKit:TransformBox Width="200"
+        <items:TransformBox Width="200"
                               Height="100"
                               BorderBrush="Black"
                               BorderThickness="1"
@@ -63,7 +63,7 @@
     </Style>
 
     <!-- Стиль TransformBox -->
-    <Style Selector="toolKit|TransformBox">
+    <Style Selector="items|TransformBox">
         <Setter Property="MinHeight" Value="8"/>
         <Setter Property="MinWidth" Value="8"/>
         <Setter Property="ZIndex" Value="0" />
@@ -120,19 +120,19 @@
         </Setter>
     </Style>
 
-    <Style Selector="toolKit|TransformBox:selected">
+    <Style Selector="items|TransformBox:selected">
        <!-- <Setter Property="ZIndex" Value="999" /> -->
     </Style>
 
-    <Style Selector="toolKit|TransformBox:drag Thumb#PART_MoveThumb">
+    <Style Selector="items|TransformBox:drag Thumb#PART_MoveThumb">
         <Setter Property="Cursor" Value="SizeAll"/>
     </Style>
     
-    <Style Selector="toolKit|TransformBox:drag Rectangle#PART_CustomBorder">
+    <Style Selector="items|TransformBox:drag Rectangle#PART_CustomBorder">
         <Setter Property="IsVisible" Value="True"/>
     </Style>
     
-    <Style Selector="toolKit|TransformBox:resize Rectangle#PART_CustomBorder">
+    <Style Selector="items|TransformBox:resize Rectangle#PART_CustomBorder">
         <Setter Property="IsVisible" Value="True"/>
     </Style>
     

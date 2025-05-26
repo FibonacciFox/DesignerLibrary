@@ -1,25 +1,22 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.IDE.ToolKit.Controls.Designer.Layers;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 
-namespace Avalonia.IDE.ToolKit.Controls.Designer;
+namespace Avalonia.IDE.ToolKit.Controls.Designer.Items;
 
 /// <summary>
 /// Контрол для визуального редактирования размеров и положения другого контрола.
 /// </summary>
 [PseudoClasses(":selected", ":pressed", ":active", ":drag", ":resize")]
-public class TransformBox : TemplatedControl, ISelectable
+public class TransformBox : SelectableInteractionLayerItem
 {
     public static readonly StyledProperty<Size> GridStepProperty =
         AvaloniaProperty.Register<TransformBox, Size>(nameof(GridStep), new Size(8, 8));
-
-    public static readonly StyledProperty<bool> IsSelectedProperty =
-        SelectingItemsControl.IsSelectedProperty.AddOwner<TransformBox>();
     
     public static readonly StyledProperty<Control> TargetProperty =
         AvaloniaProperty.Register<TransformBox, Control>(nameof(Target));
@@ -37,12 +34,6 @@ public class TransformBox : TemplatedControl, ISelectable
     {
         get => GetValue(GridStepProperty);
         set => SetValue(GridStepProperty, value);
-    }
-
-    public bool IsSelected
-    {
-        get => GetValue(IsSelectedProperty);
-        set => SetValue(IsSelectedProperty, value);
     }
     
     public bool IsActive
@@ -99,14 +90,14 @@ public class TransformBox : TemplatedControl, ISelectable
                     Extensions.Layout.SetX(this, Extensions.Layout.GetX(Target) - AnchorSize);
                     Extensions.Layout.SetY(this, Extensions.Layout.GetY(Target) - AnchorSize);
                     
-                    AddHandler(PointerPressedEvent, (s, e) =>
+                    AddHandler(PointerPressedEvent, (s, pointerPressedEventArgs) =>
                     {
-                        var lastMouseButton = e.GetCurrentPoint(this).Properties.PointerUpdateKind;
+                        var lastMouseButton = pointerPressedEventArgs.GetCurrentPoint(this).Properties.PointerUpdateKind;
                         Console.WriteLine(lastMouseButton);
                     
                         if (ItemsControl.ItemsControlFromItemContainer(this) is InteractionLayer selecting)
                         {
-                            selecting.TrySelectItem(this, e);
+                            selecting.TrySelectItem(this, pointerPressedEventArgs);
                             Focus();
                         }
                     

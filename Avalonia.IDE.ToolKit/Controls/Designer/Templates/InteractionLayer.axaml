@@ -1,12 +1,13 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:designer="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer"
+                    xmlns:items="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer.Items"
                     x:ClassModifier="internal">
   <Design.PreviewWith>
     <Border Padding="10" Width="600" Height="600" >
       <InteractionLayer>
         <Button CornerRadius="0" x:Name="BoxItem" Layout.X="0" >Test</Button>
-        <designer:TransformBox Target="{Binding ElementName=BoxItem}" Background="Transparent" Width="300" Height="120" IsSelected="True"/>
+        <items:TransformBox Target="{Binding ElementName=BoxItem}" Background="Transparent" Width="300" Height="120" IsSelected="True"/>
       </InteractionLayer>
     </Border>
   </Design.PreviewWith>

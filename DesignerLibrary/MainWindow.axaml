@@ -131,7 +131,6 @@
                                 <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
                                 <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
                                 <Button extensions:Layout.X="0" extensions:Layout.Y="0">TEST</Button>
-                                <Thumb Width="30" Height="30" Background="Black"></Thumb>
                             </StackPanel>
                         </Panel>
                     </primitives:MeshPanel>

@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.IDE.ToolKit.Controls.Designer.Items;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;

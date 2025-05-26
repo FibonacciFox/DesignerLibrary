@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:toolKit="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer;assembly=Avalonia.IDE.ToolKit"
-           
+             xmlns:items="clr-namespace:Avalonia.IDE.ToolKit.Controls.Designer.Items;assembly=Avalonia.IDE.ToolKit"
+
              Title="TransformBoxDemo"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DesignerLibrary.TransformBoxDemo">
@@ -31,7 +32,7 @@
                 Layout.X = "50"
                 Layout.Y = "150"/>
         
-        <toolKit:TransformBox Width="200"
+        <items:TransformBox Width="200"
                               Height="100"
                               Name="TransformBox1"
                               Target="{Binding ElementName=Button1}"
@@ -40,14 +41,14 @@
                               BorderBrush="Black"
                               BorderThickness="1"/>
         
-        <toolKit:TransformBox Width="200"
+        <items:TransformBox Width="200"
                               Height="100"
                               Target="{Binding ElementName=Button2}"
                               Background="Transparent"
                               BorderBrush="Black"
                               BorderThickness="1"/>
         
-        <toolKit:TransformBox Width="200"
+        <items:TransformBox Width="200"
                               Height="100"
                               Name="TransformBox3"
                               Target="{Binding ElementName=Button3}"

@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Selection;
 using Avalonia.Controls.Templates;
+using Avalonia.IDE.ToolKit.Controls.Designer.Items;
 using Avalonia.Input;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer.Layers;
@@ -43,6 +44,8 @@ public class InteractionLayer : SelectingItemsControl
     static InteractionLayer()
     {
         ItemsPanelProperty.OverrideDefaultValue<InteractionLayer>(DefaultPanel);
+        SelectionModeProperty.OverrideDefaultValue<InteractionLayer>(SelectionMode.Multiple);
+        
         KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue(
             typeof(InteractionLayer),
             KeyboardNavigationMode.Once);
@@ -91,11 +94,18 @@ public class InteractionLayer : SelectingItemsControl
     
     internal void TrySelectItem(Control item, PointerEventArgs e)
     {
+        Console.WriteLine($"TrySelectItem: {item}, Selection.Count: {Selection.Count}");
+
         var toggle = e.KeyModifiers.HasFlag(KeyModifiers.Control);
         var range = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
         var right = e.GetCurrentPoint(item).Properties.IsRightButtonPressed;
 
-        UpdateSelectionFromEventSource(item, true, false, range, right);
+        var changed = UpdateSelectionFromEventSource(item, true, false, range, right);
+
+       var  item1 = item as TransformBox;
+
+        Console.WriteLine($"Updated: {changed} Button:{item1.Target.Name} IsSelected: {(item1 as ISelectable)?.IsSelected}");
     }
+
     
 }

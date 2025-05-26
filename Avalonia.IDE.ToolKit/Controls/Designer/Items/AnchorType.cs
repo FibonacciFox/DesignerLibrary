@@ -1,4 +1,4 @@
-namespace Avalonia.IDE.ToolKit.Controls.Designer;
+namespace Avalonia.IDE.ToolKit.Controls.Designer.Items;
 
 /// <summary>
 /// Тип точки якоря, определяющий направление изменения размеров.

@@ -4,6 +4,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.IDE.ToolKit.Controls.Designer.Layers;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace Avalonia.IDE.ToolKit.Controls.Designer.Items;
 
@@ -28,19 +29,22 @@ public class SelectableInteractionLayerItem : InteractionLayerBaseItem, ISelecta
         PressedMixin.Attach<SelectableInteractionLayerItem>();
         FocusableProperty.OverrideDefaultValue<SelectableInteractionLayerItem>(true);
     }
-
+    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        Console.WriteLine("OnPointerPressed");
         base.OnPointerPressed(e);
 
         if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             return;
 
-        if (ItemsControl.ItemsControlFromItemContainer(this) is InteractionLayer layer)
+        if (ItemsControl.ItemsControlFromItemContainer(this) is InteractionLayer interactionLayer)
         {
-            layer.TrySelectItem(this, e);
-            Focus();
+            interactionLayer.TrySelectItem(this, e);
+            Focus(); // необязательно, но полезно
             e.Handled = true;
         }
     }
+
 }
+
